@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Enjambre — Manada Hollow · Bleach Hobba RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#04050a;
+  --card:#0d0f0a;--card2:#080a06;
+  --border:rgba(120,180,40,.18);--border-hi:rgba(160,220,50,.42);
+  --cg:#4a7c10;--cg-hi:#8bc34a;
+  --acid:#b8e000;--acid2:#d4ff00;
+  --chitin:#1a1f0e;--chitin2:#252d14;
+  --amber:#c8820a;--amber-hi:#f0a830;
+  --text:#c6d4a8;--text-dim:#5a6840;--bone:#dde8c0;
+  --void-green:rgba(120,180,40,.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background-color:var(--void);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%,rgba(60,100,5,.45) 0%,transparent 65%),
+    radial-gradient(ellipse 40% 35% at 15% 80%,rgba(30,60,2,.3) 0%,transparent 55%),
+    radial-gradient(ellipse 30% 25% at 85% 60%,rgba(100,140,10,.12) 0%,transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(120,180,40,0.04)' stroke-width='0.5'%3E%3Cpolygon points='30,2 52,16 52,44 30,58 8,44 8,16'/%3E%3C/g%3E%3C/svg%3E");
+  color:var(--text);
+  font-family:"Rajdhani",sans-serif;
+  font-size:15px;line-height:1.5;
+  min-height:100vh;padding:40px 20px 80px;
+}
+
+.wrap{max-width:860px;margin:0 auto}
+
+/* ── HEADER ── */
+.hdr{text-align:center;margin-bottom:48px;position:relative}
+.hdr-topline{height:1px;background:linear-gradient(to right,transparent,var(--acid),rgba(160,220,50,.4),var(--acid),transparent);margin-bottom:32px}
+
+/* Big hexagonal bg symbol */
+.hdr-hex-bg{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  font-size:260px;line-height:1;
+  color:rgba(74,124,16,.035);
+  pointer-events:none;user-select:none;
+  font-family:"Share Tech Mono",monospace;
+}
+
+.hdr-tag{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:5px;color:var(--cg-hi);text-transform:uppercase;margin-bottom:18px;position:relative}
+
+/* Hexagon avatar frame */
+.hex-frame{
+  width:110px;height:110px;margin:0 auto 22px;
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.hex-frame svg.hex-ring{position:absolute;inset:0;width:100%;height:100%}
+.hex-inner{
+  width:88px;height:88px;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:var(--card2);
+  background-image:repeating-linear-gradient(60deg,rgba(74,124,16,.08) 0px,rgba(74,124,16,.08) 1px,transparent 1px,transparent 12px);
+  overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;color:rgba(139,195,74,.15);
+  font-family:"Share Tech Mono",monospace;
+}
+
+.hdr-title{
+  font-family:"Cinzel",serif;
+  font-size:clamp(32px,6vw,58px);
+  font-weight:900;letter-spacing:8px;
+  color:var(--bone);text-transform:uppercase;
+  line-height:1;
+  text-shadow:0 0 30px rgba(184,224,0,.5),0 0 80px rgba(74,124,16,.3);
+  position:relative;
+}
+.hdr-title span{color:var(--acid)}
+.hdr-sub{font-family:"Cinzel",serif;font-size:12px;letter-spacing:7px;color:var(--cg-hi);margin-top:10px;text-transform:uppercase}
+.hdr-divider{
+  display:flex;align-items:center;gap:14px;margin:20px auto 0;max-width:420px;
+}
+.hdr-divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--cg-hi))}
+.hdr-divider-line.r{background:linear-gradient(to left,transparent,var(--cg-hi))}
+.hdr-divider-ico{font-family:"Share Tech Mono",monospace;font-size:16px;color:var(--acid);letter-spacing:0}
+.faction-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:18px;
+  background:rgba(74,124,16,.1);
+  border:1px solid var(--border-hi);
+  padding:5px 22px;
+  font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:3px;
+  color:var(--acid);text-transform:uppercase;
+}
+.faction-pill::before,.faction-pill::after{content:"⬡";font-size:10px;color:rgba(139,195,74,.5)}
+
+/* ── SECTIONS ── */
+.sec{
+  background:var(--card);
+  border:1px solid var(--border);
+  margin-bottom:18px;
+  position:relative;overflow:hidden;
+  animation:fadeUp .45s ease both;
+}
+.sec::before{
+  content:"";position:absolute;top:0;left:0;
+  width:3px;height:100%;
+  background:linear-gradient(to bottom,var(--acid),var(--cg-hi),transparent);
+}
+/* hex corner accent */
+.sec::after{
+  content:"⬡";
+  position:absolute;top:8px;right:12px;
+  font-size:11px;color:rgba(139,195,74,.12);
+  pointer-events:none;
+}
+.sec:nth-child(2){animation-delay:.05s}
+.sec:nth-child(3){animation-delay:.1s}
+.sec:nth-child(4){animation-delay:.15s}
+.sec:nth-child(5){animation-delay:.2s}
+.sec:nth-child(6){animation-delay:.25s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.shdr{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px 10px 22px;
+  background:rgba(0,0,0,.45);
+  border-bottom:1px solid var(--border);
+}
+.sico{width:20px;height:20px;flex-shrink:0;opacity:.85}
+.sttl{font-family:"Cinzel",serif;font-size:11px;font-weight:600;letter-spacing:3px;color:var(--cg-hi);text-transform:uppercase;flex:1}
+.stag{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.sbody{padding:20px 24px 22px}
+
+/* ── FIELDS ── */
+.frow{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.frow:last-child{border-bottom:none}
+.flbl{font-weight:600;font-size:12px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;flex-shrink:0;min-width:200px}
+.fdash{color:var(--acid);flex-shrink:0;font-size:11px}
+.fval{font-size:14px;color:var(--bone);font-weight:500}
+.fval.accent{color:var(--acid);font-family:"Share Tech Mono",monospace;font-size:13px;letter-spacing:1px}
+.fval.faction{color:var(--cg-hi);font-weight:700;font-family:"Cinzel",serif;letter-spacing:2px}
+
+/* ── HIERARCHY ── */
+.hier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
+@media(max-width:600px){.hier-grid{grid-template-columns:1fr}}
+.hcard{
+  background:var(--chitin);
+  border:1px solid var(--border);
+  padding:14px 16px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s,background .2s;
+}
+.hcard:hover{border-color:var(--border-hi);background:var(--chitin2)}
+.hcard::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--cg-hi),transparent);opacity:.6}
+.hcard.leader{border-color:rgba(212,255,0,.35)}
+.hcard.leader::after{background:linear-gradient(to right,var(--acid2),var(--amber-hi),transparent)}
+.hcard.leader::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at top,rgba(184,224,0,.05) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hcard-role{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2.5px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px}
+.hcard.leader .hcard-role{color:var(--amber-hi)}
+.hcard-name{font-family:"Cinzel",serif;font-size:15px;font-weight:600;color:var(--bone);letter-spacing:1px;margin-bottom:8px;line-height:1.2}
+.hcard.leader .hcard-name{color:var(--acid);text-shadow:0 0 20px rgba(184,224,0,.35)}
+.hcard-link{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(74,124,16,.15);
+  border:1px solid var(--border);
+  padding:3px 10px;
+  font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1.5px;
+  color:var(--cg-hi);text-decoration:none;text-transform:uppercase;
+  transition:background .2s,border-color .2s;
+}
+.hcard-link:hover{background:rgba(74,124,16,.3);border-color:var(--border-hi);color:var(--acid)}
+.hcard-link::before{content:"⬡";font-size:8px}
+
+/* Members extra grid — wider */
+.members-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+@media(max-width:600px){.members-grid{grid-template-columns:1fr 1fr}}
+.mcard{
+  background:var(--chitin);border:1px solid var(--border);
+  padding:10px 13px;position:relative;overflow:hidden;
+  transition:border-color .2s;
+}
+.mcard:hover{border-color:var(--border-hi)}
+.mcard::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--cg-hi);opacity:.4}
+.mcard-name{font-family:"Cinzel",serif;font-size:13px;color:var(--bone);margin-bottom:6px;font-weight:600}
+.mcard-link{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;
+  color:var(--text-dim);text-decoration:none;
+  transition:color .2s;
+}
+.mcard-link:hover{color:var(--acid)}
+.mcard-link::before{content:"→";font-size:10px}
+
+/* ── OBJECTIVES ── */
+.obj-list{display:flex;flex-direction:column;gap:12px}
+.obj{
+  display:flex;gap:14px;
+  background:var(--chitin);
+  border:1px solid var(--border);
+  padding:14px 16px;
+  position:relative;overflow:hidden;
+}
+.obj::before{
+  content:"";position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.obj.short::before{background:var(--cg-hi)}
+.obj.mid::before{background:var(--amber-hi)}
+.obj.long::before{background:var(--acid2)}
+.obj-icon{
+  flex-shrink:0;width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  background:rgba(0,0,0,.3);
+  border:1px solid var(--border);
+}
+.obj-body{flex:1;min-width:0}
+.obj-label{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px}
+.obj.short .obj-label{color:var(--cg-hi)}
+.obj.mid .obj-label{color:var(--amber-hi)}
+.obj.long .obj-label{color:var(--acid2)}
+.obj-text{font-size:13px;color:var(--text);line-height:1.65}
+
+/* ── THEMATIC ── */
+.theme-block{
+  background:var(--chitin);
+  border:1px solid var(--border);
+  padding:18px 20px;
+  position:relative;overflow:hidden;
+}
+.theme-block::before{
+  content:"⬡⬡⬡";
+  position:absolute;bottom:-8px;right:10px;
+  font-size:42px;letter-spacing:-6px;
+  color:rgba(74,124,16,.06);pointer-events:none;
+  line-height:1;
+}
+.theme-label{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px}
+.theme-text{font-size:13.5px;color:var(--text);line-height:1.75}
+.theme-text em{color:var(--acid);font-style:normal;font-weight:600}
+
+/* ── DIVIDER ── */
+.sec-sep{
+  display:flex;align-items:center;gap:10px;
+  margin:6px 0 14px;
+}
+.sep-line{flex:1;height:1px;background:linear-gradient(to right,rgba(139,195,74,.25),transparent)}
+.sep-ico{font-family:"Share Tech Mono",monospace;font-size:11px;color:rgba(139,195,74,.4)}
+
+/* ── FOOTER ── */
+.ftr{text-align:center;margin-top:40px}
+.ftr::before{content:"";display:block;height:1px;background:linear-gradient(to right,transparent,var(--acid),rgba(139,195,74,.3),var(--acid),transparent);margin-bottom:16px}
+.ftxt{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}
+
+/* ── SWARM PARTICLE DECORATION ── */
+.swarm-deco{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;overflow:hidden;
+}
+.particle{
+  position:absolute;
+  width:2px;height:2px;
+  background:var(--acid);
+  border-radius:50%;
+  opacity:0;
+  animation:drift linear infinite;
+}
+@keyframes drift{
+  0%{opacity:0;transform:translate(0,0)}
+  10%{opacity:.6}
+  90%{opacity:.2}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy))}
+}
+.wrap{position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<!-- Partículas de fondo -->
+<div class="swarm-deco" id="swarm"></div>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-hex-bg">⬡</div>
+  <div class="hdr-topline"></div>
+  <div class="hdr-tag">Bleach Hobba RPG &middot; Registro de Manada &middot; Facción Hollow</div>
+
+  <div class="hex-frame">
+    <svg class="hex-ring" viewBox="0 0 110 110" fill="none">
+      <polygon points="55,4 102,29 102,81 55,106 8,81 8,29" stroke="#8bc34a" stroke-width="1.2"/>
+      <polygon points="55,14 92,34 92,76 55,96 18,76 18,34" stroke="#8bc34a" stroke-width=".5" stroke-dasharray="3 5"/>
+      <!-- tick marks at each vertex -->
+      <line x1="55" y1="4" x2="55" y2="12" stroke="#d4ff00" stroke-width="1.5"/>
+      <line x1="102" y1="29" x2="95" y2="33" stroke="#d4ff00" stroke-width="1.5"/>
+      <line x1="102" y1="81" x2="95" y2="77" stroke="#d4ff00" stroke-width="1.5"/>
+      <line x1="55" y1="106" x2="55" y2="98" stroke="#d4ff00" stroke-width="1.5"/>
+      <line x1="8" y1="81" x2="15" y2="77" stroke="#d4ff00" stroke-width="1.5"/>
+      <line x1="8" y1="29" x2="15" y2="33" stroke="#d4ff00" stroke-width="1.5"/>
+    </svg>
+    <div class="hex-inner">∅</div>
+  </div>
+
+  <div class="hdr-title">El <span>Enjambre</span></div>
+  <div class="hdr-sub">Manada de los Sin Nombre &middot; Hueco Mundo</div>
+  <div class="hdr-divider">
+    <div class="hdr-divider-line"></div>
+    <div class="hdr-divider-ico">⬡ ⬡ ⬡</div>
+    <div class="hdr-divider-line r"></div>
+  </div>
+  <div><span class="faction-pill">Hollow &mdash; Selecci&oacute;n Natural</span></div>
+</div>
+
+<!-- 01 DATOS GENERALES -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="1" stroke="#8bc34a" stroke-width="1.2"/><line x1="6" y1="8" x2="14" y2="8" stroke="#8bc34a" stroke-width="1"/><line x1="6" y1="11.5" x2="11" y2="11.5" stroke="#8bc34a" stroke-width="1"/></svg>
+    <span class="sttl">Datos Generales</span><span class="stag">01</span>
+  </div>
+  <div class="sbody">
+    <div class="frow">
+      <span class="flbl">Nombre del Grupo</span>
+      <span class="fdash">&mdash;</span>
+      <span class="fval accent">El Enjambre</span>
+    </div>
+    <div class="frow">
+      <span class="flbl">Facción Correspondiente</span>
+      <span class="fdash">&mdash;</span>
+      <span class="fval faction">Hollow</span>
+    </div>
+    <div class="frow">
+      <span class="flbl">Territorio</span>
+      <span class="fdash">&mdash;</span>
+      <span class="fval">Hueco Mundo</span>
+    </div>
+  </div>
+</div>
+
+<!-- 02 JERARQUÍA -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><polygon points="10,2 13,8 19,9 14.5,13.5 16,20 10,17 4,20 5.5,13.5 1,9 7,8" stroke="#8bc34a" stroke-width="1.1" fill="none"/></svg>
+    <span class="sttl">Datos Jerárquicos</span><span class="stag">02</span>
+  </div>
+  <div class="sbody">
+    <div class="hier-grid">
+      <!-- LÍDER -->
+      <div class="hcard leader">
+        <div class="hcard-role">⬡ Líder Indiscutible</div>
+        <div class="hcard-name">Mossca Mossquitez</div>
+        <a class="hcard-link" href="https://bhrpg.forumcommunity.net/?t=63475008#lastpost" target="_blank">Ver Ficha</a>
+      </div>
+      <!-- 2DO -->
+      <div class="hcard">
+        <div class="hcard-role">Segundo al Mando</div>
+        <div class="hcard-name">Zanshin</div>
+        <a class="hcard-link" href="https://bhrpg.forumcommunity.net/?t=63472104" target="_blank">Ver Ficha</a>
+      </div>
+      <!-- KAGAMI -->
+      <div class="hcard">
+        <div class="hcard-role">Miembro</div>
+        <div class="hcard-name">Kagami</div>
+        <a class="hcard-link" href="https://bhrpg.forumcommunity.net/?t=63472193" target="_blank">Ver Ficha</a>
+      </div>
+    </div>
+
+    <div class="sec-sep"><div class="sep-line"></div><span class="sep-ico">⬡ MIEMBROS ⬡</span><div class="sep-line"></div></div>
+
+    <div class="members-grid">
+      <div class="mcard">
+        <div class="mcard-name">Grysta</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63473995" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Kindred</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63472257#c" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Mandíbula</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63472655#entry472245860" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Altalune Rouga</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63472684" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Aal</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63472521" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Harbinger</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63472797" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Stryge</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63472077" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Vaaldrak</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63473518#lastpost" target="_blank">Ver Ficha</a>
+      </div>
+      <div class="mcard">
+        <div class="mcard-name">Rohan Zodd</div>
+        <a class="mcard-link" href="https://bhrpg.forumcommunity.net/?t=63474533#entry472276708" target="_blank">Ver Ficha</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 TEMÁTICA -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#8bc34a" stroke-width="1.2"/><path d="M10 6v4l3 2" stroke="#8bc34a" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="10" r="2" fill="#8bc34a" opacity=".4"/></svg>
+    <span class="sttl">Temática y Naturaleza</span><span class="stag">03</span>
+  </div>
+  <div class="sbody">
+    <div class="theme-block">
+      <div class="theme-label">Descripción del Grupo</div>
+      <div class="theme-text">
+        Manada de Hollows de naturaleza <em>insectoide</em> que opera bajo la ley de <em>selección natural</em> de Hueco Mundo. Sus miembros se devoran entre sí de manera deliberada como método de evolución, sin que esto suponga ruptura del grupo. Actúan de forma <em>coordinada</em> frente a amenazas externas, pero internamente cada miembro es responsable de su propia supervivencia y progresión.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 04 OBJETIVOS -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><path d="M10 2l2.5 6h6.5l-5 4 2 6.5L10 15l-6 3.5 2-6.5-5-4h6.5z" stroke="#8bc34a" stroke-width="1.1" fill="none"/></svg>
+    <span class="sttl">Objetivos Narrativos</span><span class="stag">04</span>
+  </div>
+  <div class="sbody">
+    <div class="obj-list">
+
+      <div class="obj short">
+        <div class="obj-icon">⬡</div>
+        <div class="obj-body">
+          <div class="obj-label">Objetivo a Corto Plazo</div>
+          <div class="obj-text">Que la mayoría de la manada alcance la etapa <strong>Adjucha o Arrancar</strong>, recuperando su individualidad y consolidando una identidad colectiva real. El enjambre deja de ser una masa irracional para convertirse en una fuerza coordinada, inteligente y reconocible dentro de Hueco Mundo.</div>
+        </div>
+      </div>
+
+      <div class="obj mid">
+        <div class="obj-icon">⬢</div>
+        <div class="obj-body">
+          <div class="obj-label">Objetivo a Medio Plazo</div>
+          <div class="obj-text">Establecer al Enjambre como una <strong>potencia territorial independiente</strong> dentro de Hueco Mundo y fuera de él, dominando territorios de otras facciones.</div>
+        </div>
+      </div>
+
+      <div class="obj long">
+        <div class="obj-icon">◈</div>
+        <div class="obj-body">
+          <div class="obj-label">Objetivo a Largo Plazo</div>
+          <div class="obj-text"><strong>Derrocar al líder de Hueco Mundo</strong> una vez la manada haya acumulado suficiente poder y autonomía, eliminando cualquier figura de autoridad que pretenda controlarlos, y establecer al Enjambre como la <strong>facción dominante de Hueco Mundo</strong>, imponiendo su ley sobre el resto de Hollows y Arrancar.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="ftr">
+  <div class="ftxt">Bleach Hobba RPG &middot; El Enjambre &middot; Hollow &empty; &middot; v1.0</div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// Partículas tipo enjambre
+(function(){
+  var container = document.getElementById("swarm");
+  var count = 28;
+  for(var i = 0; i < count; i++){
+    (function(idx){
+      var p = document.createElement("div");
+      p.className = "particle";
+      var x = Math.random() * 100;
+      var y = Math.random() * 100;
+      var dx = (Math.random() - 0.5) * 120 + "px";
+      var dy = (Math.random() - 0.5) * 120 + "px";
+      var dur = 6 + Math.random() * 14;
+      var delay = Math.random() * 10;
+      p.style.cssText =
+        "left:" + x + "%;top:" + y + "%;" +
+        "--dx:" + dx + ";--dy:" + dy + ";" +
+        "animation-duration:" + dur + "s;" +
+        "animation-delay:" + delay + "s;" +
+        "width:" + (1 + Math.random() * 2) + "px;" +
+        "height:" + (1 + Math.random() * 2) + "px;";
+      container.appendChild(p);
+    })(i);
+  }
+})();
+</script>
+</body>
+</html>
