@@ -490,31 +490,12 @@ function toggleLock(){
   }
 }
 
-/* ============================================================
-   GITHUB GIST — PERSISTENCIA
-
-   CONFIGURACIÓN (una sola vez):
-   1. Crea un Gist en https://gist.github.com
-      · Nombre del archivo: ficha.json
-      · Contenido inicial:  {}
-      · Visibilidad: secreto (solo quien tenga el enlace lo ve)
-   2. Copia el ID del Gist (los 32 caracteres del final de la URL)
-      y pégalo en GIST_ID abajo.
-   3. Crea un token en https://github.com/settings/tokens/new
-      · Nombre: ficha-hollow
-      · Expiration: No expiration (o la que prefieras)
-      · Scope: marca solo "gist"
-   4. Abre la ficha en el navegador, abre la consola (F12) y ejecuta:
-         setupEncrypt("ghp_TU_TOKEN_AQUI", "choripan123")
-   5. Copia el resultado y pégalo en ENCRYPTED_PAT abajo.
-   6. Sube el archivo actualizado a GitHub y listo.
 ============================================================ */
-var GIST_ID       = "TU_GIST_ID_AQUI";     // ← reemplazar
-var ENCRYPTED_PAT = "TU_PAT_CIFRADO_AQUI";  // ← reemplazar (ver paso 4)
+var GIST_ID       = "T60656921a5e63dc11aa71c39ed790861";
+var ENCRYPTED_PAT = "/iHGgiSbW7Nt8k1FSOXOBsgpGuGSQSkBs9efeAonpQdBbOsH+Vsk0vh4bixFEYILm/h2KP+9y6JHTV9YaMaFWxcck/8="; 
 var GIST_FILE     = "ficha.json";
 var _SALT         = "bleach-hollow-rpg-2026";
 
-/* --- Derivación de clave AES-256-GCM con PBKDF2 (200 000 iteraciones) --- */
 async function _deriveKey(pwd, usage){
   var enc = new TextEncoder();
   var km = await crypto.subtle.importKey("raw", enc.encode(pwd), "PBKDF2", false, ["deriveKey"]);
@@ -600,9 +581,8 @@ function _restore(s){
   var ht=document.getElementById("hueco-text"); if(ht&&s.ht!==undefined) ht.value=s.ht;
 }
 
-/* --- Carga al abrir la página --- */
 async function loadFromGist(){
-  if(GIST_ID==="TU_GIST_ID_AQUI") return;
+  if(GIST_ID==="T60656921a5e63dc11aa71c39ed790861") return;
   try {
     var r=await fetch("https://api.github.com/gists/"+GIST_ID,{ headers:{"Accept":"application/vnd.github+json"} });
     if(!r.ok) return;
@@ -612,7 +592,6 @@ async function loadFromGist(){
   } catch(e){ console.warn("No se pudo cargar la ficha:", e); }
 }
 
-/* --- Guardar en Gist --- */
 async function handleSave(){
   if(!_pwd){ showPassModal(); return; }
   var btn=document.getElementById("saveBtn");
@@ -702,7 +681,6 @@ document.querySelectorAll(".scard[data-stat]").forEach(function(card){
   if(STAT_OPTS[s]) card.appendChild(mkBreakdown(STAT_OPTS[s],s));
 });
 
-/* Cargar datos del Gist al abrir la página */
 loadFromGist();
 
 function toggleBd(btn){
