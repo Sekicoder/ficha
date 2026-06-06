@@ -431,7 +431,7 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
 var isLocked   = true;
 var dlvl       = 0;
 var _restoring = false;
-var _pwd       = null;   // contraseña activa en memoria mientras la sesión está abierta
+var _pwd       = null;   
 
 var PASS_HASH = "f1570876b9daeff816effc00f7019f4237f24bf1e8e4792e2825e05618256286";
 
@@ -499,16 +499,15 @@ async function _deriveKey(pwd, usage){
     km, { name:"AES-GCM", length:256 }, false, [usage]
   );
 }
-
-/* Herramienta de configuración: ejecutar en consola F12 */
+  
 window.setupEncrypt = async function(pat, pwd){
   var enc = new TextEncoder();
   var key = await _deriveKey(pwd, "encrypt");
   var iv  = crypto.getRandomValues(new Uint8Array(12));
   var ct  = await crypto.subtle.encrypt({ name:"AES-GCM", iv:iv }, key, enc.encode(pat));
   var res = btoa(String.fromCharCode.apply(null, [...iv, ...new Uint8Array(ct)]));
-  console.log("%c✅ ENCRYPTED_PAT =", "color:#27ae60;font-weight:bold;font-size:14px", res);
-  console.log("Reemplaza ENCRYPTED_PAT en el HTML con el valor de arriba.");
+  console.log("%c✅ what is love=", "color:#27ae60;font-weight:bold;font-size:14px", res);
+  console.log("baby dont hurt me dont hurt me no moreee");
   return res;
 };
 
