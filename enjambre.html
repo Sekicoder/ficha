@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BHRPG</title>
+<title>El Enjambre — Manada Hollow · Bleach Hobba RPG</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -256,6 +256,77 @@ body{
 .ftr::before{content:"";display:block;height:1px;background:linear-gradient(to right,transparent,var(--acid),rgba(139,195,74,.3),var(--acid),transparent);margin-bottom:16px}
 .ftxt{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}
 
+/* ── REPRODUCTOR ── */
+.player{
+  max-width:860px;margin:0 auto 0;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-top:2px solid var(--acid);
+  padding:16px 24px;
+  display:flex;align-items:center;gap:18px;
+  position:relative;overflow:hidden;
+  animation:fadeUp .5s .3s ease both;
+}
+.player::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 100% at 0% 50%,rgba(74,124,16,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+.play-btn{
+  flex-shrink:0;
+  width:42px;height:42px;
+  border:1px solid var(--border-hi);
+  background:rgba(74,124,16,.15);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:background .2s,border-color .2s;
+  position:relative;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+}
+.play-btn:hover{background:rgba(74,124,16,.35);border-color:var(--acid)}
+.play-btn svg{width:16px;height:16px;fill:var(--acid);transition:transform .15s}
+.play-btn:hover svg{transform:scale(1.15)}
+.player-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.progress-wrap{
+  width:100%;height:4px;
+  background:rgba(255,255,255,.06);
+  cursor:pointer;position:relative;
+}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(to right,var(--cg-hi),var(--acid));
+  transition:width .1s linear;
+  position:relative;
+}
+.progress-fill::after{
+  content:"";position:absolute;right:-4px;top:50%;transform:translateY(-50%);
+  width:8px;height:8px;
+  background:var(--acid);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+}
+.player-times{display:flex;justify-content:space-between}
+.ptime{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px}
+.vol-wrap{flex-shrink:0;display:flex;align-items:center;gap:8px}
+.vol-ico{font-size:13px;color:var(--text-dim);cursor:pointer;transition:color .2s;user-select:none}
+.vol-ico:hover{color:var(--acid)}
+.vol-slider{
+  -webkit-appearance:none;appearance:none;
+  width:70px;height:3px;
+  background:rgba(255,255,255,.08);
+  outline:none;cursor:pointer;
+}
+.vol-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:10px;height:10px;
+  background:var(--cg-hi);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  cursor:pointer;
+}
+.vol-slider::-moz-range-thumb{
+  width:10px;height:10px;
+  background:var(--cg-hi);border:none;cursor:pointer;border-radius:0;
+}
+
 /* ── SWARM PARTICLE DECORATION ── */
 .swarm-deco{
   position:fixed;top:0;left:0;width:100%;height:100%;
@@ -289,7 +360,7 @@ body{
 <div class="hdr">
   <div class="hdr-hex-bg">⬡</div>
   <div class="hdr-topline"></div>
-  <div class="hdr-tag">mANADA hOLLOW</div>
+  <div class="hdr-tag">Manada Hollow</div>
 
   <div class="hex-frame">
     <svg class="hex-ring" viewBox="0 0 110 110" fill="none">
@@ -303,11 +374,11 @@ body{
       <line x1="8" y1="81" x2="15" y2="77" stroke="#d4ff00" stroke-width="1.5"/>
       <line x1="8" y1="29" x2="15" y2="33" stroke="#d4ff00" stroke-width="1.5"/>
     </svg>
-    <div class="hex-inner">∅</div>
+    <div class="hex-inner" style="font-size:0"><img src="https://i.gyazo.com/e57b7ba2a19af139f46b907500f4a1e5.png" alt="El Enjambre" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
   </div>
 
   <div class="hdr-title">El <span>Enjambre</span></div>
-  <div class="hdr-sub">La plaga más asquerosa del mundo</div>
+  <div class="hdr-sub">La plaga más asquerosa</div>
   <div class="hdr-divider">
     <div class="hdr-divider-line"></div>
     <div class="hdr-divider-ico">⬡ ⬡ ⬡</div>
@@ -422,7 +493,7 @@ body{
     <div class="theme-block">
       <div class="theme-label">Descripción del Grupo</div>
       <div class="theme-text">
-        Manada de Hollows de naturaleza <em>insectoide</em> (con algunas excepciones...) que opera bajo la ley de <em>selección natural</em> de Hueco Mundo. Sus miembros se devoran entre sí de manera deliberada como método de evolución, sin que esto suponga ruptura del grupo. Actúan de forma <em>coordinada</em> frente a amenazas externas, pero internamente cada miembro es responsable de su propia supervivencia y progresión.
+        Manada de Hollows de naturaleza <em>insectoide</em> (con algunas excepciones) que opera bajo la ley de <em>selección natural</em> de Hueco Mundo. Sus miembros se devoran entre sí de manera deliberada como método de evolución, sin que esto suponga ruptura del grupo. Actúan de forma <em>coordinada</em> frente a amenazas externas, pero internamente cada miembro es responsable de su propia supervivencia y progresión.
       </div>
     </div>
   </div>
@@ -465,14 +536,94 @@ body{
   </div>
 </div>
 
+<!-- REPRODUCTOR -->
+<div class="player" id="player">
+  <button class="play-btn" id="playBtn" onclick="togglePlay()" title="Play / Pause">
+    <svg id="playIco" viewBox="0 0 16 16"><polygon points="3,1 15,8 3,15"/></svg>
+  </button>
+  <div class="player-mid">
+    <div class="progress-wrap" id="progWrap" onclick="seek(event)">
+      <div class="progress-fill" id="progFill"></div>
+    </div>
+    <div class="player-times">
+      <span class="ptime" id="cur">0:00</span>
+      <span class="ptime" id="dur">—</span>
+    </div>
+  </div>
+  <div class="vol-wrap">
+    <span class="vol-ico" id="volIco" onclick="toggleMute()">🔊</span>
+    <input class="vol-slider" id="volSlider" type="range" min="0" max="1" step="0.01" value="0.8" oninput="setVol(this.value)"/>
+  </div>
+  <audio id="aud" src="https://sekicoder.github.io/ficha/inocente.mp3" preload="metadata"></audio>
+</div>
+
 <div class="ftr">
-  <div class="ftxt">Bleach Hobba RPG &middot; El Enjambre &middot; Hollow &empty; &middot; v1.0</div>
+  <div class="ftxt"></div>
 </div>
 
 </div><!-- /wrap -->
 
 <script>
-// Partículas tipo enjambre
+// Reproductor
+var aud = document.getElementById("aud");
+var playBtn = document.getElementById("playBtn");
+var playIco = document.getElementById("playIco");
+var progFill = document.getElementById("progFill");
+var progWrap = document.getElementById("progWrap");
+var curEl = document.getElementById("cur");
+var durEl = document.getElementById("dur");
+var volIco = document.getElementById("volIco");
+var volSlider = document.getElementById("volSlider");
+
+aud.volume = 0.8;
+
+function fmt(s){
+  var m = Math.floor(s/60), sec = Math.floor(s%60);
+  return m + ":" + (sec<10?"0":"") + sec;
+}
+
+aud.addEventListener("loadedmetadata", function(){
+  durEl.textContent = fmt(aud.duration);
+});
+aud.addEventListener("timeupdate", function(){
+  if(!aud.duration) return;
+  var pct = (aud.currentTime / aud.duration) * 100;
+  progFill.style.width = pct + "%";
+  curEl.textContent = fmt(aud.currentTime);
+});
+aud.addEventListener("ended", function(){
+  playIco.innerHTML = '<polygon points="3,1 15,8 3,15"/>';
+  progFill.style.width = "0%";
+  curEl.textContent = "0:00";
+});
+
+function togglePlay(){
+  if(aud.paused){
+    aud.play();
+    playIco.innerHTML = '<rect x="3" y="1" width="4" height="14"/><rect x="9" y="1" width="4" height="14"/>';
+  } else {
+    aud.pause();
+    playIco.innerHTML = '<polygon points="3,1 15,8 3,15"/>';
+  }
+}
+
+function seek(e){
+  var rect = progWrap.getBoundingClientRect();
+  var pct = (e.clientX - rect.left) / rect.width;
+  aud.currentTime = pct * aud.duration;
+}
+
+function setVol(v){
+  aud.volume = v;
+  aud.muted = (v == 0);
+  volIco.textContent = v == 0 ? "🔇" : v < 0.5 ? "🔉" : "🔊";
+}
+
+function toggleMute(){
+  aud.muted = !aud.muted;
+  volIco.textContent = aud.muted ? "🔇" : aud.volume < 0.5 ? "🔉" : "🔊";
+  volSlider.value = aud.muted ? 0 : aud.volume;
+}
 (function(){
   var container = document.getElementById("swarm");
   var count = 28;
