@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha — Bleach Hobba RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#060608;--card:#17161f;--card2:#13121a;
+  --border:rgba(180,50,30,.25);--border-hi:rgba(220,60,30,.55);
+  --cr:#c0392b;--cr-hi:#e74c3c;
+  --bone:#d9d0be;--bone-dim:#9a9188;
+  --spirit:#7a3fa0;--spirit-hi:#a35cc7;
+  --text:#ccc6b8;--text-dim:#6e685e;--gold:#d4a93e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background-color:var(--void);background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(40,10,60,.6) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 90%,rgba(130,20,10,.12) 0%,transparent 60%);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:15px;line-height:1.5;min-height:100vh;padding:40px 20px 80px}
+.wrap{max-width:820px;margin:0 auto}
+
+/* LOCK BTN */
+#lockBtn{position:fixed;top:20px;right:20px;z-index:1000;background:rgba(12,10,20,.92);border:1px solid var(--border-hi);color:var(--cr-hi);font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;padding:8px 16px;cursor:pointer;text-transform:uppercase;display:flex;align-items:center;gap:6px;backdrop-filter:blur(8px);transition:background .2s}
+#lockBtn:hover{background:rgba(192,57,43,.2)}
+#lockBtn.vm{color:var(--bone-dim);border-color:var(--border)}
+#lockBtn.vm:hover{color:var(--cr-hi);border-color:var(--border-hi)}
+
+/* HEADER */
+.hdr{text-align:center;margin-bottom:40px}
+.hdr::before{content:"";display:block;height:1px;background:linear-gradient(to right,transparent,var(--cr),transparent);margin-bottom:28px}
+.hdr-eye{font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:4px;color:var(--cr);text-transform:uppercase;margin-bottom:16px}
+.av-frame{position:relative;width:108px;height:108px;margin:0 auto 20px}
+.av-ring{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);opacity:.32;pointer-events:none}
+.av-circle{width:108px;height:108px;border-radius:50%;border:2px solid var(--cr);overflow:hidden;background:var(--card2);background-image:repeating-linear-gradient(-45deg,rgba(192,57,43,.06) 0px,rgba(192,57,43,.06) 1px,transparent 1px,transparent 9px);box-shadow:0 0 22px rgba(192,57,43,.35);position:relative}
+.av-circle::before{content:"∅";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:"Cinzel",serif;font-size:30px;color:rgba(192,57,43,.22);z-index:0;pointer-events:none}
+.av-circle img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+.hdr-title{font-family:"Cinzel",serif;font-size:clamp(28px,5vw,46px);font-weight:900;letter-spacing:6px;color:var(--bone);text-transform:uppercase;line-height:1;text-shadow:0 0 40px rgba(130,20,10,.6)}
+.hdr-sub{font-family:"Cinzel",serif;font-size:13px;letter-spacing:8px;color:var(--cr);margin-top:8px;text-transform:uppercase}
+.hdr-line{width:60px;height:2px;background:linear-gradient(to right,transparent,var(--cr),transparent);margin:18px auto 0}
+.badge{display:inline-block;margin-top:16px;background:rgba(192,57,43,.1);border:1px solid var(--border-hi);padding:4px 18px;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:3px;color:var(--cr-hi);text-transform:uppercase}
+
+/* SECTIONS */
+.sec{background:var(--card);border:1px solid var(--border);margin-bottom:20px;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+.sec::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--cr),var(--spirit),transparent)}
+.sec:nth-child(2){animation-delay:.05s}.sec:nth-child(3){animation-delay:.1s}.sec:nth-child(4){animation-delay:.15s}.sec:nth-child(5){animation-delay:.2s}.sec:nth-child(6){animation-delay:.25s}.sec:nth-child(7){animation-delay:.3s}.sec:nth-child(8){animation-delay:.35s}.sec:nth-child(9){animation-delay:.4s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.shdr{display:flex;align-items:center;gap:10px;padding:10px 20px 10px 22px;background:rgba(0,0,0,.35);border-bottom:1px solid var(--border)}
+.sico{width:20px;height:20px;flex-shrink:0;opacity:.8}
+.sttl{font-family:"Cinzel",serif;font-size:11px;font-weight:600;letter-spacing:3px;color:var(--cr-hi);text-transform:uppercase;flex:1}
+.stag{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.sbody{padding:18px 22px 20px}
+
+/* FIELDS */
+.frow{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.frow:last-child{border-bottom:none}
+.flbl{font-weight:600;font-size:13px;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase;flex-shrink:0;min-width:170px}
+.fdash{color:var(--cr);flex-shrink:0;font-size:12px}
+.fi{background:transparent;border:none;border-bottom:1px dashed rgba(192,57,43,.3);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:14px;width:100%;outline:none;padding:1px 4px;transition:border-color .2s}
+.fi:focus{border-bottom-color:var(--cr-hi);background:rgba(192,57,43,.05)}
+textarea.ta{width:100%;background:rgba(0,0,0,.3);border:1px dashed rgba(180,50,30,.25);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:14px;line-height:1.6;padding:10px 12px;resize:vertical;min-height:70px;outline:none;margin-top:6px}
+textarea.ta:focus{border-color:var(--cr)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:580px){.two{grid-template-columns:1fr}}
+
+/* CHAR LAYOUT */
+.charlayout{display:flex;gap:20px;align-items:flex-start}
+.charfields{flex:1;min-width:0}
+.pwrap{flex-shrink:0;width:188px}
+.pslot{width:188px;height:272px;border:1px solid var(--border-hi);background:var(--card2);background-image:repeating-linear-gradient(-45deg,rgba(192,57,43,.05) 0px,rgba(192,57,43,.05) 1px,transparent 1px,transparent 10px);position:relative;overflow:hidden}
+.pslot::before{content:"彅";position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:48px;color:rgba(192,57,43,.08);pointer-events:none}
+.pslot::after{content:"ARTE DEL\APERSONAJE";white-space:pre;position:absolute;top:50%;left:50%;transform:translate(-50%,30%);font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:rgba(192,57,43,.28);text-align:center;line-height:1.8;pointer-events:none;text-transform:uppercase}
+.pslot img{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:cover;display:block}
+.pcap{border:1px solid var(--border-hi);border-top:none;padding:5px 8px;background:rgba(0,0,0,.4);font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--cr);text-transform:uppercase;text-align:center}
+@media(max-width:600px){.charlayout{flex-direction:column}.pwrap{width:100%}.pslot{width:100%;height:200px}}
+
+/* RANK */
+.rankrow{display:flex;gap:16px;margin-bottom:20px}
+.rankpill{flex:1;background:rgba(192,57,43,.08);border:1px solid var(--border-hi);padding:12px 16px;text-align:center}
+.rlbl{font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:4px}
+.rval{font-family:"Cinzel",serif;font-size:18px;font-weight:600;color:var(--bone);letter-spacing:2px;outline:none;cursor:text;display:block}
+
+/* STAT GRID */
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:560px){.sgrid{grid-template-columns:repeat(2,1fr)}}
+
+/* STAT CARD */
+.scard{background:rgba(0,0,0,.35);border:1px solid var(--border);padding:12px 14px;position:relative;overflow:hidden;transition:border-color .2s,background .2s}
+.scard:hover{border-color:var(--border-hi);background:rgba(192,57,43,.06)}
+.scard::after{content:"";position:absolute;bottom:0;left:0;height:2px;width:100%;background:linear-gradient(to right,var(--cr),transparent);opacity:.5}
+.scard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+.sabb{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--cr);text-transform:uppercase}
+.sname{font-size:11px;color:var(--text-dim)}
+.bd-btn{background:none;border:none;color:rgba(192,57,43,.65);cursor:pointer;font-size:9px;padding:0;line-height:1;font-family:"Share Tech Mono",monospace;letter-spacing:1px;flex-shrink:0;transition:color .2s;text-transform:uppercase}
+.bd-btn:hover{color:var(--cr-hi)}
+.sval-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.statnum{font-family:"Share Tech Mono",monospace;font-size:22px;color:var(--bone);min-width:28px;line-height:1;outline:none;cursor:default;pointer-events:none;user-select:none}
+.sbar-wrap{flex:1;height:4px;background:rgba(255,255,255,.06);position:relative}
+.sbar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(to right,var(--cr),var(--spirit-hi));transition:width .4s ease}
+
+/* REII full width */
+.scard.reii{grid-column:1/-1;border-color:rgba(163,92,199,.3)}
+.scard.reii::after{background:linear-gradient(to right,var(--spirit),var(--spirit-hi))}
+.scard.reii .sabb{color:var(--spirit-hi)}
+.scard.reii .sbar-fill{background:linear-gradient(to right,var(--spirit),var(--spirit-hi))}
+.reii-body{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.reii-body .scard-top{margin-bottom:0;flex-shrink:0}
+.reii-body .sval-row{flex:1;min-width:120px;margin-top:0}
+.scard.reii .statnum{font-size:26px}
+
+/* BREAKDOWN */
+.breakdown{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(192,57,43,.18)}
+.breakdown.open{display:block}
+.brow{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:3px 0}
+.blbl{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.binput{background:rgba(0,0,0,.35);border:1px solid rgba(192,57,43,.22);color:var(--text);font-family:"Share Tech Mono",monospace;font-size:12px;padding:3px 6px;outline:none;width:64px;text-align:right;transition:border-color .2s}
+.binput:focus{border-color:var(--cr)}
+.bsel{background:rgba(0,0,0,.35);border:1px solid rgba(192,57,43,.22);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:12px;padding:3px 4px;outline:none;flex:1;min-width:0;transition:border-color .2s}
+.bsel:focus{border-color:var(--cr)}
+
+/* Increment rows */
+.binclist{margin:2px 0}
+.bincrow{display:flex;align-items:center;gap:5px;padding:2px 0}
+.bincname{flex:1;min-width:0;text-align:left;font-family:"Rajdhani",sans-serif;font-size:11px;color:var(--text);background:transparent;border:none;border-bottom:1px dashed rgba(192,57,43,.2);outline:none;padding:1px 3px}
+.bincname:focus{border-bottom-color:var(--cr)}
+.bincval{width:48px;font-size:11px}
+.bdel{background:none;border:none;color:rgba(192,57,43,.55);cursor:pointer;font-size:14px;padding:0;line-height:1;flex-shrink:0;transition:color .2s}
+.bdel:hover{color:var(--cr-hi)}
+.badd-inc{display:block;background:none;border:none;color:rgba(192,57,43,.45);cursor:pointer;font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:3px 0;text-align:left;text-transform:uppercase;transition:color .2s;margin:2px 0}
+.badd-inc:hover{color:var(--cr-hi)}
+
+/* Subtotal + result rows */
+.bsubtotal-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0 3px;border-top:1px dashed rgba(192,57,43,.18);margin-top:5px}
+.bsubtotal{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--bone-dim)}
+.bhint{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--spirit-hi);margin:4px 0 2px;letter-spacing:.5px;line-height:1.5;display:none}
+.bpdbonus{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--spirit-hi);padding:0 6px}
+.bpdrate{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--text-dim);letter-spacing:.5px;flex:1;text-align:right;white-space:nowrap}
+.bd-sublbl{color:var(--spirit-hi)!important;font-style:italic}
+.bd-pdrow{border-bottom:1px dashed rgba(163,92,199,.18)!important}
+.bresult-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:7px;margin-top:4px;border-top:1px dashed rgba(192,57,43,.22)}
+.bresult{font-family:"Share Tech Mono",monospace;font-size:16px;color:var(--bone);flex:1;text-align:right}
+.bapply{background:rgba(192,57,43,.15);border:1px solid var(--border-hi);color:var(--cr-hi);font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:4px 10px;cursor:pointer;text-transform:uppercase;transition:background .2s;white-space:nowrap;flex-shrink:0}
+.bapply:hover{background:rgba(192,57,43,.3)}
+
+/* EXP */
+.expblk{background:rgba(0,0,0,.25);border:1px solid var(--border);padding:12px 16px;margin-bottom:14px}
+.erow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0}
+.elbl{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase;white-space:nowrap}
+.evals{display:flex;align-items:center;gap:6px}
+.enum{font-family:"Share Tech Mono",monospace;font-size:13px;color:var(--bone);outline:none;cursor:text}
+.esep{color:var(--text-dim);font-size:11px}
+.mdiv{height:1px;background:linear-gradient(to right,var(--cr),transparent);margin:6px 0;opacity:.3}
+
+/* HUECOS DE PODER */
+.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hlbl{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase}
+.hcount{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--text-dim);letter-spacing:1px}
+.hueco-list{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.hueco-entry{display:flex;align-items:center;gap:7px;padding:4px 6px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.04)}
+.hcolor{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hname{flex:1;min-width:0;font-size:13px;color:var(--text);font-family:"Rajdhani",sans-serif;background:transparent;border:none;border-bottom:1px dashed rgba(192,57,43,.2);outline:none;padding:1px 4px}
+.hname:focus{border-bottom-color:var(--cr-hi)}
+.hhuecos{width:28px;text-align:center;font-family:"Share Tech Mono",monospace;font-size:13px;color:var(--bone);background:transparent;border:none;outline:none}
+.hlbl-sm{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;flex-shrink:0;white-space:nowrap}
+.hdel{background:none;border:none;color:rgba(192,57,43,.5);cursor:pointer;font-size:14px;padding:0;line-height:1;flex-shrink:0;transition:color .2s}
+.hdel:hover{color:var(--cr-hi)}
+.hpips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.hpip{width:22px;height:22px;border:1px solid var(--border-hi);background:rgba(192,57,43,.08);position:relative;flex-shrink:0;transition:background .2s}
+.hpip::before{content:"";position:absolute;inset:3px;background:rgba(0,0,0,.25)}
+.hpip.on{box-shadow:0 0 6px rgba(0,0,0,.4)}
+.hpip.on::before{background:rgba(255,255,255,.12)}
+
+/* RAMAS */
+.rrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.rrow:last-child{border-bottom:none}
+.rlbl2{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase;min-width:160px;flex-shrink:0}
+.dbar{display:flex;gap:4px;flex:1}
+.dpip{width:18px;height:6px;background:rgba(255,255,255,.06);cursor:pointer;transition:background .2s}
+.dpip.on{background:var(--spirit-hi)}
+.dval{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--bone-dim);margin-left:8px;min-width:20px;text-align:right}
+
+/* SKILLS */
+.sklist{display:flex;flex-direction:column;gap:6px}
+.ski{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.04);padding:8px 12px}
+.skdot{width:6px;height:6px;background:var(--cr);flex-shrink:0}
+.skinput{background:transparent;border:none;border-bottom:1px dashed rgba(192,57,43,.2);outline:none;color:var(--text);font-family:"Rajdhani",sans-serif;font-size:14px;width:100%;transition:border-color .2s}
+.skinput:focus{border-bottom-color:var(--cr-hi)}
+.add-btn{margin-top:10px;background:rgba(192,57,43,.1);border:1px solid var(--border-hi);color:var(--cr-hi);font-family:"Rajdhani",sans-serif;font-size:12px;letter-spacing:2px;padding:6px 16px;cursor:pointer;text-transform:uppercase;transition:background .2s}
+.add-btn:hover{background:rgba(192,57,43,.2)}
+
+/* EQUIP */
+.egrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(max-width:560px){.egrid{grid-template-columns:1fr}}
+.eslot{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.04);padding:8px 12px}
+.eico{width:28px;height:28px;background:rgba(192,57,43,.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--cr)}
+.einf{flex:1;min-width:0}
+.eslbl{font-size:10px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:1px}
+.einput{background:transparent;border:none;border-bottom:1px dashed rgba(192,57,43,.2);outline:none;color:var(--text);font-family:"Rajdhani",sans-serif;font-size:13px;width:100%;transition:border-color .2s}
+.einput:focus{border-bottom-color:var(--cr-hi)}
+
+/* CURRENCY */
+.equip-rules{display:flex;flex-direction:column;gap:4px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:4px;padding:8px 10px;margin-bottom:12px;font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--text-dim);letter-spacing:.4px;line-height:1.8}.er-item{display:flex;align-items:baseline;gap:6px}.er-ico{font-size:12px;flex-shrink:0;color:var(--cr);opacity:.7}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+@media(max-width:560px){.cgrid{grid-template-columns:repeat(2,1fr)}}
+.ccard{background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center}
+.cico{font-size:15px;margin-bottom:3px;color:var(--gold)}
+.clbl{font-size:10px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:3px}
+.cval{font-family:"Share Tech Mono",monospace;font-size:16px;color:var(--bone);outline:none;cursor:text}
+
+/* LOG */
+.log{height:180px;overflow-y:auto;background:rgba(0,0,0,.4);border:1px solid var(--border);padding:12px;scrollbar-width:thin;scrollbar-color:var(--cr) transparent}
+.log::-webkit-scrollbar{width:4px}
+.log::-webkit-scrollbar-thumb{background:var(--cr)}
+.lentry{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.lentry:last-child{margin-bottom:0;border-bottom:none}
+.lwk{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--cr);text-transform:uppercase;margin-bottom:4px}
+.ldate{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--text-dim);margin-right:8px}
+.ltxt{font-size:12px;color:var(--text);line-height:1.5}
+
+/* FOOTER */
+.ftr{text-align:center;margin-top:36px}
+.ftr::before{content:"";display:block;height:1px;background:linear-gradient(to right,transparent,var(--cr),transparent);margin-bottom:16px}
+.ftxt{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}
+
+/* === LOCKED === */
+body.locked .fi,body.locked .ta,body.locked .skinput,body.locked .einput{pointer-events:none;border-color:transparent;cursor:default;user-select:text}
+body.locked .rval,body.locked .enum,body.locked .cval{cursor:default;pointer-events:none}
+body.locked .dpip{pointer-events:none;cursor:default}
+body.locked .add-btn,body.locked .bapply,body.locked .bdel,body.locked .badd-inc,body.locked .hdel,body.locked #add-hueco-btn{display:none}
+body.locked .bincname,body.locked .bincval{pointer-events:none;border-color:transparent}
+body.locked .hname,body.locked .hhuecos{pointer-events:none;border-color:transparent;cursor:default}
+body.locked .fi::placeholder,body.locked .ta::placeholder,body.locked .skinput::placeholder,body.locked .einput::placeholder{color:transparent}
+body.locked .bd-btn{pointer-events:auto;cursor:pointer}
+body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,57,43,.1)}
+</style>
+</head>
+<body class="locked">
+
+<!-- MODAL CONTRASEÑA -->
+<div id="passModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
+  <div style="background:#141414;border:1px solid var(--cr);border-radius:6px;padding:30px 34px;min-width:290px;max-width:90vw;text-align:center;font-family:'Share Tech Mono',monospace;box-shadow:0 0 40px rgba(192,57,43,.25)">
+    <div style="color:var(--cr-hi);font-size:12px;letter-spacing:3px;margin-bottom:4px">&#9670; ACCESO RESTRINGIDO</div>
+    <div style="color:var(--text-dim);font-size:9px;letter-spacing:1.5px;margin-bottom:22px">introduce la clave para editar</div>
+    <input id="passInput" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+      style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.55);border:1px solid var(--border);border-radius:4px;color:var(--bone);font-family:'Share Tech Mono',monospace;font-size:15px;padding:9px 12px;margin-bottom:6px;outline:none;text-align:center;letter-spacing:4px"
+      onkeydown="if(event.key==='Enter')confirmPass()"/>
+    <div id="passErr" style="display:none;color:var(--cr-hi);font-size:9px;letter-spacing:2px;margin-bottom:4px;min-height:14px">&#10005; CLAVE INCORRECTA</div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button onclick="hidePassModal()"
+        style="flex:1;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px;border-radius:4px;cursor:pointer;letter-spacing:1.5px">CANCELAR</button>
+      <button onclick="confirmPass()"
+        style="flex:1;background:var(--cr);border:none;color:#fff;font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px;border-radius:4px;cursor:pointer;letter-spacing:1.5px">CONFIRMAR</button>
+    </div>
+  </div>
+</div>
+
+<button id="saveBtn" onclick="handleSave()" style="display:none;position:fixed;top:20px;right:168px;z-index:1000;background:rgba(12,10,20,.92);border:1px solid rgba(163,92,199,.55);color:var(--spirit-hi);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:8px 16px;cursor:pointer;text-transform:uppercase;display:none;align-items:center;gap:6px;backdrop-filter:blur(8px);transition:background .2s">&#128190; Guardar</button>
+<button id="lockBtn" class="vm" onclick="toggleLock()">&#9998; Editar</button>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-eye">Ficha de Personaje &middot; Clase Hollow</div>
+  <div class="av-frame">
+    <svg class="av-ring" viewBox="0 0 136 136" fill="none">
+      <circle cx="68" cy="68" r="62" stroke="#c0392b" stroke-width="1"/>
+      <circle cx="68" cy="68" r="52" stroke="#c0392b" stroke-width=".5" stroke-dasharray="4 5"/>
+      <circle cx="48" cy="58" r="7" stroke="#c0392b" stroke-width=".8"/>
+      <circle cx="88" cy="58" r="7" stroke="#c0392b" stroke-width=".8"/>
+      <path d="M46 82 Q68 96 90 82" stroke="#c0392b" stroke-width=".8" fill="none"/>
+      <line x1="6" y1="68" x2="130" y2="68" stroke="#c0392b" stroke-width=".4"/>
+      <line x1="68" y1="6" x2="68" y2="130" stroke="#c0392b" stroke-width=".4"/>
+    </svg>
+    <div class="av-circle">
+      <!-- AVATAR: reemplaza src con la URL de tu imagen -->
+      <img src="" alt="Avatar" />
+    </div>
+  </div>
+  <div class="hdr-title">Bleach Hobba RPG</div>
+  <div class="hdr-sub">Sistema de Fichas v2.0</div>
+  <div class="hdr-line"></div>
+  <span class="badge">&#8709; &mdash; Hollow &mdash; Vac&iacute;o Interior</span>
+</div>
+
+<!-- 01 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="1" stroke="#c0392b" stroke-width="1.2"/><line x1="6" y1="8" x2="14" y2="8" stroke="#c0392b" stroke-width="1"/><line x1="6" y1="11.5" x2="11" y2="11.5" stroke="#c0392b" stroke-width="1"/></svg><span class="sttl">Datos de la Cuenta</span><span class="stag">01</span></div>
+  <div class="sbody"><div class="two">
+    <div>
+      <div class="frow"><span class="flbl">Usuario de Hobba</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+      <div class="frow"><span class="flbl">Otras Cuentas</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+      <div class="frow"><span class="flbl">Fecha de Ingreso</span><span class="fdash">&mdash;</span><input class="fi" placeholder="DD/MM/AAAA"/></div>
+    </div>
+    <div>
+      <div class="frow"><span class="flbl">Raza</span><span class="fdash">&mdash;</span><span style="color:var(--cr-hi);font-weight:600;font-size:14px">Hollow</span></div>
+      <div class="frow"><span class="flbl">Escuadr&oacute;n / Manada</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+      <div class="frow"><span class="flbl">Cargo</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- 02 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="4" stroke="#c0392b" stroke-width="1.2"/><path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="sttl">Datos del Personaje</span><span class="stag">02</span></div>
+  <div class="sbody"><div class="charlayout">
+    <div class="charfields">
+      <div class="frow" style="margin-bottom:8px"><span class="flbl">Nombre</span><span class="fdash">&mdash;</span><input class="fi" placeholder="Nombre del personaje" style="font-size:16px;font-weight:600"/></div>
+      <div class="frow" style="margin-bottom:8px"><span class="flbl">Personalidad</span><span class="fdash">&mdash;</span><input class="fi" placeholder="Descripci&oacute;n breve&hellip;"/></div>
+      <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Historia</span><textarea class="ta" rows="4" placeholder="Historia del personaje&hellip;"></textarea></div>
+      <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Aptitudes y Limitaciones</span><textarea class="ta" rows="3" placeholder="Anotar aptitudes y limitaciones de forma libre&hellip;"></textarea></div>
+    </div>
+    <div class="pwrap">
+      <!-- RETRATO: reemplaza src con la URL de tu imagen -->
+      <div class="pslot"><img src="" alt="Arte del personaje"/></div>
+      <div class="pcap">Arte del personaje</div>
+    </div>
+  </div></div>
+</div>
+
+<!-- 03 ATRIBUTOS -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><polygon points="10,2 12.5,8.5 19.5,8.5 14,12.5 16,19 10,15 4,19 6,12.5 0.5,8.5 7.5,8.5" stroke="#c0392b" stroke-width="1.1" fill="none"/></svg><span class="sttl">Atributos Espirituales</span><span class="stag">03</span></div>
+  <div class="sbody">
+    <div class="rankrow">
+      <div class="rankpill"><div class="rlbl">Rango</div><div class="rval" contenteditable="true">&mdash;</div></div>
+      <div class="rankpill"><div class="rlbl">Nivel</div><div class="rval" contenteditable="true">0</div></div>
+    </div>
+
+    <!-- Stat cards — breakdowns injected by JS -->
+    <div class="sgrid">
+      <div class="scard" data-stat="VIT"><div class="scard-top"><div><div class="sabb">VIT</div><div class="sname">Vitalidad</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="REI"><div class="scard-top"><div><div class="sabb">REI</div><div class="sname">Reiryoku</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="FUE"><div class="scard-top"><div><div class="sabb">FUE</div><div class="sname">Fuerza</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="DEF"><div class="scard-top"><div><div class="sabb">DEF</div><div class="sname">Defensa</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="VEL"><div class="scard-top"><div><div class="sabb">VEL</div><div class="sname">Velocidad</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="VOL"><div class="scard-top"><div><div class="sabb">VOL</div><div class="sname">Voluntad</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard reii" data-stat="REII"><div class="reii-body"><div class="scard-top"><div class="sabb">REII</div><div class="sname">Reiatsu</div></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)" style="align-self:center">&#9660; ver desglose</button></div></div>
+    </div>
+
+    <div class="expblk">
+      <div class="erow"><span class="elbl">Puntos de Desarrollo</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
+      <div class="mdiv"></div>
+      <div class="erow"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
+      <div class="erow"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum" contenteditable="true">0</span></div></div>
+      <div class="erow"><span class="elbl">EXP Total Restante / Gastada</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
+    </div>
+
+    <!-- HUECOS DE PODER -->
+    <div class="hdr-row"><span class="hlbl">Huecos de Poder</span><span class="hcount">m&aacute;x.&thinsp;10</span></div>
+    <textarea class="ta" id="hueco-text" rows="5" placeholder="Ejemplo:&#10;Murci&eacute;lago &mdash; 7 huecos&#10;Rama b&aacute;sica: Sonido &mdash; 0 huecos (principal)&#10;Rama b&aacute;sica: Cero &mdash; 1 hueco&#10;Rama b&aacute;sica: Brutal &mdash; 1 hueco&#10;Rama b&aacute;sica: Hierro &mdash; 1 hueco" style="margin-bottom:4px"></textarea>
+  </div>
+</div>
+
+<!-- 04 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><path d="M10 18V10M10 10L5 5M10 10L15 5M5 5L2 2M15 5L18 2M5 5L8 2" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="sttl">Sistema de Ramas y Dominios</span><span class="stag">04</span></div>
+  <div class="sbody">
+    <div class="rrow"><span class="rlbl2">Rama Principal</span><input class="fi" placeholder="&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Ramas Secundarias</span><input class="fi" placeholder="&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Ramas Avanzadas</span><input class="fi" placeholder="&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Nivel de Dominio</span><div class="dbar" id="dbar"></div><span class="dval" id="dval">0</span></div>
+  </div>
+</div>
+
+<!-- 05 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><path d="M3 10h2m10 0h2M5 10l3-5m4 0l3 5M8 5l4 0" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="14" r="3" stroke="#c0392b" stroke-width="1.2"/></svg><span class="sttl">Entrenamientos y Mejoras</span><span class="stag">05</span></div>
+  <div class="sbody">
+    <div style="margin-bottom:12px"><span class="flbl" style="display:block;margin-bottom:6px">Mejoras</span><textarea class="ta" rows="2" placeholder="Mejoras obtenidas&hellip;"></textarea></div>
+    <div><span class="flbl" style="display:block;margin-bottom:6px">Entrenamientos</span><textarea class="ta" rows="2" placeholder="Entrenamientos realizados&hellip;"></textarea></div>
+  </div>
+</div>
+
+<!-- 06 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><path d="M4 4l5 5-3 7 10-6-7-2-2-7z" stroke="#c0392b" stroke-width="1.2" stroke-linejoin="round"/></svg><span class="sttl">Habilidades y T&eacute;cnicas</span><span class="stag">06</span></div>
+  <div class="sbody">
+    <div class="sklist" id="sklist">
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad&hellip;"/></div>
+    </div>
+    <button class="add-btn" onclick="addSkill()">+ A&ntilde;adir habilidad</button>
+  </div>
+</div>
+
+<!-- 07 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="12" rx="1" stroke="#c0392b" stroke-width="1.2"/><path d="M6 6V4a4 4 0 018 0v2" stroke="#c0392b" stroke-width="1.2"/><circle cx="10" cy="12" r="2" stroke="#c0392b" stroke-width="1"/></svg><span class="sttl">Posesiones y Divisas</span><span class="stag">07</span></div>
+  <div class="sbody">
+    <span class="flbl" style="display:block;margin-bottom:6px">Equipamiento Actual</span>
+    <div class="equip-rules"><span class="er-item"><span class="er-ico">&#9876;</span>1 arma empuñada <em>(2 si <strong>Ambidiestro</strong> + ambas de 1 mano)</em></span><span class="er-item"><span class="er-ico">&#128737;</span>1 pieza por parte del cuerpo <em>(cabeza, torso, brazos, piernas)</em></span><span class="er-item"><span class="er-ico">&#9671;</span>Máx. 2 complementos de vestimenta</span></div>
+    <div class="egrid">
+      <div class="eslot"><div class="eico">&#9876;</div><div class="einf"><div class="eslbl">Arma Empu&ntilde;ada</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#9937;</div><div class="einf"><div class="eslbl">Cabeza</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#128737;</div><div class="einf"><div class="eslbl">Torso</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#9994;</div><div class="einf"><div class="eslbl">Brazos</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#128094;</div><div class="einf"><div class="eslbl">Piernas</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#9671;</div><div class="einf"><div class="eslbl">Complemento 1</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot" style="grid-column:1/-1"><div class="eico">&#9671;</div><div class="einf"><div class="eslbl">Complemento 2</div><input class="einput" placeholder="&mdash;"/></div></div>
+    </div>
+    <div style="margin-top:14px"><span class="flbl" style="display:block;margin-bottom:6px">Objetos y Consumibles</span><textarea class="ta" rows="2" placeholder="Listar objetos&hellip;"></textarea></div>
+    <div class="cgrid">
+      <div class="ccard"><div class="cico">&yen;</div><div class="clbl">Kan / Yen</div><div class="cval" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:var(--spirit-hi)">&#9672;</div><div class="clbl">Monedas Temp.</div><div class="cval" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:var(--gold)">&#9673;</div><div class="clbl">Fichas Arcade</div><div class="cval" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:#6aacdf">&#10022;</div><div class="clbl">Tickets Gacha</div><div class="cval" contenteditable="true">0</div></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:10px">
+      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">Pase de Batalla</div><div class="cval" contenteditable="true">0</div></div>
+      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">ELO Clasificatorio</div><div class="cval" contenteditable="true">0</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#c0392b" stroke-width="1.2"/><polyline points="10,5 10,10 13,13" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="sttl">Historial de Acciones</span><span class="stag">08</span></div>
+  <div class="sbody"><div class="log">
+    <div class="lentry">
+      <div class="lwk">&#11041; Semana 1 [DD/MM &ndash; DD/MM]</div>
+      <div><span class="ldate">[DD/MM/2026]</span><span class="ltxt">Registro del personaje en <strong style="color:var(--cr-hi)">Bleach Hobba RPG</strong>. Aptitudes y limitaciones iniciales asignadas. Se obtienen <strong>1000 EXP</strong> de base.</span></div>
+    </div>
+  </div></div>
+</div>
+
+<div class="ftr"><div class="ftxt">Bleach Hobba RPG &middot; Sistema de Fichas &middot; Hollow &#8709; &middot; v2.0</div></div>
+</div>
+
+<script>
+var isLocked   = true;
+var dlvl       = 0;
+var _restoring = false;
+var _pwd       = null;   // contraseña activa en memoria mientras la sesión está abierta
+
+/* ============================================================
+   CONTRASEÑA — verificación SHA-256
+============================================================ */
+var PASS_HASH = "f1570876b9daeff816effc00f7019f4237f24bf1e8e4792e2825e05618256286";
+
+function showPassModal(){
+  var m = document.getElementById("passModal");
+  m.style.display = "flex";
+  document.getElementById("passInput").value = "";
+  document.getElementById("passErr").style.display = "none";
+  setTimeout(function(){ document.getElementById("passInput").focus(); }, 50);
+}
+function hidePassModal(){ document.getElementById("passModal").style.display = "none"; }
+
+async function confirmPass(){
+  var val = document.getElementById("passInput").value;
+  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(val));
+  var hash = [...new Uint8Array(buf)].map(function(x){ return x.toString(16).padStart(2,"0"); }).join("");
+  if(hash === PASS_HASH){
+    _pwd = val;
+    hidePassModal();
+    doUnlock();
+  } else {
+    document.getElementById("passErr").style.display = "block";
+    document.getElementById("passInput").value = "";
+    document.getElementById("passInput").focus();
+  }
+}
+
+function doUnlock(){
+  isLocked = false;
+  document.body.classList.remove("locked");
+  var btn = document.getElementById("lockBtn");
+  btn.innerHTML = "&#128274; Bloquear"; btn.classList.remove("vm");
+  var sb = document.getElementById("saveBtn");
+  sb.style.display = "flex";
+  document.querySelectorAll("[data-was-edit]").forEach(function(el){
+    el.contentEditable = "true"; delete el.dataset.wasEdit;
+  });
+}
+
+function toggleLock(){
+  if(isLocked){
+    showPassModal();
+  } else {
+    isLocked = true; _pwd = null;
+    document.body.classList.add("locked");
+    var btn = document.getElementById("lockBtn");
+    btn.innerHTML = "&#9998; Editar"; btn.classList.add("vm");
+    document.getElementById("saveBtn").style.display = "none";
+    document.querySelectorAll("[contenteditable=true]").forEach(function(el){
+      el.contentEditable = "false"; el.dataset.wasEdit = "1";
+    });
+  }
+}
+
+/* ============================================================
+   GITHUB GIST — PERSISTENCIA
+
+   CONFIGURACIÓN (una sola vez):
+   1. Crea un Gist en https://gist.github.com
+      · Nombre del archivo: ficha.json
+      · Contenido inicial:  {}
+      · Visibilidad: secreto (solo quien tenga el enlace lo ve)
+   2. Copia el ID del Gist (los 32 caracteres del final de la URL)
+      y pégalo en GIST_ID abajo.
+   3. Crea un token en https://github.com/settings/tokens/new
+      · Nombre: ficha-hollow
+      · Expiration: No expiration (o la que prefieras)
+      · Scope: marca solo "gist"
+   4. Abre la ficha en el navegador, abre la consola (F12) y ejecuta:
+         setupEncrypt("ghp_TU_TOKEN_AQUI", "choripan123")
+   5. Copia el resultado y pégalo en ENCRYPTED_PAT abajo.
+   6. Sube el archivo actualizado a GitHub y listo.
+============================================================ */
+var GIST_ID       = "TU_GIST_ID_AQUI";     // ← reemplazar
+var ENCRYPTED_PAT = "TU_PAT_CIFRADO_AQUI";  // ← reemplazar (ver paso 4)
+var GIST_FILE     = "ficha.json";
+var _SALT         = "bleach-hollow-rpg-2026";
+
+/* --- Derivación de clave AES-256-GCM con PBKDF2 (200 000 iteraciones) --- */
+async function _deriveKey(pwd, usage){
+  var enc = new TextEncoder();
+  var km = await crypto.subtle.importKey("raw", enc.encode(pwd), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name:"PBKDF2", salt:enc.encode(_SALT), iterations:200000, hash:"SHA-256" },
+    km, { name:"AES-GCM", length:256 }, false, [usage]
+  );
+}
+
+/* Herramienta de configuración: ejecutar en consola F12 */
+window.setupEncrypt = async function(pat, pwd){
+  var enc = new TextEncoder();
+  var key = await _deriveKey(pwd, "encrypt");
+  var iv  = crypto.getRandomValues(new Uint8Array(12));
+  var ct  = await crypto.subtle.encrypt({ name:"AES-GCM", iv:iv }, key, enc.encode(pat));
+  var res = btoa(String.fromCharCode.apply(null, [...iv, ...new Uint8Array(ct)]));
+  console.log("%c✅ ENCRYPTED_PAT =", "color:#27ae60;font-weight:bold;font-size:14px", res);
+  console.log("Reemplaza ENCRYPTED_PAT en el HTML con el valor de arriba.");
+  return res;
+};
+
+async function _decryptPAT(pwd){
+  var key = await _deriveKey(pwd, "decrypt");
+  var raw = Uint8Array.from(atob(ENCRYPTED_PAT), function(c){ return c.charCodeAt(0); });
+  var dec = await crypto.subtle.decrypt({ name:"AES-GCM", iv:raw.slice(0,12) }, key, raw.slice(12));
+  return new TextDecoder().decode(dec);
+}
+
+/* --- Serialización del estado --- */
+function _collect(){
+  var s = { v:1, tf:[], ed:[], sn:{}, bds:{}, dlvl:dlvl, ht:"" };
+  document.querySelectorAll('.wrap input.fi,.wrap input.skinput,.wrap input.einput,.wrap textarea.ta:not(#hueco-text)').forEach(function(el){ s.tf.push(el.value); });
+  document.querySelectorAll('.rval,.enum,.cval').forEach(function(el){ s.ed.push(el.textContent.trim()); });
+  document.querySelectorAll('.scard[data-stat]').forEach(function(c){
+    var n=c.querySelector('.statnum'); if(n) s.sn[c.dataset.stat]=n.textContent.trim();
+  });
+  document.querySelectorAll('.breakdown').forEach(function(bd){
+    var incs=[];
+    bd.querySelectorAll('.bincrow').forEach(function(r){
+      incs.push({ n:r.querySelector('.bincname').value, v:r.querySelector('.bincval').value });
+    });
+    s.bds[bd.dataset.stat]={
+      b:(bd.querySelector('.bbase')||{}).value||0,
+      p:(bd.querySelector('.bpd')||{}).value||0,
+      si:(bd.querySelector('.bsel')||{}).selectedIndex||0,
+      f:(bd.querySelector('.bfinal')||{}).value||0,
+      i:incs
+    };
+  });
+  var ht=document.getElementById("hueco-text"); s.ht=ht?ht.value:"";
+  return s;
+}
+
+function _restore(s){
+  if(!s||s.v!==1) return;
+  var tfEls=document.querySelectorAll('.wrap input.fi,.wrap input.skinput,.wrap input.einput,.wrap textarea.ta:not(#hueco-text)');
+  (s.tf||[]).forEach(function(v,i){ if(tfEls[i]) tfEls[i].value=v; });
+  var edEls=document.querySelectorAll('.rval,.enum,.cval');
+  (s.ed||[]).forEach(function(v,i){ if(edEls[i]) edEls[i].textContent=v; });
+  if(s.sn) document.querySelectorAll('.scard[data-stat]').forEach(function(c){
+    var n=c.querySelector('.statnum'), v=s.sn[c.dataset.stat];
+    if(n&&v!==undefined){ n.textContent=v; var b=c.querySelector('.sbar-fill'); if(b) b.style.width=Math.min(parseInt(v)||0,100)+'%'; }
+  });
+  if(s.bds) document.querySelectorAll('.breakdown').forEach(function(bd){
+    var d=s.bds[bd.dataset.stat]; if(!d) return;
+    var bb=bd.querySelector('.bbase'),bp=bd.querySelector('.bpd'),
+        bs=bd.querySelector('.bsel'),bf=bd.querySelector('.bfinal');
+    if(bb) bb.value=d.b||0;
+    if(bp) bp.value=d.p||0;
+    if(bs) bs.selectedIndex=d.si||0;
+    if(bf) bf.value=d.f||0;
+    if(d.i&&d.i.length){ _restoring=true; d.i.forEach(function(inc){
+      addInc(bd);
+      var rows=bd.querySelectorAll('.bincrow'),last=rows[rows.length-1];
+      if(last){ last.querySelector('.bincname').value=inc.n; last.querySelector('.bincval').value=inc.v; }
+    }); _restoring=false; recalcBd(bd); }
+  });
+  if(s.dlvl!==undefined){
+    dlvl=parseInt(s.dlvl)||0;
+    document.querySelectorAll('.dpip').forEach(function(d,i){ d.classList.toggle('on',i<dlvl); });
+    var dv=document.getElementById("dval"); if(dv) dv.textContent=dlvl;
+  }
+  var ht=document.getElementById("hueco-text"); if(ht&&s.ht!==undefined) ht.value=s.ht;
+}
+
+/* --- Carga al abrir la página --- */
+async function loadFromGist(){
+  if(GIST_ID==="TU_GIST_ID_AQUI") return;
+  try {
+    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{ headers:{"Accept":"application/vnd.github+json"} });
+    if(!r.ok) return;
+    var g=await r.json();
+    var f=g.files&&g.files[GIST_FILE];
+    if(f) _restore(JSON.parse(f.content));
+  } catch(e){ console.warn("No se pudo cargar la ficha:", e); }
+}
+
+/* --- Guardar en Gist --- */
+async function handleSave(){
+  if(!_pwd){ showPassModal(); return; }
+  var btn=document.getElementById("saveBtn");
+  var orig=btn.innerHTML; btn.disabled=true; btn.innerHTML="&#8987; Guardando…";
+  try {
+    var pat=await _decryptPAT(_pwd);
+    var body=JSON.stringify({ files:{ [GIST_FILE]:{ content:JSON.stringify(_collect(),null,2) } } });
+    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{
+      method:"PATCH",
+      headers:{ "Authorization":"Bearer "+pat,"Content-Type":"application/json","Accept":"application/vnd.github+json" },
+      body:body
+    });
+    btn.innerHTML=r.ok?"&#10003; Guardado":"&#10005; Error al guardar";
+  } catch(e){ btn.innerHTML="&#10005; Error (clave o red)"; }
+  setTimeout(function(){ btn.innerHTML=orig; btn.disabled=false; },2800);
+}
+
+/* ============================================================
+   PD RATES
+============================================================ */
+function getCurrentRank(){
+  var el=document.querySelector(".rval");
+  return el?(el.textContent||el.innerText||"").trim().toUpperCase().charAt(0):"";
+}
+function calcPdBonus(stat,pds){
+  var rank=getCurrentRank(); pds=parseFloat(pds)||0;
+  switch(stat){
+    case "VIT": return pds*((rank==="A"||rank==="S")?50:20);
+    case "REI": return pds*10;
+    case "FUE": return pds*3;
+    case "DEF": var dr=(rank==="A"||rank==="S")?10:(rank==="C"||rank==="B")?5:3; return pds*dr;
+    case "VEL": return Math.floor(pds/5);
+    case "VOL": return Math.floor(pds/5);
+    default: return 0;
+  }
+}
+function pdRateLabel(stat){
+  var rank=getCurrentRank();
+  switch(stat){
+    case "VIT": return (rank==="A"||rank==="S")?"50/PD ◆":"20/PD";
+    case "REI": return "10/PD";
+    case "FUE": return "3/PD";
+    case "DEF": if(rank==="A"||rank==="S") return "10/PD ◆"; if(rank==="C"||rank==="B") return "5/PD ◆"; return "3/PD";
+    case "VEL": return "1 / 5 PD";
+    case "VOL": return "1 / 5 PD";
+    default: return "";
+  }
+}
+
+/* ============================================================
+   STAT BREAKDOWNS
+============================================================ */
+var STAT_OPTS={
+  VIT: [["&mdash; Sin aptitud",1.0],["Constituci&oacute;n Grande",1.3],["Cuerpo Equilibrado",1.2]],
+  REI: [["&mdash; Sin aptitud",1.0],["Poder Espiritual Denso",1.2],["Cuerpo Equilibrado",1.1]],
+  FUE: [["&mdash; Sin aptitud",1.0],["Fuerza Bruta",1.3],["Cuerpo Equilibrado",1.1],["Mutilado: Manco",0.75]],
+  DEF: [["&mdash; Sin aptitud",1.0],["Piel de Hierro",1.3,"Suma al Bonus Final seg&uacute;n rango &mdash; D:+10 &middot; C:+20 &middot; B:+30 &middot; A:+40 &middot; S:+50"],["Cuerpo Equilibrado",1.15]],
+  VEL: [["&mdash; Sin aptitud",1.0],["Cuerpo &Aacute;gil",1.2],["Cuerpo Equilibrado",1.1],["Obeso",0.85],["Mutilado: Cojo",0.75]],
+  VOL: [["&mdash; Sin aptitud",1.0],["Voluntad F&eacute;rrea",1.2],["Cuerpo Equilibrado",1.1]],
+  REII:[["&mdash; Sin aptitud",1.0],["Cuerpo Equilibrado",1.1]]
+};
+function mkBreakdown(opts,stat){
+  var selHtml=opts.map(function(o){
+    var h=o[2]?' data-hint="'+o[2]+'"':''; return '<option value="'+o[1]+'"'+h+'>'+o[0]+' (&times;'+o[1]+')</option>';
+  }).join('');
+  var hasPd=stat&&stat!=="REII";
+  var pdHtml=hasPd
+    ?'<div class="brow"><span class="blbl">PD Gastados</span><input class="binput bpd" type="number" value="0" min="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/></div>'+
+     '<div class="brow bd-pdrow"><span class="blbl bd-sublbl">&rarr; Bonus PD</span><span class="bpdbonus">0</span><span class="bpdrate"></span></div>'
+    :'';
+  var bd=document.createElement("div");
+  bd.className="breakdown"; bd.dataset.stat=stat||"";
+  bd.innerHTML=
+    '<div class="brow"><span class="blbl">Base</span><input class="binput bbase" type="number" value="0" min="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/></div>'+
+    pdHtml+
+    '<div class="binclist"></div>'+
+    '<button class="badd-inc" onclick="addInc(this.closest(\'.breakdown\'))">+ a&ntilde;adir incremento</button>'+
+    '<div class="brow bsubtotal-row"><span class="blbl">Subtotal</span><span class="bsubtotal">0</span></div>'+
+    '<div class="brow"><span class="blbl">&times; Aptitud Est.</span><select class="bsel" onchange="recalcBd(this.closest(\'.breakdown\'));checkHint(this)">'+selHtml+'</select></div>'+
+    '<div class="bhint" style="display:none"></div>'+
+    '<div class="brow"><span class="blbl">+ Bonus final</span><input class="binput bfinal" type="number" value="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/></div>'+
+    '<div class="bresult-row"><span class="blbl">= Resultado</span><span class="bresult">0</span><button class="bapply" onclick="applyBd(this.closest(\'.scard\'))">Aplicar &#9658;</button></div>';
+  return bd;
+}
+document.querySelectorAll(".scard[data-stat]").forEach(function(card){
+  var s=card.dataset.stat;
+  if(STAT_OPTS[s]) card.appendChild(mkBreakdown(STAT_OPTS[s],s));
+});
+
+/* Cargar datos del Gist al abrir la página */
+loadFromGist();
+
+function toggleBd(btn){
+  var card=btn.closest(".scard"),bd=card.querySelector(".breakdown"),open=bd.classList.toggle("open");
+  btn.innerHTML=open?"&#9650; cerrar":"&#9660; ver";
+  if(open) recalcBd(bd);
+}
+function recalcBd(bd){
+  var stat=bd.dataset.stat||"",base=parseFloat(bd.querySelector(".bbase").value)||0;
+  var pdInput=bd.querySelector(".bpd"),pdBonus=0;
+  if(pdInput){
+    pdBonus=calcPdBonus(stat,pdInput.value);
+    var pbe=bd.querySelector(".bpdbonus"),pre=bd.querySelector(".bpdrate");
+    if(pbe) pbe.textContent=pdBonus;
+    if(pre) pre.textContent=pdRateLabel(stat);
+  }
+  var inc=pdBonus;
+  bd.querySelectorAll(".bincval").forEach(function(i){ inc+=parseFloat(i.value)||0; });
+  var sub=base+inc;
+  bd.querySelector(".bsubtotal").textContent=sub;
+  var mult=parseFloat(bd.querySelector(".bsel").value)||1;
+  var fin=parseFloat(bd.querySelector(".bfinal").value)||0;
+  bd.querySelector(".bresult").textContent=Math.floor(sub*mult)+fin;
+}
+function checkHint(sel){
+  var bd=sel.closest(".breakdown"),hint=bd.querySelector(".bhint");
+  var h=sel.options[sel.selectedIndex]&&sel.options[sel.selectedIndex].getAttribute("data-hint");
+  if(h){ hint.textContent=h; hint.style.display="block"; } else hint.style.display="none";
+}
+function addInc(bd){
+  if(isLocked&&!_restoring) return;
+  var list=bd.querySelector(".binclist"),row=document.createElement("div");
+  row.className="bincrow";
+  row.innerHTML=
+    '<span class="blbl" style="flex-shrink:0">+</span>'+
+    '<input class="bincname" placeholder="Entrenamiento / Pasiva…" oninput="recalcBd(this.closest(\'.breakdown\'))"/>'+
+    '<input class="binput bincval" type="number" value="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/>'+
+    '<button class="bdel" onclick="delInc(this)">&times;</button>';
+  list.appendChild(row);
+  if(!_restoring) row.querySelector(".bincname").focus();
+}
+function delInc(btn){
+  if(isLocked) return;
+  var bd=btn.closest(".breakdown"); btn.closest(".bincrow").remove(); recalcBd(bd);
+}
+function applyBd(card){
+  if(isLocked) return;
+  var res=parseInt(card.querySelector(".bresult").textContent)||0;
+  card.querySelector(".statnum").textContent=res;
+  var bar=card.querySelector(".sbar-fill");
+  if(bar) bar.style.width=Math.min(res,100)+"%";
+}
+
+/* ============================================================
+   DOMINIO BAR
+============================================================ */
+var dbar=document.getElementById("dbar"),dval=document.getElementById("dval");
+for(var j=0;j<10;j++){
+  (function(idx){
+    var p=document.createElement("div"); p.className="dpip";
+    p.addEventListener("click",function(){
+      if(isLocked) return;
+      dlvl=(dlvl===idx+1)?0:idx+1;
+      document.querySelectorAll(".dpip").forEach(function(d,i){ d.classList.toggle("on",i<dlvl); });
+      dval.textContent=dlvl;
+    });
+    dbar.appendChild(p);
+  })(j);
+}
+
+/* ============================================================
+   ADD SKILL
+============================================================ */
+function addSkill(){
+  if(isLocked) return;
+  var list=document.getElementById("sklist"),d=document.createElement("div"); d.className="ski";
+  d.innerHTML="<div class='skdot'></div><input class='skinput' placeholder='Nombre de habilidad…'/>";
+  list.appendChild(d); d.querySelector("input").focus();
+}
+</script>
+</body>
+</html>
