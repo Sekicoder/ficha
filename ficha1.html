@@ -490,7 +490,7 @@ function toggleLock(){
   }
 }
 
-var GIST_ID       = "T60656921a5e63dc11aa71c39ed790861";
+var GIST_ID       = "60656921a5e63dc11aa71c39ed790861";
 var ENCRYPTED_PAT = "/iHGgiSbW7Nt8k1FSOXOBsgpGuGSQSkBs9efeAonpQdBbOsH+Vsk0vh4bixFEYILm/h2KP+9y6JHTV9YaMaFWxcck/8="; 
 var GIST_FILE     = "ficha.json";
 var _SALT         = "bleach-hollow-rpg-2026";
@@ -581,7 +581,7 @@ function _restore(s){
 }
 
 async function loadFromGist(){
-  if(GIST_ID==="T60656921a5e63dc11aa71c39ed790861") return;
+  if(GIST_ID==="60656921a5e63dc11aa71c39ed790861") return;
   try {
     var r=await fetch("https://api.github.com/gists/"+GIST_ID,{ headers:{"Accept":"application/vnd.github+json"} });
     if(!r.ok) return;
