@@ -434,9 +434,6 @@ var dlvl       = 0;
 var _restoring = false;
 var _pwd       = null;   // contraseña activa en memoria mientras la sesión está abierta
 
-/* ============================================================
-   CONTRASEÑA — verificación SHA-256
-============================================================ */
 var PASS_HASH = "f1570876b9daeff816effc00f7019f4237f24bf1e8e4792e2825e05618256286";
 
 function showPassModal(){
@@ -581,7 +578,7 @@ function _restore(s){
 }
 
 async function loadFromGist(){
-  if(GIST_ID==="60656921a5e63dc11aa71c39ed790861") return;
+  if(!GIST_ID) return;
   try {
     var r=await fetch("https://api.github.com/gists/"+GIST_ID,{ headers:{"Accept":"application/vnd.github+json"} });
     if(!r.ok) return;
