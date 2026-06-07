@@ -398,8 +398,8 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <div class="erow" style="padding:3px 0"><span class="elbl" style="font-size:11px;color:var(--text-dim)">Semana de ingreso</span><div class="evals"><span class="enum" id="join-week" contenteditable="true" style="font-size:12px;color:var(--text-dim)" title="Semana en que te registraste — afecta al cap acumulativo">1</span></div></div>
       <div class="mdiv"></div>
       <div class="erow erow-dentro"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum exp-dentro" id="exp-dentro" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-dentro-max" id="exp-dentro-max" contenteditable="true">0</span></div></div>
-      <div class="erow erow-fuera"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum exp-fuera" id="exp-fuera" contenteditable="true">0</span></div></div>
-      <div class="erow erow-total"><span class="elbl">EXP Total</span><div class="evals"><span class="enum exp-total" id="exp-total">0</span><span class="esep">/</span><span class="enum exp-gastada" id="exp-gastada" contenteditable="true">0</span></div></div>
+      <div class="erow erow-fuera"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum exp-fuera" id="exp-fuera" contenteditable="true">1000</span></div></div>
+      <div class="erow erow-total"><span class="elbl">EXP Total</span><div class="evals"><span class="enum exp-total" id="exp-total">1000</span><span class="esep">/</span><span class="enum exp-gastada" id="exp-gastada" contenteditable="true">0</span></div></div>
     </div>
 
     <!-- HUECOS DE PODER -->
@@ -869,6 +869,7 @@ function _makeLentryEditable(el){
       var idx = _laUndoStack.indexOf(el);
       if(idx > -1) _laUndoStack.splice(idx, 1);
       _updUndoBtn();
+      _revertEntry(el);
       el.remove();
     });
     el.appendChild(btn);
@@ -1055,9 +1056,12 @@ function laInsert(){
   if(!isLocked) _makeLentryEditable(entry);
 
   /* ── EXP ── */
+  /* capturar expType antes del bloque para poder guardarlo en el snapshot */
+  var expType = (_laData.expAmt>0 && sign>0)
+    ? document.querySelector('input[name="laExpType"]:checked').value
+    : "dentro";
   if(_laData.expAmt>0){
     if(sign>0){
-      var expType=document.querySelector('input[name="laExpType"]:checked').value;
       var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
       if(expEl){ var cur=parseFloat(expEl.textContent)||0; expEl.textContent=cur+_laData.expAmt; }
     } else {
@@ -1101,6 +1105,16 @@ function laInsert(){
     }
   }
 
+  /* ── guardar snapshot para revertir los cambios al eliminar la entrada ── */
+  entry._laSnapshot = {
+    expAmt:   _laData.expAmt   || 0,
+    expSign:  _laData.expSign  || 1,
+    expType:  expType,
+    pdAmt:    _laData.pdAmt    || 0,
+    pdIsGain: _laData.pdIsGain || false,
+    pdStat:   _laData.pdStat   || null
+  };
+
   _updUndoBtn();
   document.getElementById("laInp").value="";
   document.getElementById("laPrev").style.display="none";
@@ -1109,6 +1123,51 @@ function laInsert(){
   document.getElementById("laInsBtn").style.display="none";
   _laData=null;
   log.scrollTop=0;
+}
+
+function _revertEntry(el){
+  var snap = el._laSnapshot;
+  if(!snap) return;
+
+  /* ── revertir EXP ── */
+  if(snap.expAmt > 0){
+    if(snap.expSign > 0){
+      /* era ganancia: restar del campo correspondiente */
+      var expEl = document.getElementById(snap.expType === "fuera" ? "exp-fuera" : "exp-dentro");
+      if(expEl){ var cur = parseFloat(expEl.textContent)||0; expEl.textContent = Math.max(0, cur - snap.expAmt); }
+    } else {
+      /* era gasto: restar de exp-gastada */
+      var gastEl = document.getElementById("exp-gastada");
+      if(gastEl){ var curG = parseFloat(gastEl.textContent)||0; gastEl.textContent = Math.max(0, curG - snap.expAmt); }
+    }
+    _recalcExpTotal();
+  }
+
+  /* ── revertir PD ── */
+  if(snap.pdAmt > 0){
+    var pdDispEl = document.getElementById("pd-disp");
+    var pdTotalEl = pdDispEl ? pdDispEl.parentNode.querySelector(".enum.exp-pd:last-child") : null;
+    if(snap.pdIsGain){
+      /* era obtención: descontar de disponibles y del total */
+      if(pdDispEl){ var dv = parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent = Math.max(0, dv - snap.pdAmt); }
+      if(pdTotalEl && pdTotalEl !== pdDispEl){ var tv = parseFloat(pdTotalEl.textContent)||0; pdTotalEl.textContent = Math.max(0, tv - snap.pdAmt); }
+    } else {
+      /* era gasto: devolver a disponibles y descontar del bpd del stat */
+      if(pdDispEl){ var dv2 = parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent = dv2 + snap.pdAmt; }
+      if(snap.pdStat){
+        var targetCard = document.querySelector('.scard[data-stat="' + snap.pdStat + '"]');
+        if(targetCard){
+          var bpd = targetCard.querySelector('.bpd');
+          if(bpd){
+            var curPd = parseFloat(bpd.value)||0;
+            bpd.value = Math.max(0, curPd - snap.pdAmt);
+            var bd = targetCard.querySelector('.breakdown');
+            if(bd) recalcBd(bd);
+          }
+        }
+      }
+    }
+  }
 }
 
 function _updUndoBtn(){
@@ -1125,7 +1184,10 @@ function _updUndoBtn(){
 function laUndo(){
   if(!_laUndoStack.length) return;
   var entry=_laUndoStack.pop();
-  if(entry && entry.parentNode) entry.remove();
+  if(entry && entry.parentNode){
+    _revertEntry(entry);
+    entry.remove();
+  }
   _updUndoBtn();
 }
 
@@ -1208,6 +1270,16 @@ function _ensureWeekSep(weekNum){
   setTimeout(function(){ _updateExpCap(); _recalcExpTotal(); },1200);
   /* actualizar cap cada hora (por si el tab queda abierto) */
   setInterval(_updateExpCap, 3600000);
+
+  /* adjuntar snapshot a la entrada de registro inicial (1000 EXP fuera de límite)
+     para que eliminarla revierta los contadores correctamente */
+  var initEntry = document.querySelector('#logContainer .lentry');
+  if(initEntry && !initEntry._laSnapshot){
+    initEntry._laSnapshot = {
+      expAmt:1000, expSign:1, expType:"fuera",
+      pdAmt:0, pdIsGain:false, pdStat:null
+    };
+  }
 })();
 
 /* ============================================================
