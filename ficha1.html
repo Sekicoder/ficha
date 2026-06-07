@@ -209,7 +209,16 @@ textarea.ta:focus{border-color:var(--cr)}
 .log{height:180px;overflow-y:auto;background:rgba(0,0,0,.4);border:1px solid var(--border);padding:12px;scrollbar-width:thin;scrollbar-color:var(--cr) transparent}
 .log::-webkit-scrollbar{width:4px}
 .log::-webkit-scrollbar-thumb{background:var(--cr)}
-.lentry{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.lentry{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.04);position:relative;outline:none}
+body.locked .lentry{user-select:text;cursor:default}
+.le-del{position:absolute;top:2px;right:0;background:none;border:none;color:rgba(192,57,43,.35);cursor:pointer;font-size:13px;padding:0 3px;line-height:1;transition:color .2s;display:none}
+.le-del:hover{color:var(--cr-hi)}
+body.locked .le-del{display:none!important}
+.la-exp-row{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:7px;padding:6px 9px;background:rgba(212,169,62,.07);border:1px solid rgba(212,169,62,.2);font-family:"Share Tech Mono",monospace;font-size:9px}
+.la-exp-lbl{color:var(--gold);letter-spacing:1px;white-space:nowrap}
+.la-exp-amt{color:var(--bone);letter-spacing:1px;font-weight:bold}
+.la-exp-opt{color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer;letter-spacing:.5px}
+.la-exp-opt input{accent-color:var(--gold);cursor:pointer}
 .lentry:last-child{margin-bottom:0;border-bottom:none}
 .lwk{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--cr);text-transform:uppercase;margin-bottom:4px}
 .ldate{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--text-dim);margin-right:8px}
@@ -229,6 +238,27 @@ body.locked .bincname,body.locked .bincval{pointer-events:none;border-color:tran
 body.locked .hname,body.locked .hhuecos{pointer-events:none;border-color:transparent;cursor:default}
 body.locked .fi::placeholder,body.locked .ta::placeholder,body.locked .skinput::placeholder,body.locked .einput::placeholder{color:transparent}
 body.locked .bd-btn{pointer-events:auto;cursor:pointer}
+body.locked .log-asst{display:none}
+.log-asst{background:rgba(0,0,0,.28);border:1px solid rgba(163,92,199,.22);padding:12px 14px;margin-bottom:10px}
+.la-ttl{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--spirit-hi);text-transform:uppercase;margin-bottom:8px}
+.la-tpls{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.la-tpl{font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:.8px;padding:3px 8px;cursor:pointer;border:1px solid rgba(163,92,199,.3);color:var(--spirit-hi);background:transparent;text-transform:uppercase;transition:background .15s}
+.la-tpl:hover{background:rgba(163,92,199,.15)}
+.la-inp{width:100%;background:rgba(0,0,0,.3);border:1px dashed rgba(163,92,199,.25);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:13px;padding:7px 9px;resize:none;outline:none;line-height:1.5;transition:border-color .2s}
+.la-inp:focus{border-color:var(--spirit-hi)}
+.la-row{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center}
+.la-btn{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:5px 11px;cursor:pointer;border:1px solid;text-transform:uppercase;background:transparent;transition:background .2s;white-space:nowrap}
+.la-btn-proc{color:var(--spirit-hi);border-color:rgba(163,92,199,.4)}
+.la-btn-proc:hover{background:rgba(163,92,199,.15)}
+.la-btn-copy{color:var(--bone-dim);border-color:var(--border)}
+.la-btn-copy:hover{background:rgba(255,255,255,.06)}
+.la-btn-ins{color:var(--cr-hi);border-color:var(--border-hi)}
+.la-btn-ins:hover{background:rgba(192,57,43,.15)}
+.la-btn-undo{color:var(--text-dim);border-color:rgba(255,255,255,.08);margin-left:auto}
+.la-btn-undo:hover{background:rgba(255,255,255,.05)}
+.la-prev{margin-top:8px;padding:7px 10px;background:rgba(0,0,0,.4);border-left:2px solid var(--spirit-hi);display:none}
+.la-prev-lbl{font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:1.5px;color:var(--spirit-hi);text-transform:uppercase;margin-bottom:4px}
+.la-prev-txt{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--bone-dim);line-height:1.7;word-break:break-all}
 body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,57,43,.1)}
 </style>
 </head>
@@ -337,8 +367,8 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     <div class="expblk">
       <div class="erow"><span class="elbl">Puntos de Desarrollo</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
       <div class="mdiv"></div>
-      <div class="erow"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
-      <div class="erow"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum" contenteditable="true">0</span></div></div>
+      <div class="erow"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum" id="exp-dentro" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
+      <div class="erow"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum" id="exp-fuera" contenteditable="true">0</span></div></div>
       <div class="erow"><span class="elbl">EXP Total Restante / Gastada</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
     </div>
 
@@ -416,7 +446,39 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
 <!-- 08 -->
 <div class="sec">
   <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#c0392b" stroke-width="1.2"/><polyline points="10,5 10,10 13,13" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="sttl">Historial de Acciones</span><span class="stag">08</span></div>
-  <div class="sbody"><div class="log">
+  <div class="sbody">
+  <!-- ASISTENTE DE LOG -->
+  <div class="log-asst">
+    <div class="la-ttl">&#9670; A&ntilde;adir entrada al historial</div>
+    <!-- Plantillas rápidas -->
+    <div class="la-tpls">
+      <button class="la-tpl" onclick="laTpl('exp')">+ EXP</button>
+      <button class="la-tpl" onclick="laTpl('pd')">+ PD gastado</button>
+      <button class="la-tpl" onclick="laTpl('train')">+ Entrenamiento</button>
+      <button class="la-tpl" onclick="laTpl('mejora')">+ Mejora</button>
+      <button class="la-tpl" onclick="laTpl('item')">+ &Iacute;tem</button>
+    </div>
+    <textarea class="la-inp" id="laInp" rows="2"
+      placeholder="Ej: gan&eacute; 200 EXP rolando con Kuroten &rarr; https://foro.com/hilo/123"></textarea>
+    <div class="la-row">
+      <button class="la-btn la-btn-proc" onclick="laProcess()">&#8635; Procesar</button>
+      <button class="la-btn la-btn-copy" id="laCopyBtn" onclick="laCopy()" style="display:none">&#128203; Copiar</button>
+      <button class="la-btn la-btn-ins"  id="laInsBtn"  onclick="laInsert()" style="display:none">&#43; Insertar</button>
+      <button class="la-btn la-btn-undo" id="laUndoBtn" onclick="laUndo()" style="display:none">&#8630; Deshacer</button>
+    </div>
+    <!-- Selector tipo EXP (aparece solo si se detecta EXP) -->
+    <div class="la-exp-row" id="laExpRow">
+      <span class="la-exp-lbl">&#9670; EXP detectada:</span>
+      <span class="la-exp-amt" id="laExpAmt">0</span>
+      <label class="la-exp-opt"><input type="radio" name="laExpType" value="dentro" checked/> Dentro l&iacute;mite</label>
+      <label class="la-exp-opt"><input type="radio" name="laExpType" value="fuera"/> Fuera l&iacute;mite</label>
+    </div>
+    <div class="la-prev" id="laPrev">
+      <div class="la-prev-lbl">BBCode generado</div>
+      <div class="la-prev-txt" id="laPrevTxt"></div>
+    </div>
+  </div>
+  <div class="log">
     <div class="lentry">
       <div class="lwk">&#11041; Semana 1 [DD/MM &ndash; DD/MM]</div>
       <div><span class="ldate">[DD/MM/2026]</span><span class="ltxt">Registro del personaje en <strong style="color:var(--cr-hi)">Bleach Hobba RPG</strong>. Aptitudes y limitaciones iniciales asignadas. Se obtienen <strong>1000 EXP</strong> de base.</span></div>
@@ -469,6 +531,8 @@ function doUnlock(){
   document.querySelectorAll("[data-was-edit]").forEach(function(el){
     el.contentEditable = "true"; delete el.dataset.wasEdit;
   });
+  /* hacer editables las entradas del historial */
+  document.querySelectorAll(".lentry").forEach(_makeLentryEditable);
 }
 
 function toggleLock(){
@@ -743,6 +807,150 @@ for(var j=0;j<10;j++){
     });
     dbar.appendChild(p);
   })(j);
+}
+
+/* ============================================================
+   LOG ASSISTANT
+============================================================ */
+var _laData = null;
+var _laLastEntry = null;
+
+function _makeLentryEditable(el){
+  el.contentEditable = "true";
+  if(!el.querySelector(".le-del")){
+    var btn = document.createElement("button");
+    btn.className = "le-del"; btn.title = "Eliminar entrada"; btn.innerHTML = "&times;";
+    btn.addEventListener("click", function(e){ e.stopPropagation(); el.remove(); });
+    el.appendChild(btn);
+  }
+}
+
+/* Plantillas rápidas */
+function laTpl(type){
+  var tpls={
+    exp:   "Obtengo ___ EXP [motivo] → https://",
+    pd:    "Gasto ___ PD en [VIT/REI/FUE/DEF/VEL/VOL]",
+    train: "Realizo entrenamiento de [tipo] → https://",
+    mejora:"Obtengo mejora: [nombre] → https://",
+    item:  "Obtengo ítem: [nombre] por [motivo] → https://"
+  };
+  var el=document.getElementById("laInp");
+  el.value=tpls[type]||"";
+  el.focus();
+  /* seleccionar primer [placeholder] */
+  var i=el.value.indexOf("[");
+  if(i>-1){ var j=el.value.indexOf("]",i); el.setSelectionRange(i,j+1); }
+}
+
+function _laDate(){
+  var d=new Date();
+  return "["+String(d.getDate()).padStart(2,"0")+"/"
+        +String(d.getMonth()+1).padStart(2,"0")+"/"
+        +d.getFullYear()+"]";
+}
+
+function laProcess(){
+  var raw=document.getElementById("laInp").value.trim();
+  if(!raw) return;
+  var date=_laDate();
+
+  /* detectar URLs */
+  var urlRx=/https?:\/\/[^\s,;)>\]]+/g;
+  var urls=raw.match(urlRx)||[];
+
+  /* construir cuerpo */
+  var body=raw;
+  /* quitar palabras indicadoras de enlace */
+  body=body.replace(/[,;\s]*(?:link|enlace|post|ver en|aqui:|aquí:|url:)\s*/gi," ");
+  body=body.replace(/\s*[→\-][>]?\s*/g," ");
+  /* sustituir URLs por BBCode */
+  urls.forEach(function(url){
+    body=body.replace(url,"[url="+url+"]aquí[/url]");
+  });
+  body=body.replace(/\s{2,}/g," ").trim();
+  /* capitalizar primera letra */
+  body=body.charAt(0).toUpperCase()+body.slice(1);
+  /* punto final si no termina en puntuación o BBCode */
+  if(!/[.!?\]]$/.test(body)) body+=".";
+
+  var bbcode=date+" "+body;
+  _laData={date:date,body:body,bbcode:bbcode};
+
+  /* detectar cantidad de EXP */
+  var expM=raw.match(/(\d[\d.,]*)\s*(?:exp|experiencia)/i);
+  var expAmt=0;
+  if(expM){
+    expAmt=parseFloat(expM[1].replace(",",".").replace("k",""))*
+           (/k/i.test(expM[1])?1000:1);
+    document.getElementById("laExpAmt").textContent=expAmt;
+    document.getElementById("laExpRow").style.display="flex";
+  } else {
+    document.getElementById("laExpRow").style.display="none";
+  }
+  _laData.expAmt=expAmt;
+
+  document.getElementById("laPrevTxt").textContent=bbcode;
+  document.getElementById("laPrev").style.display="block";
+  document.getElementById("laCopyBtn").style.display="inline-block";
+  document.getElementById("laInsBtn").style.display="inline-block";
+}
+
+function laCopy(){
+  if(!_laData) return;
+  var btn=document.getElementById("laCopyBtn");
+  navigator.clipboard.writeText(_laData.bbcode).then(function(){
+    btn.innerHTML="&#10003; Copiado";
+    setTimeout(function(){ btn.innerHTML="&#128203; Copiar"; },1800);
+  }).catch(function(){
+    /* fallback para navegadores sin clipboard API */
+    var ta=document.createElement("textarea");
+    ta.value=_laData.bbcode; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+    btn.innerHTML="&#10003; Copiado";
+    setTimeout(function(){ btn.innerHTML="&#128203; Copiar"; },1800);
+  });
+}
+
+function laInsert(){
+  if(!_laData||isLocked) return;
+  var log=document.querySelector(".log");
+  var entry=document.createElement("div");
+  entry.className="lentry";
+  /* convertir BBCode a HTML visual */
+  var visual=_laData.body.replace(
+    /\[url=([^\]]+)\]([^\[]+)\[\/url\]/g,
+    '<a href="$1" target="_blank" style="color:var(--cr-hi);text-decoration:none">$2</a>'
+  );
+  entry.innerHTML=
+    '<div class="lwk">&#11041; '+_laData.date+'</div>'+
+    '<div><span class="ldate">'+_laData.date+'</span>'+
+    '<span class="ltxt"> '+visual+'</span></div>';
+  log.insertBefore(entry,log.firstChild);
+  _laLastEntry=entry;
+  /* hacer la nueva entrada editable si estamos desbloqueados */
+  if(!isLocked) _makeLentryEditable(entry);
+  /* sumar EXP al contador correspondiente */
+  if(_laData.expAmt>0){
+    var expType=document.querySelector('input[name="laExpType"]:checked').value;
+    var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
+    if(expEl){ var cur=parseFloat(expEl.textContent)||0; expEl.textContent=cur+_laData.expAmt; }
+  }
+  document.getElementById("laUndoBtn").style.display="inline-block";
+  /* reset */
+  document.getElementById("laInp").value="";
+  document.getElementById("laPrev").style.display="none";
+  document.getElementById("laExpRow").style.display="none";
+  document.getElementById("laCopyBtn").style.display="none";
+  document.getElementById("laInsBtn").style.display="none";
+  _laData=null;
+  log.scrollTop=0;
+}
+
+function laUndo(){
+  if(!_laLastEntry) return;
+  _laLastEntry.remove();
+  _laLastEntry=null;
+  document.getElementById("laUndoBtn").style.display="none";
 }
 
 /* ============================================================
