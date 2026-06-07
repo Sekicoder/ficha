@@ -235,6 +235,22 @@ body.locked .le-del{display:none!important}
 .lwk{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--cr);text-transform:uppercase;margin-bottom:4px}
 .ldate{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--text-dim);margin-right:8px}
 .ltxt{font-size:12px;color:var(--text);line-height:1.5}
+.lexp-gain{color:#6fcf97;font-weight:700;font-family:"Share Tech Mono",monospace}
+.lexp-lose{color:#e74c3c;font-weight:700;font-family:"Share Tech Mono",monospace}
+.lpd-badge{color:#7ec8e3;font-weight:700;font-family:"Share Tech Mono",monospace}
+/* Semana separador */
+.lwk-sep{
+  display:flex;align-items:center;gap:8px;
+  margin:10px 0 6px;padding:6px 10px;
+  background:rgba(192,57,43,.08);
+  border:1px solid rgba(192,57,43,.2);
+  border-left:3px solid var(--cr);
+  font-family:"Share Tech Mono",monospace;font-size:10px;
+  letter-spacing:2px;color:var(--cr-hi);text-transform:uppercase;
+}
+.lwk-sep-num{font-size:13px;font-weight:700;color:var(--bone)}
+.lwk-sep-dates{color:var(--text-dim);font-size:9px}
+.lwk-sep-cap{font-size:9px;color:var(--spirit-hi);margin-left:auto}
 
 /* FOOTER */
 .ftr{text-align:center;margin-top:36px}
@@ -377,7 +393,9 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     </div>
 
     <div class="expblk">
-      <div class="erow erow-pd"><span class="elbl">Puntos de Desarrollo</span><div class="evals"><span class="enum exp-pd" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-pd" contenteditable="true">0</span></div></div>
+      <div class="erow erow-pd"><span class="elbl">Puntos de Desarrollo</span><div class="evals"><span class="enum exp-pd" id="pd-disp" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-pd" contenteditable="true">0</span></div></div>
+      <div class="mdiv"></div>
+      <div class="erow" style="padding:3px 0"><span class="elbl" style="font-size:11px;color:var(--text-dim)">Semana de ingreso</span><div class="evals"><span class="enum" id="join-week" contenteditable="true" style="font-size:12px;color:var(--text-dim)" title="Semana en que te registraste — afecta al cap acumulativo">1</span></div></div>
       <div class="mdiv"></div>
       <div class="erow erow-dentro"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum exp-dentro" id="exp-dentro" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-dentro-max" id="exp-dentro-max" contenteditable="true">0</span></div></div>
       <div class="erow erow-fuera"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum exp-fuera" id="exp-fuera" contenteditable="true">0</span></div></div>
@@ -465,7 +483,8 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     <!-- Plantillas rápidas -->
     <div class="la-tpls">
       <button class="la-tpl" onclick="laTpl('exp')">+ EXP</button>
-      <button class="la-tpl" onclick="laTpl('pd')">+ PD gastado</button>
+      <button class="la-tpl" onclick="laTpl('pd-gain')">+ PD obtenido</button>
+      <button class="la-tpl" onclick="laTpl('pd-spend')">&#8722; PD gastado</button>
       <button class="la-tpl" onclick="laTpl('train')">&#8722; Entrenamiento</button>
       <button class="la-tpl" onclick="laTpl('habilidad')">&#8722; Habilidad</button>
       <button class="la-tpl" onclick="laTpl('mejora')">&#8722; Tienda EXP</button>
@@ -496,10 +515,15 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <div class="la-prev-txt" id="laPrevTxt"></div>
     </div>
   </div>
-  <div class="log">
+  <div class="log" id="logContainer">
+    <div class="lwk-sep" data-week="1">
+      <span class="lwk-sep-num">S1</span>
+      <span>Semana 1</span>
+      <span class="lwk-sep-dates">08/06 &ndash; 14/06/2026</span>
+      <span class="lwk-sep-cap">Cap. 500 EXP</span>
+    </div>
     <div class="lentry">
-      <div class="lwk">&#11041; Semana 1 [DD/MM &ndash; DD/MM]</div>
-      <div><span class="ldate">[DD/MM/2026]</span><span class="ltxt">Registro del personaje en <strong style="color:var(--cr-hi)">Bleach Hobba RPG</strong>. Aptitudes y limitaciones iniciales asignadas. Se obtienen <strong>1000 EXP</strong> de base.</span></div>
+      <div><span class="ldate">[08/06/2026]</span><span class="ltxt">Registro del personaje en <strong style="color:var(--cr-hi)">Bleach Hobba RPG</strong>. Aptitudes y limitaciones iniciales asignadas. Se obtienen <span class="lexp-gain">+1000 EXP</span> de base.</span></div>
     </div>
   </div></div>
 </div>
@@ -831,14 +855,22 @@ for(var j=0;j<10;j++){
    LOG ASSISTANT
 ============================================================ */
 var _laData = null;
-var _laLastEntry = null;
+var _laUndoStack = [];  /* pila de entradas para deshacer */
 
 function _makeLentryEditable(el){
   el.contentEditable = "true";
   if(!el.querySelector(".le-del")){
     var btn = document.createElement("button");
     btn.className = "le-del"; btn.title = "Eliminar entrada"; btn.innerHTML = "&times;";
-    btn.addEventListener("click", function(e){ e.stopPropagation(); el.remove(); });
+    btn.style.display = "block";
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      /* quitar de la pila de deshacer si estaba ahí */
+      var idx = _laUndoStack.indexOf(el);
+      if(idx > -1) _laUndoStack.splice(idx, 1);
+      _updUndoBtn();
+      el.remove();
+    });
     el.appendChild(btn);
   }
 }
@@ -847,7 +879,8 @@ function _makeLentryEditable(el){
 function laTpl(type){
   var tpls={
     exp:      "Obtengo ___ EXP [motivo] → https://",
-    pd:       "Gasto ___ PD en [VIT/REI/FUE/DEF/VEL/VOL]",
+    "pd-gain":  "Obtengo ___ PD [motivo, ej: subida de rango] → https://",
+    "pd-spend": "Gasto ___ PD en [VIT|REI|FUE|DEF|VEL|VOL] → https://",
     train:    "Canjeo entrenamiento de [tipo], consumo 500 EXP → https://",
     habilidad:"Canjeo habilidad: [nombre], consumo 100 EXP → https://",
     mejora:   "Canjeo mejora de tienda: [nombre], consumo ___ EXP → https://",
@@ -895,6 +928,40 @@ function laProcess(){
   var bbcode=date+" "+body;
   _laData={date:date,body:body,bbcode:bbcode};
 
+  /* detectar PD: cantidad, stat destino y si es obtención o gasto */
+  var pdAmt=0, pdStat=null, pdIsGain=false;
+  var pdStatRx=/\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i;
+  /* obtención de PD: "obtengo N PD", "gano N PD", "recibo N PD", "compro N PD" */
+  var pdGainRx=/(?:obtengo|gano|recibo|compro|subo de rango|rango[^,]*?otorga)\D{0,30}?(\d+)\s*PD/i;
+  /* gasto de PD: "gasto N PD en STAT", "consumo N PD en STAT" */
+  var pdSpendRx=/(?:gasto|consumo|invierto|uso)\D{0,10}?(\d+)\s*PD\D{0,20}?\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i;
+  var pdGainM=raw.match(pdGainRx);
+  var pdSpendM=raw.match(pdSpendRx);
+  /* también patrón simple "X PD en STAT" sin verbo explícito de gasto si hay stat */
+  var pdSimpleM=raw.match(/(\d+)\s*PD\b[^\n]{0,30}?\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i);
+  if(pdSpendM){
+    pdAmt=parseInt(pdSpendM[1])||0;
+    pdStat=pdSpendM[2].toUpperCase();
+    pdIsGain=false;
+  } else if(pdSimpleM && /gasto|consumo|invierto|uso/i.test(raw)){
+    pdAmt=parseInt(pdSimpleM[1])||0;
+    pdStat=pdSimpleM[2].toUpperCase();
+    pdIsGain=false;
+  } else if(pdGainM){
+    pdAmt=parseInt(pdGainM[1])||0;
+    pdIsGain=true;
+  } else {
+    /* fallback: cualquier mención de N PD */
+    var pdFallM=raw.match(/(\d+)\s*PD/i);
+    if(pdFallM){
+      pdAmt=parseInt(pdFallM[1])||0;
+      pdIsGain=/obtengo|gano|recibo|compro|rango/i.test(raw);
+      var statFallM=raw.match(pdStatRx);
+      if(statFallM && !pdIsGain) pdStat=statFallM[1].toUpperCase();
+    }
+  }
+  _laData.pdAmt=pdAmt; _laData.pdStat=pdStat; _laData.pdIsGain=pdIsGain;
+
   /* detectar cantidad de EXP y si es ganancia o consumo */
   var expM=raw.match(/(\d[\d.,]*)\s*(?:exp|experiencia)/i);
   var expAmt=0;
@@ -938,39 +1005,103 @@ function laCopy(){
 
 function laInsert(){
   if(!_laData||isLocked) return;
-  var log=document.querySelector(".log");
+  var log=document.getElementById("logContainer");
   var entry=document.createElement("div");
   entry.className="lentry";
+
   /* convertir BBCode a HTML visual */
   var visual=_laData.body.replace(
     /\[url=([^\]]+)\]([^\[]+)\[\/url\]/g,
     '<a href="$1" target="_blank" style="color:var(--cr-hi);text-decoration:none">$2</a>'
   );
+
+  /* colorear EXP en el texto */
+  var sign=_laData.expSign||1;
+  if(_laData.expAmt>0){
+    var expStr=_laData.expAmt+" EXP";
+    var cls=sign>0?"lexp-gain":"lexp-lose";
+    var prefix=sign>0?"+":"-";
+    visual=visual.replace(
+      new RegExp("(\\d[\\d.,]*)\\s*EXP","i"),
+      '<span class="'+cls+'">'+prefix+_laData.expAmt+' EXP</span>'
+    );
+  }
+
+  /* colorear PD en el texto */
+  if(_laData.pdAmt>0){
+    var pdPrefix=_laData.pdIsGain?"+":"-";
+    var pdCls=_laData.pdIsGain?"lexp-gain":"lpd-badge";
+    visual=visual.replace(
+      new RegExp("(\\d+)\\s*PD\\b","i"),
+      '<span class="'+pdCls+'">'+pdPrefix+_laData.pdAmt+' PD</span>'
+    );
+  }
+
+  /* asegurar separador de semana actual */
+  var wn=_currentWeekNumber();
+  _ensureWeekSep(wn);
+
   entry.innerHTML=
-    '<div class="lwk">&#11041; '+_laData.date+'</div>'+
     '<div><span class="ldate">'+_laData.date+'</span>'+
     '<span class="ltxt"> '+visual+'</span></div>';
-  log.insertBefore(entry,log.firstChild);
-  _laLastEntry=entry;
-  /* hacer la nueva entrada editable si estamos desbloqueados */
+  /* insertar tras el sep de la semana actual */
+  var sep=log.querySelector('.lwk-sep[data-week="'+wn+'"]');
+  if(sep && sep.nextSibling){
+    log.insertBefore(entry, sep.nextSibling);
+  } else {
+    log.insertBefore(entry, log.firstChild);
+  }
+  _laUndoStack.push(entry);
   if(!isLocked) _makeLentryEditable(entry);
-  /* sumar/restar EXP y recalcular total */
+
+  /* ── EXP ── */
   if(_laData.expAmt>0){
-    var sign=_laData.expSign||1;
     if(sign>0){
-      /* ganancia: va a dentro o fuera según selección */
       var expType=document.querySelector('input[name="laExpType"]:checked').value;
       var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
       if(expEl){ var cur=parseFloat(expEl.textContent)||0; expEl.textContent=cur+_laData.expAmt; }
     } else {
-      /* consumo: se descuenta del total gastado */
       var gastEl=document.getElementById("exp-gastada");
       if(gastEl){ var curG=parseFloat(gastEl.textContent)||0; gastEl.textContent=curG+_laData.expAmt; }
     }
     _recalcExpTotal();
   }
-  document.getElementById("laUndoBtn").style.display="inline-block";
-  /* reset */
+
+  /* ── PD ── */
+  if(_laData.pdAmt>0){
+    var pdDispEl=document.getElementById("pd-disp");
+    var pdTotalEl=pdDispEl ? pdDispEl.parentNode.querySelector(".enum.exp-pd:last-child") : null;
+    if(_laData.pdIsGain){
+      /* obtención: sube disponibles Y el total */
+      if(pdDispEl){ var dv=parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent=dv+_laData.pdAmt; }
+      if(pdTotalEl){ var tv=parseFloat(pdTotalEl.textContent)||0; pdTotalEl.textContent=tv+_laData.pdAmt; }
+    } else {
+      /* gasto: baja disponibles */
+      if(pdDispEl){ var dv2=parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent=Math.max(0,dv2-_laData.pdAmt); }
+      /* sumar al campo bpd del breakdown del stat correspondiente y recalcular */
+      if(_laData.pdStat){
+        var targetCard=document.querySelector('.scard[data-stat="'+_laData.pdStat+'"]');
+        if(targetCard){
+          var bpd=targetCard.querySelector('.bpd');
+          if(bpd){
+            var curPd=parseFloat(bpd.value)||0;
+            bpd.value=curPd+_laData.pdAmt;
+            var bd=targetCard.querySelector('.breakdown');
+            if(bd){ recalcBd(bd); }
+            /* abrir el desglose brevemente para feedback visual */
+            if(bd && !bd.classList.contains('open')){
+              var bdBtn=targetCard.querySelector('.bd-btn');
+              if(bdBtn){ toggleBd(bdBtn); }
+            }
+            /* aplicar automáticamente al statnum */
+            applyBd(targetCard);
+          }
+        }
+      }
+    }
+  }
+
+  _updUndoBtn();
   document.getElementById("laInp").value="";
   document.getElementById("laPrev").style.display="none";
   document.getElementById("laExpRow").style.display="none";
@@ -980,16 +1111,62 @@ function laInsert(){
   log.scrollTop=0;
 }
 
+function _updUndoBtn(){
+  var btn=document.getElementById("laUndoBtn");
+  if(!btn) return;
+  if(_laUndoStack.length>0){
+    btn.style.display="inline-block";
+    btn.innerHTML="&#8630; Deshacer ("+ _laUndoStack.length +")";
+  } else {
+    btn.style.display="none";
+    btn.innerHTML="&#8630; Deshacer";
+  }
+}
 function laUndo(){
-  if(!_laLastEntry) return;
-  _laLastEntry.remove();
-  _laLastEntry=null;
-  document.getElementById("laUndoBtn").style.display="none";
+  if(!_laUndoStack.length) return;
+  var entry=_laUndoStack.pop();
+  if(entry && entry.parentNode) entry.remove();
+  _updUndoBtn();
 }
 
 /* ============================================================
-   EXP TOTAL RECALC
+   EXP TOTAL RECALC + CAP SEMANAL AUTOMÁTICO
 ============================================================ */
+var _WEEK1_START = new Date("2026-06-08T00:00:00"); /* lunes semana 1 */
+var _EXP_PER_WEEK = 500;
+
+function _currentWeekNumber(){
+  var now = new Date();
+  var diff = now - _WEEK1_START;
+  if(diff < 0) return 1;
+  return Math.floor(diff / (7*24*60*60*1000)) + 1;
+}
+
+function _weekDates(n){
+  /* devuelve {start, end} como strings DD/MM/YYYY */
+  var ms = 7*24*60*60*1000;
+  var s = new Date(_WEEK1_START.getTime() + (n-1)*ms);
+  var e = new Date(s.getTime() + 6*24*60*60*1000);
+  function fmt(d){ return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear(); }
+  return {start:fmt(s), end:fmt(e)};
+}
+
+function _calcExpCap(joinWeek){
+  /* joinWeek: semana en que el personaje se registró (por defecto 1) */
+  joinWeek = parseInt(joinWeek)||1;
+  var current = _currentWeekNumber();
+  /* cap = 500 * semanas disponibles desde que entró */
+  return Math.max(0, (current - joinWeek + 1)) * _EXP_PER_WEEK;
+}
+
+function _updateExpCap(){
+  var joinWeekEl = document.getElementById("join-week");
+  var joinWeek = joinWeekEl ? (parseInt(joinWeekEl.textContent)||1) : 1;
+  var cap = _calcExpCap(joinWeek);
+  var maxEl = document.getElementById("exp-dentro-max");
+  if(maxEl) maxEl.textContent = cap;
+}
+
 function _recalcExpTotal(){
   var dentro=parseFloat(document.getElementById("exp-dentro").textContent)||0;
   var fuera=parseFloat(document.getElementById("exp-fuera").textContent)||0;
@@ -997,6 +1174,27 @@ function _recalcExpTotal(){
   var el=document.getElementById("exp-total");
   if(el) el.textContent=total;
 }
+
+/* Insertar separador de semana en el log si es necesario */
+function _ensureWeekSep(weekNum){
+  var log=document.getElementById("logContainer");
+  if(!log) return;
+  /* buscar si ya existe el sep de esa semana */
+  var existing=log.querySelector('.lwk-sep[data-week="'+weekNum+'"]');
+  if(existing) return;
+  var d=_weekDates(weekNum);
+  var sep=document.createElement("div");
+  sep.className="lwk-sep";
+  sep.dataset.week=weekNum;
+  sep.innerHTML=
+    '<span class="lwk-sep-num">S'+weekNum+'</span>'+
+    '<span>Semana '+weekNum+'</span>'+
+    '<span class="lwk-sep-dates">'+d.start+' &ndash; '+d.end+'</span>'+
+    '<span class="lwk-sep-cap">Cap. '+(_calcExpCap(1) - (weekNum-1)*500)+'&nbsp;acum.</span>';
+  /* insertar al principio (entradas nuevas van arriba) */
+  log.insertBefore(sep, log.firstChild);
+}
+
 /* Recalcular al editar dentro/fuera manualmente */
 (function(){
   function _watchExp(id){
@@ -1004,8 +1202,12 @@ function _recalcExpTotal(){
     if(el) el.addEventListener("input",_recalcExpTotal);
   }
   _watchExp("exp-dentro"); _watchExp("exp-fuera");
-  /* también cuando se restaura desde Gist */
-  setTimeout(_recalcExpTotal,1200);
+  var jwEl=document.getElementById("join-week");
+  if(jwEl) jwEl.addEventListener("input",function(){ _updateExpCap(); _recalcExpTotal(); });
+  /* cap automático al cargar */
+  setTimeout(function(){ _updateExpCap(); _recalcExpTotal(); },1200);
+  /* actualizar cap cada hora (por si el tab queda abierto) */
+  setInterval(_updateExpCap, 3600000);
 })();
 
 /* ============================================================
