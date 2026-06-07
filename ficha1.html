@@ -252,6 +252,10 @@ body.locked .le-del{display:none!important}
 .lwk-sep-dates{color:var(--text-dim);font-size:9px}
 .lwk-sep-cap{font-size:9px;color:var(--spirit-hi);margin-left:auto}
 
+/* LAST EDIT */
+.last-edit{margin-top:8px;padding:5px 10px 2px;font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1.5px;color:var(--text-dim);text-align:right;border-top:1px solid rgba(255,255,255,.05);text-transform:uppercase}
+.last-edit-ts{color:var(--bone-dim);text-transform:none;letter-spacing:.5px}
+
 /* FOOTER */
 .ftr{text-align:center;margin-top:36px}
 .ftr::before{content:"";display:block;height:1px;background:linear-gradient(to right,transparent,var(--cr),transparent);margin-bottom:16px}
@@ -525,7 +529,9 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     <div class="lentry">
       <div><span class="ldate">[08/06/2026]</span><span class="ltxt">Registro del personaje en <strong style="color:var(--cr-hi)">Bleach Hobba RPG</strong>. Aptitudes y limitaciones iniciales asignadas. Se obtienen <span class="lexp-gain">+1000 EXP</span> de base.</span></div>
     </div>
-  </div></div>
+  </div>
+  <div class="last-edit" id="lastEditStamp">&#8212; Sin guardar a&uacute;n &#8212;</div>
+</div>
 </div>
 
 <div class="ftr"><div class="ftxt">Bzzzzzzzzzzzzzzzzzzzzzzzzz</div></div>
@@ -679,6 +685,7 @@ function _restore(s){
     var dv=document.getElementById("dval"); if(dv) dv.textContent=dlvl;
   }
   var ht=document.getElementById("hueco-text"); if(ht&&s.ht!==undefined) ht.value=s.ht;
+  if(s.lastEdit) _setLastEdit(s.lastEdit);
 }
 
 async function loadFromGist(){
@@ -698,13 +705,16 @@ async function handleSave(){
   var orig=btn.innerHTML; btn.disabled=true; btn.innerHTML="&#8987; Guardando…";
   try {
     var pat=await _decryptPAT(_pwd);
-    var body=JSON.stringify({ files:{ [GIST_FILE]:{ content:JSON.stringify(_collect(),null,2) } } });
+    var now=new Date().toISOString();
+    var state=_collect(); state.lastEdit=now;
+    var body=JSON.stringify({ files:{ [GIST_FILE]:{ content:JSON.stringify(state,null,2) } } });
     var r=await fetch("https://api.github.com/gists/"+GIST_ID,{
       method:"PATCH",
       headers:{ "Authorization":"Bearer "+pat,"Content-Type":"application/json","Accept":"application/vnd.github+json" },
       body:body
     });
-    btn.innerHTML=r.ok?"&#10003; Guardado":"&#10005; Error al guardar";
+    if(r.ok){ btn.innerHTML="&#10003; Guardado"; _setLastEdit(now); }
+    else btn.innerHTML="&#10005; Error al guardar";
   } catch(e){ btn.innerHTML="&#10005; Error (clave o red)"; }
   setTimeout(function(){ btn.innerHTML=orig; btn.disabled=false; },2800);
 }
@@ -782,6 +792,24 @@ document.querySelectorAll(".scard[data-stat]").forEach(function(card){
 });
 
 loadFromGist();
+
+/* ============================================================
+   LAST EDIT STAMP
+============================================================ */
+function _fmtLastEdit(iso){
+  var d=new Date(iso);
+  /* hora local del visitante con abreviatura de zona horaria */
+  return d.toLocaleString(undefined,{
+    year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",
+    timeZoneName:"short"
+  });
+}
+function _setLastEdit(iso){
+  var el=document.getElementById("lastEditStamp");
+  if(!el) return;
+  el.innerHTML="&#128336; &Uacute;ltima edici&oacute;n: <span class='last-edit-ts'>"+_fmtLastEdit(iso)+"</span>";
+}
 
 function toggleBd(btn){
   var card=btn.closest(".scard"),bd=card.querySelector(".breakdown"),open=bd.classList.toggle("open");
@@ -1060,10 +1088,21 @@ function laInsert(){
   var expType = (_laData.expAmt>0 && sign>0)
     ? document.querySelector('input[name="laExpType"]:checked').value
     : "dentro";
+  var effectiveExpAmt = _laData.expAmt || 0; /* puede reducirse si supera el cap de dentro */
   if(_laData.expAmt>0){
     if(sign>0){
       var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
-      if(expEl){ var cur=parseFloat(expEl.textContent)||0; expEl.textContent=cur+_laData.expAmt; }
+      if(expEl){
+        var cur=parseFloat(expEl.textContent)||0;
+        if(expType==="dentro"){
+          /* no superar exp-dentro-max: solo añadir el hueco disponible */
+          var maxEl=document.getElementById("exp-dentro-max");
+          var cap=parseFloat(maxEl?maxEl.textContent:0)||0;
+          var space=Math.max(0,cap-cur);
+          effectiveExpAmt=Math.min(_laData.expAmt,space);
+        }
+        expEl.textContent=cur+effectiveExpAmt;
+      }
     } else {
       var gastEl=document.getElementById("exp-gastada");
       if(gastEl){ var curG=parseFloat(gastEl.textContent)||0; gastEl.textContent=curG+_laData.expAmt; }
@@ -1106,8 +1145,9 @@ function laInsert(){
   }
 
   /* ── guardar snapshot para revertir los cambios al eliminar la entrada ── */
+  /* expAmt usa effectiveExpAmt: la cantidad real que se añadió tras respetar el cap */
   entry._laSnapshot = {
-    expAmt:   _laData.expAmt   || 0,
+    expAmt:   effectiveExpAmt,
     expSign:  _laData.expSign  || 1,
     expType:  expType,
     pdAmt:    _laData.pdAmt    || 0,
