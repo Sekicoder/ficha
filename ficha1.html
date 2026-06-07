@@ -142,12 +142,24 @@ textarea.ta:focus{border-color:var(--cr)}
 
 /* EXP */
 .expblk{background:rgba(0,0,0,.25);border:1px solid var(--border);padding:12px 16px;margin-bottom:14px}
-.erow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0}
+.erow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:5px 0}
 .elbl{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase;white-space:nowrap}
 .evals{display:flex;align-items:center;gap:6px}
 .enum{font-family:"Share Tech Mono",monospace;font-size:13px;color:var(--bone);outline:none;cursor:text}
 .esep{color:var(--text-dim);font-size:11px}
 .mdiv{height:1px;background:linear-gradient(to right,var(--cr),transparent);margin:6px 0;opacity:.3}
+/* EXP colores */
+.enum.exp-pd{color:#7ec8e3}
+.enum.exp-dentro{color:#6fcf97}
+.enum.exp-dentro-max{color:#a8d8a8}
+.enum.exp-fuera{color:#f0a830}
+.enum.exp-total{color:#e0c97e;font-size:15px}
+.enum.exp-gastada{color:#e74c3c}
+.erow.erow-pd{background:rgba(126,200,227,.04);border-left:2px solid rgba(126,200,227,.3);padding-left:6px}
+.erow.erow-dentro{background:rgba(111,207,151,.05);border-left:2px solid rgba(111,207,151,.35);padding-left:6px}
+.erow.erow-fuera{background:rgba(240,168,48,.05);border-left:2px solid rgba(240,168,48,.35);padding-left:6px}
+.erow.erow-total{background:rgba(224,201,126,.07);border-left:2px solid rgba(224,201,126,.45);padding-left:6px;margin-top:4px}
+.erow-total .elbl{color:var(--gold)}
 
 /* HUECOS DE PODER */
 .hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -365,11 +377,11 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     </div>
 
     <div class="expblk">
-      <div class="erow"><span class="elbl">Puntos de Desarrollo</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
+      <div class="erow erow-pd"><span class="elbl">Puntos de Desarrollo</span><div class="evals"><span class="enum exp-pd" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-pd" contenteditable="true">0</span></div></div>
       <div class="mdiv"></div>
-      <div class="erow"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum" id="exp-dentro" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
-      <div class="erow"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum" id="exp-fuera" contenteditable="true">0</span></div></div>
-      <div class="erow"><span class="elbl">EXP Total Restante / Gastada</span><div class="evals"><span class="enum" contenteditable="true">0</span><span class="esep">/</span><span class="enum" contenteditable="true">0</span></div></div>
+      <div class="erow erow-dentro"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum exp-dentro" id="exp-dentro" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-dentro-max" id="exp-dentro-max" contenteditable="true">0</span></div></div>
+      <div class="erow erow-fuera"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum exp-fuera" id="exp-fuera" contenteditable="true">0</span></div></div>
+      <div class="erow erow-total"><span class="elbl">EXP Total</span><div class="evals"><span class="enum exp-total" id="exp-total">0</span><span class="esep">/</span><span class="enum exp-gastada" id="exp-gastada" contenteditable="true">0</span></div></div>
     </div>
 
     <!-- HUECOS DE PODER -->
@@ -454,8 +466,9 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     <div class="la-tpls">
       <button class="la-tpl" onclick="laTpl('exp')">+ EXP</button>
       <button class="la-tpl" onclick="laTpl('pd')">+ PD gastado</button>
-      <button class="la-tpl" onclick="laTpl('train')">+ Entrenamiento</button>
-      <button class="la-tpl" onclick="laTpl('mejora')">+ Mejora</button>
+      <button class="la-tpl" onclick="laTpl('train')">&#8722; Entrenamiento</button>
+      <button class="la-tpl" onclick="laTpl('habilidad')">&#8722; Habilidad</button>
+      <button class="la-tpl" onclick="laTpl('mejora')">&#8722; Tienda EXP</button>
       <button class="la-tpl" onclick="laTpl('item')">+ &Iacute;tem</button>
     </div>
     <textarea class="la-inp" id="laInp" rows="2"
@@ -467,11 +480,16 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <button class="la-btn la-btn-undo" id="laUndoBtn" onclick="laUndo()" style="display:none">&#8630; Deshacer</button>
     </div>
     <!-- Selector tipo EXP (aparece solo si se detecta EXP) -->
-    <div class="la-exp-row" id="laExpRow">
-      <span class="la-exp-lbl">&#9670; EXP detectada:</span>
-      <span class="la-exp-amt" id="laExpAmt">0</span>
-      <label class="la-exp-opt"><input type="radio" name="laExpType" value="dentro" checked/> Dentro l&iacute;mite</label>
-      <label class="la-exp-opt"><input type="radio" name="laExpType" value="fuera"/> Fuera l&iacute;mite</label>
+    <div class="la-exp-row" id="laExpRow" style="display:none;flex-direction:column;gap:4px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="la-exp-lbl">&#9670; EXP detectada:</span>
+        <span class="la-exp-amt" id="laExpAmt" style="font-weight:700">0</span>
+      </div>
+      <div id="laExpTypeRow" style="display:flex;gap:10px;align-items:center">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px">TIPO:</span>
+        <label class="la-exp-opt"><input type="radio" name="laExpType" value="dentro" checked/> Dentro l&iacute;mite</label>
+        <label class="la-exp-opt"><input type="radio" name="laExpType" value="fuera"/> Fuera l&iacute;mite</label>
+      </div>
     </div>
     <div class="la-prev" id="laPrev">
       <div class="la-prev-lbl">BBCode generado</div>
@@ -828,11 +846,12 @@ function _makeLentryEditable(el){
 /* Plantillas rápidas */
 function laTpl(type){
   var tpls={
-    exp:   "Obtengo ___ EXP [motivo] → https://",
-    pd:    "Gasto ___ PD en [VIT/REI/FUE/DEF/VEL/VOL]",
-    train: "Realizo entrenamiento de [tipo] → https://",
-    mejora:"Obtengo mejora: [nombre] → https://",
-    item:  "Obtengo ítem: [nombre] por [motivo] → https://"
+    exp:      "Obtengo ___ EXP [motivo] → https://",
+    pd:       "Gasto ___ PD en [VIT/REI/FUE/DEF/VEL/VOL]",
+    train:    "Canjeo entrenamiento de [tipo], consumo 500 EXP → https://",
+    habilidad:"Canjeo habilidad: [nombre], consumo 100 EXP → https://",
+    mejora:   "Canjeo mejora de tienda: [nombre], consumo ___ EXP → https://",
+    item:     "Obtengo ítem: [nombre] por [motivo] → https://"
   };
   var el=document.getElementById("laInp");
   el.value=tpls[type]||"";
@@ -876,18 +895,24 @@ function laProcess(){
   var bbcode=date+" "+body;
   _laData={date:date,body:body,bbcode:bbcode};
 
-  /* detectar cantidad de EXP */
+  /* detectar cantidad de EXP y si es ganancia o consumo */
   var expM=raw.match(/(\d[\d.,]*)\s*(?:exp|experiencia)/i);
   var expAmt=0;
+  var expSign=1; /* +1 ganancia, -1 consumo */
   if(expM){
     expAmt=parseFloat(expM[1].replace(",",".").replace("k",""))*
            (/k/i.test(expM[1])?1000:1);
-    document.getElementById("laExpAmt").textContent=expAmt;
+    /* detectar si es consumo: palabras clave de gasto */
+    if(/consumo|gasto|canjeo|compro|pago/i.test(raw)) expSign=-1;
+    document.getElementById("laExpAmt").textContent=(expSign<0?"-":"+")+" "+expAmt+" EXP";
     document.getElementById("laExpRow").style.display="flex";
+    /* ocultar selector dentro/fuera si es consumo (siempre va al total) */
+    document.getElementById("laExpTypeRow").style.display=expSign>0?"flex":"none";
   } else {
     document.getElementById("laExpRow").style.display="none";
   }
   _laData.expAmt=expAmt;
+  _laData.expSign=expSign;
 
   document.getElementById("laPrevTxt").textContent=bbcode;
   document.getElementById("laPrev").style.display="block";
@@ -929,11 +954,20 @@ function laInsert(){
   _laLastEntry=entry;
   /* hacer la nueva entrada editable si estamos desbloqueados */
   if(!isLocked) _makeLentryEditable(entry);
-  /* sumar EXP al contador correspondiente */
+  /* sumar/restar EXP y recalcular total */
   if(_laData.expAmt>0){
-    var expType=document.querySelector('input[name="laExpType"]:checked').value;
-    var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
-    if(expEl){ var cur=parseFloat(expEl.textContent)||0; expEl.textContent=cur+_laData.expAmt; }
+    var sign=_laData.expSign||1;
+    if(sign>0){
+      /* ganancia: va a dentro o fuera según selección */
+      var expType=document.querySelector('input[name="laExpType"]:checked').value;
+      var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
+      if(expEl){ var cur=parseFloat(expEl.textContent)||0; expEl.textContent=cur+_laData.expAmt; }
+    } else {
+      /* consumo: se descuenta del total gastado */
+      var gastEl=document.getElementById("exp-gastada");
+      if(gastEl){ var curG=parseFloat(gastEl.textContent)||0; gastEl.textContent=curG+_laData.expAmt; }
+    }
+    _recalcExpTotal();
   }
   document.getElementById("laUndoBtn").style.display="inline-block";
   /* reset */
@@ -952,6 +986,27 @@ function laUndo(){
   _laLastEntry=null;
   document.getElementById("laUndoBtn").style.display="none";
 }
+
+/* ============================================================
+   EXP TOTAL RECALC
+============================================================ */
+function _recalcExpTotal(){
+  var dentro=parseFloat(document.getElementById("exp-dentro").textContent)||0;
+  var fuera=parseFloat(document.getElementById("exp-fuera").textContent)||0;
+  var total=dentro+fuera;
+  var el=document.getElementById("exp-total");
+  if(el) el.textContent=total;
+}
+/* Recalcular al editar dentro/fuera manualmente */
+(function(){
+  function _watchExp(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener("input",_recalcExpTotal);
+  }
+  _watchExp("exp-dentro"); _watchExp("exp-fuera");
+  /* también cuando se restaura desde Gist */
+  setTimeout(_recalcExpTotal,1200);
+})();
 
 /* ============================================================
    ADD SKILL
