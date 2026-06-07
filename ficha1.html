@@ -526,7 +526,7 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <span class="lwk-sep-dates">08/06 &ndash; 14/06/2026</span>
       <span class="lwk-sep-cap">Cap. 500 EXP</span>
     </div>
-    <div class="lentry">
+    <div class="lentry" data-snap='{"expAmt":1000,"expSign":1,"expType":"fuera","pdAmt":0,"pdIsGain":false,"pdStat":null}'>
       <div><span class="ldate">[08/06/2026]</span><span class="ltxt">Registro del personaje en <strong style="color:var(--cr-hi)">Bleach Hobba RPG</strong>. Aptitudes y limitaciones iniciales asignadas. Se obtienen <span class="lexp-gain">+1000 EXP</span> de base.</span></div>
     </div>
   </div>
@@ -1187,6 +1187,8 @@ function laInsert(){
     pdIsGain: _laData.pdIsGain || false,
     pdStat:   _laData.pdStat   || null
   };
+  /* persistir el snapshot como atributo HTML: sobrevive innerHTML restore tras F5 */
+  entry.dataset.snap = JSON.stringify(entry._laSnapshot);
 
   _updUndoBtn();
   document.getElementById("laInp").value="";
@@ -1200,6 +1202,10 @@ function laInsert(){
 
 function _revertEntry(el){
   var snap = el._laSnapshot;
+  /* fallback: leer el snapshot desde el atributo data-snap (sobrevive restore por innerHTML) */
+  if(!snap && el.dataset.snap){
+    try { snap = JSON.parse(el.dataset.snap); } catch(e){}
+  }
   if(!snap) return;
 
   /* ── revertir EXP ── */
@@ -1343,16 +1349,6 @@ function _ensureWeekSep(weekNum){
   setTimeout(function(){ _updateExpCap(); _recalcExpTotal(); },1200);
   /* actualizar cap cada hora (por si el tab queda abierto) */
   setInterval(_updateExpCap, 3600000);
-
-  /* adjuntar snapshot a la entrada de registro inicial (1000 EXP fuera de límite)
-     para que eliminarla revierta los contadores correctamente */
-  var initEntry = document.querySelector('#logContainer .lentry');
-  if(initEntry && !initEntry._laSnapshot){
-    initEntry._laSnapshot = {
-      expAmt:1000, expSign:1, expType:"fuera",
-      pdAmt:0, pdIsGain:false, pdStat:null
-    };
-  }
 })();
 
 /* ============================================================
