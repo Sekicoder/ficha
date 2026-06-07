@@ -652,6 +652,14 @@ function _collect(){
     };
   });
   var ht=document.getElementById("hueco-text"); s.ht=ht?ht.value:"";
+  /* guardar historial de acciones */
+  var logEl=document.getElementById("logContainer");
+  if(logEl){
+    var logClone=logEl.cloneNode(true);
+    /* eliminar botones de borrado (son UI en tiempo de ejecución, se recrean al desbloquear) */
+    logClone.querySelectorAll('.le-del').forEach(function(b){b.remove();});
+    s.log=logClone.innerHTML;
+  }
   return s;
 }
 
@@ -686,6 +694,16 @@ function _restore(s){
   }
   var ht=document.getElementById("hueco-text"); if(ht&&s.ht!==undefined) ht.value=s.ht;
   if(s.lastEdit) _setLastEdit(s.lastEdit);
+  /* restaurar historial de acciones */
+  if(s.log){
+    var logEl=document.getElementById("logContainer");
+    if(logEl){
+      logEl.innerHTML=s.log;
+      /* eliminar cualquier botón .le-del que viniera en el HTML guardado;
+         se recrearán correctamente (con sus event listeners) cuando el usuario desbloquee */
+      logEl.querySelectorAll('.le-del').forEach(function(b){b.remove();});
+    }
+  }
 }
 
 async function loadFromGist(){
@@ -1102,6 +1120,21 @@ function laInsert(){
           effectiveExpAmt=Math.min(_laData.expAmt,space);
         }
         expEl.textContent=cur+effectiveExpAmt;
+        /* si el cap redujo la cantidad, actualizar el texto de la entrada del historial */
+        if(effectiveExpAmt!==_laData.expAmt){
+          var expSpan=entry.querySelector('.lexp-gain');
+          if(expSpan){
+            expSpan.textContent="+"+effectiveExpAmt+" EXP";
+            expSpan.title="Límite aplicado: "+effectiveExpAmt+" de "+_laData.expAmt+" EXP añadidos (cap semanal)";
+            /* añadir nota visual entre paréntesis */
+            var note=entry.querySelector('.la-cap-note');
+            if(!note){
+              expSpan.insertAdjacentHTML('afterend',
+                ' <span class="la-cap-note" style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:var(--text-dim)">(de '+_laData.expAmt+' EXP — cap aplicado)</span>'
+              );
+            }
+          }
+        }
       }
     } else {
       var gastEl=document.getElementById("exp-gastada");
