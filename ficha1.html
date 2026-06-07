@@ -1242,6 +1242,7 @@ function _revertEntry(el){
             bpd.value = Math.max(0, curPd - snap.pdAmt);
             var bd = targetCard.querySelector('.breakdown');
             if(bd) recalcBd(bd);
+            applyBd(targetCard);
           }
         }
       }
