@@ -265,7 +265,7 @@ body.locked .le-del{display:none!important}
 body.locked .fi,body.locked .ta,body.locked .skinput,body.locked .einput{pointer-events:none;border-color:transparent;cursor:default;user-select:text}
 body.locked .rval,body.locked .enum,body.locked .cval{cursor:default;pointer-events:none}
 body.locked .dpip{pointer-events:none;cursor:default}
-body.locked .add-btn,body.locked .bapply,body.locked .bdel,body.locked .badd-inc,body.locked .hdel,body.locked #add-hueco-btn{display:none}
+body.locked .add-btn,body.locked .bapply,body.locked .bdel,body.locked .badd-inc,body.locked .hdel,body.locked #add-hueco-btn,body.locked .apt-del,body.locked .item-del,body.locked .item-qty-btn,body.locked .stat-ref-btn,body.locked .hw-adj-btn{display:none!important}
 body.locked .bincname,body.locked .bincval{pointer-events:none;border-color:transparent}
 body.locked .hname,body.locked .hhuecos{pointer-events:none;border-color:transparent;cursor:default}
 body.locked .fi::placeholder,body.locked .ta::placeholder,body.locked .skinput::placeholder,body.locked .einput::placeholder{color:transparent}
@@ -292,6 +292,76 @@ body.locked .log-asst{display:none}
 .la-prev-lbl{font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:1.5px;color:var(--spirit-hi);text-transform:uppercase;margin-bottom:4px}
 .la-prev-txt{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--bone-dim);line-height:1.7;word-break:break-all}
 body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,57,43,.1)}
+/* ── APTITUDES LIST ── */
+.apt-list{display:flex;flex-direction:column;gap:4px;min-height:2px;margin-bottom:4px}
+.apt-entry{display:flex;align-items:center;gap:7px;padding:5px 8px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.04)}
+.apt-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.apt-name{flex:1;min-width:0;font-family:"Rajdhani",sans-serif;font-size:13px;color:var(--text);background:transparent;border:none;border-bottom:1px dashed rgba(192,57,43,.25);outline:none;padding:1px 4px}
+.apt-name:focus{border-bottom-color:var(--cr-hi)}
+.apt-val{width:54px;text-align:center;font-family:"Share Tech Mono",monospace;font-size:13px;font-weight:700;background:transparent;border:1px solid;outline:none;padding:2px 4px}
+.apt-val.neutral{color:#e08020;border-color:rgba(224,128,32,.35)}
+.apt-val.positive{color:#6fcf97;border-color:rgba(111,207,151,.35)}
+.apt-val.negative{color:#e74c3c;border-color:rgba(231,76,60,.35)}
+.apt-del{background:none;border:none;color:rgba(192,57,43,.45);cursor:pointer;font-size:15px;padding:0;line-height:1;flex-shrink:0;transition:color .2s}
+.apt-del:hover{color:var(--cr-hi)}
+body.locked .apt-name{pointer-events:none;border-color:transparent}
+body.locked .apt-val{pointer-events:none;border-color:transparent!important}
+body.locked .apt-del{display:none!important}
+/* ── ITEMS LIST ── */
+.items-list{display:flex;flex-direction:column;gap:3px;margin-bottom:5px}
+.item-entry{display:flex;align-items:center;gap:8px;padding:4px 8px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.04)}
+.item-name-inp{flex:1;min-width:0;font-family:"Rajdhani",sans-serif;font-size:13px;color:var(--text);background:transparent;border:none;border-bottom:1px dashed rgba(192,57,43,.25);outline:none;padding:1px 3px}
+.item-name-inp:focus{border-bottom-color:var(--cr-hi)}
+.item-qty-box{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.item-qty-btn{background:rgba(192,57,43,.1);border:1px solid var(--border);color:var(--bone-dim);font-family:"Share Tech Mono",monospace;font-size:11px;width:18px;height:18px;cursor:pointer;line-height:1;text-align:center;padding:0;transition:background .15s}
+.item-qty-btn:hover{background:rgba(192,57,43,.3);color:var(--cr-hi)}
+.item-qty-num{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--bone);min-width:24px;text-align:center}
+.item-del{background:none;border:none;color:rgba(192,57,43,.4);cursor:pointer;font-size:14px;padding:0;line-height:1;flex-shrink:0;transition:color .2s}
+.item-del:hover{color:var(--cr-hi)}
+body.locked .item-name-inp{pointer-events:none;border-color:transparent}
+body.locked .item-qty-btn,.locked .item-del{display:none!important}
+/* ── HOLLOW TRACKER ── */
+.hw-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.hw-lbl{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;flex-shrink:0}
+.hw-sel{background:rgba(0,0,0,.4);border:1px solid var(--border-hi);color:var(--bone);font-family:"Rajdhani",sans-serif;font-size:13px;padding:3px 8px;outline:none;cursor:pointer}
+.hw-sel:focus{border-color:var(--cr)}
+.hw-bar-outer{height:6px;background:rgba(255,255,255,.06);margin:5px 0;position:relative}
+.hw-bar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(to right,var(--cr),#e08020);transition:width .4s}
+.hw-charges-txt{display:flex;justify-content:space-between;font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--bone)}
+.hw-igrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.hw-icard{background:rgba(0,0,0,.25);border:1px solid var(--border);padding:8px 10px;text-align:center}
+.hw-icard-lbl{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;margin-bottom:3px}
+.hw-icard-val{font-family:"Share Tech Mono",monospace;font-size:14px;color:var(--bone)}
+.hw-bonus{background:rgba(192,57,43,.05);border:1px solid rgba(192,57,43,.15);padding:8px 10px;margin-bottom:10px;font-family:"Share Tech Mono",monospace;font-size:9px;line-height:2}
+.hw-bonus-ttl{display:block;color:var(--cr-hi);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+.hw-bstat{display:inline-flex;gap:3px;margin-right:10px}
+.hw-bk{color:var(--cr)}.hw-bv{color:var(--bone);font-size:11px}
+.hw-adj{display:flex;align-items:center;gap:8px;padding:5px 9px;background:rgba(163,92,199,.07);border:1px solid rgba(163,92,199,.22);margin-bottom:8px;font-family:"Share Tech Mono",monospace;font-size:9px}
+.hw-adj-lbl{color:var(--spirit-hi);letter-spacing:1px;flex:1}
+.hw-adj-ok{color:#6fcf97;font-weight:700}
+.hw-adj-fail{color:#e74c3c;font-weight:700}
+.hw-adj-btn{font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:1px;padding:3px 8px;cursor:pointer;border:1px solid rgba(163,92,199,.3);color:var(--spirit-hi);background:transparent;text-transform:uppercase;transition:background .15s}
+.hw-adj-btn:hover{background:rgba(163,92,199,.15)}
+.hw-log{max-height:120px;overflow-y:auto;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:8px 10px;scrollbar-width:thin;scrollbar-color:var(--cr) transparent;font-family:"Share Tech Mono",monospace;font-size:9px;line-height:1.9}
+.hw-logr{display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,.03);padding:1px 0}
+.hw-logr-d{color:var(--text-dim);flex-shrink:0}
+.hw-logr-t{color:var(--text);flex:1}
+.hw-logr-g{color:#e08020;font-weight:700;flex-shrink:0}
+body.locked .hw-sel{pointer-events:none}
+body.locked .hw-adj-btn{display:none!important}
+/* ── STAT REFERENCE ── */
+.stat-ref-row{display:flex;align-items:center;gap:8px;margin-top:6px;padding-top:6px;border-top:1px dashed rgba(192,57,43,.12)}
+.stat-ref-btn{font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:.5px;padding:3px 8px;cursor:pointer;border:1px solid rgba(192,57,43,.3);color:var(--bone-dim);background:transparent;text-transform:uppercase;transition:background .15s;white-space:nowrap}
+.stat-ref-btn:hover{background:rgba(192,57,43,.15);color:var(--cr-hi)}
+body.locked .stat-ref-btn{display:none!important}
+/* ── LOG DETECT BADGES ── */
+.la-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.la-bd{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:.5px;border:1px solid}
+.la-bd-cur{border-color:rgba(212,169,62,.45);color:var(--gold)}
+.la-bd-item{border-color:rgba(163,92,199,.45);color:var(--spirit-hi)}
+.la-bd-apt{border-color:rgba(111,207,151,.4);color:#6fcf97}
+.la-bd-hw{border-color:rgba(231,76,60,.45);color:var(--cr-hi)}
+
 </style>
 </head>
 <body class="locked">
@@ -366,7 +436,7 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <div class="frow" style="margin-bottom:8px"><span class="flbl">Nombre</span><span class="fdash">&mdash;</span><input class="fi" placeholder="Nombre del personaje" style="font-size:16px;font-weight:600"/></div>
       <div class="frow" style="margin-bottom:8px"><span class="flbl">Personalidad</span><span class="fdash">&mdash;</span><input class="fi" placeholder="Descripci&oacute;n breve&hellip;"/></div>
       <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Historia</span><textarea class="ta" rows="4" placeholder="Historia del personaje&hellip;"></textarea></div>
-      <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Aptitudes y Limitaciones</span><textarea class="ta" rows="3" placeholder="Anotar aptitudes y limitaciones de forma libre&hellip;"></textarea></div>
+      <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Aptitudes y Limitaciones</span><div id="apt-list" class="apt-list"></div><button class="add-btn" onclick="addAptitud()" style="font-size:11px;padding:4px 12px;margin-top:4px">+ A&ntilde;adir aptitud / limitaci&oacute;n</button></div>
     </div>
     <div class="pwrap">
       <div class="pslot"><img src="https://i.gyazo.com/0286e009b07cff381f076cfa0ce9162e.png" alt="Arte del personaje"/></div>
@@ -380,8 +450,8 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
   <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><polygon points="10,2 12.5,8.5 19.5,8.5 14,12.5 16,19 10,15 4,19 6,12.5 0.5,8.5 7.5,8.5" stroke="#c0392b" stroke-width="1.1" fill="none"/></svg><span class="sttl">Atributos Espirituales</span><span class="stag">03</span></div>
   <div class="sbody">
     <div class="rankrow">
-      <div class="rankpill"><div class="rlbl">Rango</div><div class="rval" contenteditable="true">&mdash;</div></div>
-      <div class="rankpill"><div class="rlbl">Nivel</div><div class="rval" contenteditable="true">0</div></div>
+      <div class="rankpill"><div class="rlbl">Rango</div><div class="rval" id="char-rank" contenteditable="true">&mdash;</div></div>
+      <div class="rankpill"><div class="rlbl">Nivel</div><div class="rval" id="char-level" contenteditable="true">0</div></div>
     </div>
 
     <div class="sgrid">
@@ -461,23 +531,70 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <div class="eslot"><div class="eico">&#9671;</div><div class="einf"><div class="eslbl">Complemento 1</div><input class="einput" placeholder="&mdash;"/></div></div>
       <div class="eslot" style="grid-column:1/-1"><div class="eico">&#9671;</div><div class="einf"><div class="eslbl">Complemento 2</div><input class="einput" placeholder="&mdash;"/></div></div>
     </div>
-    <div style="margin-top:14px"><span class="flbl" style="display:block;margin-bottom:6px">Objetos y Consumibles</span><textarea class="ta" rows="2" placeholder="Listar objetos&hellip;"></textarea></div>
+    <div style="margin-top:14px"><span class="flbl" style="display:block;margin-bottom:6px">Objetos y Consumibles</span><div id="items-list" class="items-list"></div><button class="add-btn" onclick="addItem()" style="font-size:11px;padding:4px 12px">+ A&ntilde;adir objeto</button></div>
     <div class="cgrid">
-      <div class="ccard"><div class="cico">&yen;</div><div class="clbl">Kan / Yen</div><div class="cval" contenteditable="true">0</div></div>
-      <div class="ccard"><div class="cico" style="color:var(--spirit-hi)">&#9672;</div><div class="clbl">Monedas Temp.</div><div class="cval" contenteditable="true">0</div></div>
-      <div class="ccard"><div class="cico" style="color:var(--gold)">&#9673;</div><div class="clbl">Fichas Arcade</div><div class="cval" contenteditable="true">0</div></div>
-      <div class="ccard"><div class="cico" style="color:#6aacdf">&#10022;</div><div class="clbl">Tickets Gacha</div><div class="cval" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico">&yen;</div><div class="clbl">Kan / Yen</div><div class="cval" id="cur-kan" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:var(--spirit-hi)">&#9672;</div><div class="clbl">Monedas Temp.</div><div class="cval" id="cur-temp" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:var(--gold)">&#9673;</div><div class="clbl">Fichas Arcade</div><div class="cval" id="cur-arcade" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:#6aacdf">&#10022;</div><div class="clbl">Tickets Gacha</div><div class="cval" id="cur-gacha" contenteditable="true">0</div></div>
     </div>
     <div style="display:flex;gap:12px;margin-top:10px">
-      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">Pase de Batalla</div><div class="cval" contenteditable="true">0</div></div>
-      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">ELO Clasificatorio</div><div class="cval" contenteditable="true">0</div></div>
+      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">Pase de Batalla</div><div class="cval" id="cur-pase" contenteditable="true">0</div></div>
+      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">ELO Clasificatorio</div><div class="cval" id="cur-elo" contenteditable="true">0</div></div>
     </div>
   </div>
 </div>
 
-<!-- 08 -->
+
+<!-- 08 HOLLOW -->
 <div class="sec">
-  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#c0392b" stroke-width="1.2"/><polyline points="10,5 10,10 13,13" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="sttl">Historial de Acciones</span><span class="stag">08</span></div>
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#c0392b" stroke-width="1.2"/><circle cx="10" cy="10" r="2.5" stroke="#c0392b" stroke-width="1"/><path d="M10 3v2M10 15v2M3 10h2M15 10h2" stroke="#c0392b" stroke-width="1" stroke-linecap="round"/></svg>
+    <span class="sttl">Desarrollo Hollow</span><span class="stag">08</span>
+  </div>
+  <div class="sbody">
+    <!-- Etapa -->
+    <div class="hw-row">
+      <span class="hw-lbl">Etapa actual</span>
+      <select class="hw-sel" id="hw-stage" onchange="updateHollowStage()">
+        <option value="0">Hollow Com&uacute;n &mdash; Rango D</option>
+        <option value="1">Gillian (Menos Grande) &mdash; D+</option>
+        <option value="2">Adjucha (Menos Grande) &mdash; C</option>
+        <option value="3">Vasto Lorde (Menos Grande) &mdash; B</option>
+        <option value="4">Arrancar</option>
+      </select>
+    </div>
+    <!-- Maldición Adjucha -->
+    <div id="hw-adj" class="hw-adj" style="display:none">
+      <span class="hw-adj-lbl">&#9670; Maldici&oacute;n Adjucha &mdash; carga semanal obligatoria (o regresi&oacute;n a Gillian permanente)</span>
+      <span id="hw-adj-st" class="hw-adj-fail">&#10005; Pendiente</span>
+      <button class="hw-adj-btn" onclick="resetAdjWeek()">&#8635; Nueva semana</button>
+    </div>
+    <!-- Hambre Saciada -->
+    <div style="margin-bottom:10px">
+      <span class="hw-lbl">Hambre Saciada &mdash; <span id="hw-sname">Hollow Com&uacute;n</span></span>
+      <div class="hw-bar-outer"><div class="hw-bar-fill" id="hw-bar" style="width:0%"></div></div>
+      <div class="hw-charges-txt">
+        <span><span id="hw-cur">0</span> / <span id="hw-max">10</span> cargas</span>
+        <span style="font-size:9px;color:var(--text-dim)">Total acum.: <span id="hw-total">0</span></span>
+      </div>
+    </div>
+    <!-- Info cards -->
+    <div class="hw-igrid">
+      <div class="hw-icard"><div class="hw-icard-lbl">Pts. Morfolog&iacute;a</div><div class="hw-icard-val" id="hw-morf">2</div></div>
+      <div class="hw-icard"><div class="hw-icard-lbl">Pr&oacute;x. Etapa</div><div class="hw-icard-val" id="hw-next" style="font-size:10px;line-height:1.4">Gillian<br><span style="color:var(--text-dim);font-size:9px">10 cargas restantes</span></div></div>
+    </div>
+    <!-- Bono territorial -->
+    <div class="hw-bonus" id="hw-bonus"><span class="hw-bonus-ttl">Bono Territorial (Hueco Mundo)</span><span id="hw-bonus-body" style="color:var(--text-dim);font-style:italic;font-size:9px">Sin bono activo en Hollow Com&uacute;n.</span></div>
+    <!-- Log -->
+    <span class="hw-lbl" style="display:block;margin-bottom:5px">Registro de devoración</span>
+    <div class="hw-log" id="hw-log"><div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin registros a&uacute;n.</div></div>
+  </div>
+</div>
+
+<!-- 09 -->
+<div class="sec">
+  <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#c0392b" stroke-width="1.2"/><polyline points="10,5 10,10 13,13" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="sttl">Historial de Acciones</span><span class="stag">09</span></div>
   <div class="sbody">
   <div class="log-asst">
     <div class="la-ttl">&#9670; A&ntilde;adir entrada al historial</div>
@@ -489,6 +606,17 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <button class="la-tpl" onclick="laTpl('habilidad')">&#8722; Habilidad</button>
       <button class="la-tpl" onclick="laTpl('mejora')">&#8722; Tienda EXP</button>
       <button class="la-tpl" onclick="laTpl('item')">+ &Iacute;tem</button>
+      <button class="la-tpl" onclick="laTpl('kan-gain')">+ Kan</button>
+      <button class="la-tpl" onclick="laTpl('kan-spend')">&minus; Kan</button>
+      <button class="la-tpl" onclick="laTpl('temp')">+ Temp.</button>
+      <button class="la-tpl" onclick="laTpl('arcade')">+ Arcade</button>
+      <button class="la-tpl" onclick="laTpl('gacha')">+ Gacha</button>
+      <button class="la-tpl" onclick="laTpl('elo-gain')">+ ELO</button>
+      <button class="la-tpl" onclick="laTpl('elo-lose')">&minus; ELO</button>
+      <button class="la-tpl" onclick="laTpl('battlepass')">Pase</button>
+      <button class="la-tpl" onclick="laTpl('aptitud')">Aptitud</button>
+      <button class="la-tpl" onclick="laTpl('limitacion')">Limitaci&oacute;n</button>
+      <button class="la-tpl" onclick="laTpl('hollow-devour')">Devorar</button>
     </div>
     <textarea class="la-inp" id="laInp" rows="2"
       placeholder="Ej: gan&eacute; 200 EXP rolando con Kuroten &rarr; https://foro.com/hilo/123"></textarea>
@@ -512,6 +640,7 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     <div class="la-prev" id="laPrev">
       <div class="la-prev-lbl">BBCode generado</div>
       <div class="la-prev-txt" id="laPrevTxt"></div>
+      <div class="la-badges" id="laBadges" style="display:none"></div>
     </div>
   </div>
   <div class="log" id="logContainer">
@@ -685,6 +814,9 @@ function _collect(){
     };
   });
   var ht=document.getElementById("hueco-text"); s.ht=ht?ht.value:"";
+  s.aptitudes=JSON.parse(JSON.stringify(_aptitudes));
+  s.items=JSON.parse(JSON.stringify(_items));
+  s.hollow=JSON.parse(JSON.stringify(_hollow));
   var logEl=document.getElementById("logContainer");
   if(logEl){
     var logClone=logEl.cloneNode(true);
@@ -725,6 +857,9 @@ function _restore(s){
   }
   var ht=document.getElementById("hueco-text"); if(ht&&s.ht!==undefined) ht.value=s.ht;
   if(s.lastEdit) _setLastEdit(s.lastEdit);
+  if(s.aptitudes){ _restoring=true; _aptitudes=s.aptitudes; renderAptitudes(); _restoring=false; }
+  if(s.items){ _restoring=true; _items=s.items; renderItems(); _restoring=false; }
+  if(s.hollow){ _hollow=s.hollow; renderHollow(); }
   if(s.log){
     var logEl=document.getElementById("logContainer");
     if(logEl){
@@ -829,7 +964,8 @@ function mkBreakdown(opts,stat){
     '<div class="brow"><span class="blbl">&times; Aptitud Est.</span><select class="bsel" onchange="recalcBd(this.closest(\'.breakdown\'));checkHint(this)">'+selHtml+'</select></div>'+
     '<div class="bhint" style="display:none"></div>'+
     '<div class="brow"><span class="blbl">+ Bonus final</span><input class="binput bfinal" type="number" value="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/></div>'+
-    '<div class="bresult-row"><span class="blbl">= Resultado</span><span class="bresult">0</span><button class="bapply" onclick="applyBd(this.closest(\'.scard\'))">Aplicar &#9658;</button></div>';
+    '<div class="bresult-row"><span class="blbl">= Resultado</span><span class="bresult">0</span><button class="bapply" onclick="applyBd(this.closest(\'.scard\'))">Aplicar &#9658;</button></div>'+
+    '<div class="stat-ref-row"><span class="blbl" style="font-size:9px;color:var(--text-dim)">Nivel</span><button class="stat-ref-btn" onclick="suggestBase(this.closest(\'.breakdown\'))">&#9670; Sugerir base seg&uacute;n nivel</button></div>';
   return bd;
 }
 document.querySelectorAll(".scard[data-stat]").forEach(function(card){
@@ -838,6 +974,7 @@ document.querySelectorAll(".scard[data-stat]").forEach(function(card){
 });
 
 loadFromGist();
+setTimeout(function(){ renderHollow(); renderAptitudes(); renderItems(); },400);
 
 /* ============================================================
    LAST EDIT STAMP
@@ -956,7 +1093,18 @@ function laTpl(type){
     train:    "Canjeo entrenamiento de [tipo], consumo 500 EXP → https://",
     habilidad:"Canjeo habilidad: [nombre], consumo 100 EXP → https://",
     mejora:   "Canjeo mejora de tienda: [nombre], consumo ___ EXP → https://",
-    item:     "Obtengo ítem: [nombre] por [motivo] → https://"
+    item:     "Obtengo ítem: [nombre] por [motivo] → https://",
+    "kan-gain":    "Obtengo ___ kan/yen [motivo] → https://",
+    "kan-spend":   "Gasto ___ kan/yen en [motivo] → https://",
+    "temp":        "Obtengo ___ monedas de temporada [motivo] → https://",
+    "arcade":      "Obtengo ___ fichas arcade [motivo] → https://",
+    "gacha":       "Obtengo ___ tickets gacha [motivo] → https://",
+    "elo-gain":    "Gano ___ ELO en clasificatoria [resultado] → https://",
+    "elo-lose":    "Pierdo ___ ELO en clasificatoria [resultado] → https://",
+    "battlepass":  "Subo al nivel ___ del pase de batalla → https://",
+    "aptitud":     "Adquiero aptitud: [nombre] (valor: 0) → https://",
+    "limitacion":  "Adquiero limitación: [nombre] (valor: -1) → https://",
+    "hollow-devour":"Devoro a un Hollow de etapa [Común|Gillian|Adjucha|Vasto Lorde] → https://"
   };
   var el=document.getElementById("laInp");
   el.value=tpls[type]||"";
@@ -1018,6 +1166,65 @@ function laProcess(){
     }
   }
   _laData.pdAmt=pdAmt; _laData.pdStat=pdStat; _laData.pdIsGain=pdIsGain;
+
+  /* ── detect currencies ── */
+  var _cc=[];
+  function _tryC(rxG,rxL,id,lbl){
+    var mg=raw.match(rxG),ml=raw.match(rxL);
+    if(mg) _cc.push({id:id,lbl:lbl,amt:parseFloat((mg[1]||'0').replace(',','.'))||0,sign:1});
+    else if(ml) _cc.push({id:id,lbl:lbl,amt:parseFloat((ml[1]||'0').replace(',','.'))||0,sign:-1});
+  }
+  _tryC(/(?:obtengo|gano|recibo|gan[eé])[^\n]{0,30}?(\d[\d.,]*)\s*(?:kan|yen)\b/i,
+        /(?:gasto|compro|pago)[^\n]{0,30}?(\d[\d.,]*)\s*(?:kan|yen)\b/i,'cur-kan','Kan/Yen');
+  _tryC(/(?:obtengo|gano)[^\n]{0,30}?(\d[\d.,]*)\s*monedas?\s*(?:de\s*)?temp(?:orada)?/i,
+        /(?:gasto|uso)[^\n]{0,30}?(\d[\d.,]*)\s*monedas?\s*temp/i,'cur-temp','Mon.Temp');
+  _tryC(/(?:obtengo|gano)[^\n]{0,30}?(\d[\d.,]*)\s*fichas?\s*arcade/i,
+        /(?:gasto|uso)[^\n]{0,30}?(\d[\d.,]*)\s*fichas?\s*arcade/i,'cur-arcade','Arcade');
+  _tryC(/(?:obtengo|gano)[^\n]{0,30}?(\d[\d.,]*)\s*tickets?\s*(?:gacha)?\b/i,
+        /(?:gasto|uso)[^\n]{0,30}?(\d[\d.,]*)\s*tickets?/i,'cur-gacha','Gacha');
+  var eloG=raw.match(/(?:gano|sumo|obtengo)[^\n]{0,10}?(\d[\d.,]*)\s*elo\b/i);
+  var eloL=raw.match(/(?:pierdo|bajo|resto|perd[ií])[^\n]{0,10}?(\d[\d.,]*)\s*elo\b/i);
+  if(eloG) _cc.push({id:'cur-elo',lbl:'ELO',amt:parseFloat(eloG[1])||0,sign:1});
+  else if(eloL) _cc.push({id:'cur-elo',lbl:'ELO',amt:parseFloat(eloL[1])||0,sign:-1});
+  var paseSet=raw.match(/nivel\s*(\d+)[^\n]{0,20}pase/i);
+  var paseAdd=raw.match(/(?:subo|sube?)\s*(\d+)[^\n]{0,15}(?:nivel|nv)[^\n]{0,15}pase/i);
+  if(paseSet) _cc.push({id:'cur-pase',lbl:'Pase',amt:parseInt(paseSet[1])||0,sign:0,mode:'set'});
+  else if(paseAdd) _cc.push({id:'cur-pase',lbl:'Pase',amt:parseInt(paseAdd[1])||0,sign:1,mode:'add'});
+  _laData.cc=_cc;
+
+  /* ── detect item ── */
+  var _ic=null;
+  var igM=raw.match(/(?:obtengo|recibo|adquiero|encuentro|compro)\s+(?:el\s+)?(?:[ií]tem|objeto|consumible):?\s*([^→\n\-\(]+)/i);
+  var iuM=raw.match(/(?:uso|utilizo|consumo)\s+(?:el\s+)?(?:[ií]tem|objeto|consumible):?\s*([^→\n\-\(]+)/i);
+  if(igM) _ic={name:igM[1].trim().split(/→|\-\-?/)[0].trim(),qty:1,sign:1};
+  else if(iuM) _ic={name:iuM[1].trim().split(/→|\-\-?/)[0].trim(),qty:1,sign:-1};
+  _laData.ic=_ic;
+
+  /* ── detect aptitud/limitación ── */
+  var _ac=null;
+  var apM=raw.match(/(?:adquiero|obtengo|aprendo)\s+(?:la\s+)?(?:aptitud|limitaci[oó]n|rasgo):?\s*([^\(\n→]+?)(?:\s*\((?:valor|coste?):?\s*([+\-]?\d+)\))?(?:\s*→.*)?$/im);
+  if(apM) _ac={name:apM[1].trim(),val:parseInt(apM[2])||0};
+  _laData.ac=_ac;
+
+  /* ── detect hollow devour ── */
+  var _hwc=null;
+  var hwM=raw.match(/devo(?:ro|r[eé]|rar)\s+(?:a\s+)?(?:un?\s+)?(?:hollow\s+)?([a-zA-Zà-ü\s]+?)(?:\s+hollow)?(?:\s*→.*)?$/im);
+  if(hwM){ var tgt=_hwStageFromText(hwM[1]); if(tgt>-1) _hwc={targetStage:tgt}; }
+  _laData.hwc=_hwc;
+
+  /* ── build badges ── */
+  var bdg=document.getElementById('laBadges');
+  if(bdg){
+    var bhtml='';
+    _cc.forEach(function(c){
+      var s=c.mode==='set'?'→ nv.':'(c.sign>=0?'+':'-');
+      bhtml+='<span class="la-bd la-bd-cur">◆ '+c.lbl+' '+(c.mode==='set'?'→ nv. ':c.sign>=0?'+':'-')+c.amt+'</span>';
+    });
+    if(_ic){ bhtml+='<span class="la-bd la-bd-item">◇ '+(_ic.sign>0?'+ ítem':'− ítem')+': '+_ic.name+'</span>'; }
+    if(_ac){ var va=_ac.val>0?'+'+_ac.val:_ac.val; bhtml+='<span class="la-bd la-bd-apt">◊ Aptitud: '+_ac.name+' ('+va+')</span>'; }
+    if(_hwc){ bhtml+='<span class="la-bd la-bd-hw">💀 Devorar: '+HW_NAMES[_hwc.targetStage]+'</span>'; }
+    bdg.innerHTML=bhtml; bdg.style.display=bhtml?'flex':'none';
+  }
 
   var expM=raw.match(/(\d[\d.,]*)\s*(?:exp|experiencia)/i);
   var expAmt=0;
@@ -1168,19 +1375,39 @@ function laInsert(){
     }
   }
 
+  /* ── apply currencies ── */
+  if(_laData.cc&&_laData.cc.length){
+    _laData.cc.forEach(function(c){
+      var el=document.getElementById(c.id); if(!el) return;
+      var cur=parseFloat(el.textContent)||0;
+      el.textContent=c.mode==='set'?c.amt:Math.max(0,cur+(c.sign*c.amt));
+    });
+  }
+  /* ── apply item ── */
+  if(_laData.ic){ if(_laData.ic.sign>0) addItem(_laData.ic.name,_laData.ic.qty); else removeItemQty(_laData.ic.name,_laData.ic.qty); }
+  /* ── apply aptitud ── */
+  if(_laData.ac) addAptitud(_laData.ac.name,_laData.ac.val);
+  /* ── apply hollow devour ── */
+  if(_laData.hwc) addHollowDevour(_laData.hwc.targetStage,_laData.date);
+
   entry._laSnapshot = {
     expAmt:   effectiveExpAmt,
     expSign:  _laData.expSign  || 1,
     expType:  expType,
     pdAmt:    _laData.pdAmt    || 0,
     pdIsGain: _laData.pdIsGain || false,
-    pdStat:   _laData.pdStat   || null
+    pdStat:   _laData.pdStat   || null,
+    cc:       _laData.cc       || [],
+    ic:       _laData.ic       || null,
+    ac:       _laData.ac       || null,
+    hwc:      _laData.hwc      || null
   };
   entry.dataset.snap = JSON.stringify(entry._laSnapshot);
 
   _updUndoBtn();
   document.getElementById("laInp").value="";
   document.getElementById("laPrev").style.display="none";
+  var _bd2=document.getElementById("laBadges"); if(_bd2){_bd2.innerHTML="";_bd2.style.display="none";}
   document.getElementById("laExpRow").style.display="none";
   document.getElementById("laCopyBtn").style.display="none";
   document.getElementById("laInsBtn").style.display="none";
@@ -1228,6 +1455,30 @@ function _revertEntry(el){
         }
       }
     }
+  }
+}
+
+  /* ── revert currencies ── */
+  if(snap.cc&&snap.cc.length){
+    snap.cc.forEach(function(c){
+      var el=document.getElementById(c.id); if(!el||c.mode==='set') return;
+      var cur=parseFloat(el.textContent)||0;
+      el.textContent=Math.max(0,cur-(c.sign*c.amt));
+    });
+  }
+  /* ── revert item ── */
+  if(snap.ic){ if(snap.ic.sign>0) removeItemQty(snap.ic.name,snap.ic.qty); else addItem(snap.ic.name,snap.ic.qty); }
+  /* ── revert aptitud (eliminar última coincidencia) ── */
+  if(snap.ac){
+    var ai=_aptitudes.map(function(a,i){return a.name===snap.ac.name?i:-1;}).filter(function(i){return i>-1;});
+    if(ai.length){ _aptitudes.splice(ai[ai.length-1],1); renderAptitudes(); }
+  }
+  /* ── revert hollow devour ── */
+  if(snap.hwc&&_hollow.log.length){
+    var g=_hwGain(_hollow.stage,snap.hwc.targetStage);
+    _hollow.charges=Math.max(0,Math.round((_hollow.charges-g)*10)/10);
+    _hollow.total=Math.max(0,Math.round((_hollow.total-g)*10)/10);
+    _hollow.log.pop(); renderHollow();
   }
 }
 
@@ -1323,6 +1574,214 @@ function _ensureWeekSep(weekNum){
   setTimeout(function(){ _updateExpCap(); _recalcExpTotal(); },1200);
   setInterval(_updateExpCap, 3600000);
 })();
+
+
+/* ============================================================
+   STAT BASE TABLE  niveles 1-290
+============================================================ */
+var STAT_TABLE=(function(){
+  var t={};
+  // D (1-50)
+  for(var i=1;i<=50;i++) t[i]={VIT:50+(i-1)*10,REI:25+(i-1)*5,FUE:10,DEF:5,VEL:4,VOL:4};
+  // D+ (51-60)
+  [[51,545,272],[52,550,274],[53,555,276],[54,560,278],[55,565,280],
+   [56,570,282],[57,575,284],[58,580,286],[59,585,288],[60,590,290]
+  ].forEach(function(r){t[r[0]]={VIT:r[1],REI:r[2],FUE:15,DEF:10,VEL:4,VOL:4};});
+  // C (61-110)
+  for(var i=61;i<=110;i++) t[i]={VIT:615+(i-61)*25,REI:300+(i-61)*10,FUE:35,DEF:15,VEL:5,VOL:5};
+  // C+ (111-120)
+  for(var i=111;i<=120;i++) t[i]={VIT:1855+(i-111)*15,REI:795+(i-111)*5,FUE:40,DEF:20,VEL:5,VOL:5};
+  // B (121-170)
+  for(var i=121;i<=170;i++) t[i]={VIT:2020+(i-121)*30,REI:855+(i-121)*15,FUE:75,DEF:30,VEL:6,VOL:6};
+  // B+ (171-180)
+  [[171,3510,1595],[172,3530,1600],[173,3550,1605],[174,3570,1610],[175,3590,1615],
+   [176,3610,1620],[177,3630,1625],[178,3650,1630],[179,3670,1635],[180,3690,1640]
+  ].forEach(function(r){t[r[0]]={VIT:r[1],REI:r[2],FUE:80,DEF:35,VEL:6,VOL:6};});
+  // A (181-230)
+  for(var i=181;i<=230;i++) t[i]={VIT:3725+(i-181)*35,REI:1655+(i-181)*15,FUE:110,DEF:50,VEL:7,VOL:7};
+  // A+ (231-240)
+  [[231,5465,2400],[232,5490,2410],[233,5515,2420],[234,5540,2430],[235,5565,2440],
+   [236,5590,2450],[237,5615,2460],[238,5640,2470],[239,5665,2480],[240,5690,2490]
+  ].forEach(function(r){t[r[0]]={VIT:r[1],REI:r[2],FUE:115,DEF:55,VEL:7,VOL:7};});
+  // S (241-290)
+  for(var i=241;i<=290;i++) t[i]={VIT:5730+(i-241)*40,REI:2310+(i-241)*20,FUE:165,DEF:95,VEL:8,VOL:8};
+  return t;
+})();
+
+function suggestBase(bd){
+  var stat=bd.dataset.stat; if(!stat||stat==='REII') return;
+  var lvl=parseInt((document.getElementById('char-level')||{}).textContent)||0;
+  var row=STAT_TABLE[lvl];
+  if(!row){ alert('Nivel '+lvl+' no encontrado en la tabla (rango 1\u2013290).'); return; }
+  var bb=bd.querySelector('.bbase');
+  if(bb){ bb.value=row[stat]||0; recalcBd(bd); }
+}
+
+/* ============================================================
+   APTITUDES Y LIMITACIONES
+============================================================ */
+var _aptitudes=[];
+
+function _aptCls(v){ v=parseInt(v)||0; return v>0?'positive':(v<0?'negative':'neutral'); }
+function _aptDot(v){ v=parseInt(v)||0; return v>0?'#6fcf97':(v<0?'#e74c3c':'#e08020'); }
+
+function renderAptitudes(){
+  var list=document.getElementById('apt-list'); if(!list) return;
+  list.innerHTML='';
+  _aptitudes.forEach(function(a,idx){
+    var cls=_aptCls(a.val), d=document.createElement('div'); d.className='apt-entry';
+    d.innerHTML=
+      '<div class="apt-dot" style="background:'+_aptDot(a.val)+'"></div>'+
+      '<input class="apt-name" value="'+escQ(a.name)+'" placeholder="Nombre\u2026"'+
+        ' oninput="_aptitudes['+idx+'].name=this.value"/>'+
+      '<input class="apt-val '+cls+'" type="number" value="'+a.val+'"'+
+        ' title="0 = neutro (naranja) | + = otorga (verde) | \u2212 = consume (rojo)"'+
+        ' oninput="var v=parseInt(this.value)||0;_aptitudes['+idx+'].val=v;'+
+          'this.className=\'apt-val \'+_aptCls(v);'+
+          'this.previousElementSibling.previousElementSibling.style.background=_aptDot(v)"/>'+
+      '<button class="apt-del" onclick="delAptitud('+idx+')">\u00d7</button>';
+    list.appendChild(d);
+  });
+}
+function addAptitud(name,val){
+  if(isLocked&&!_restoring) return;
+  _aptitudes.push({name:name||'',val:val!==undefined?val:0});
+  renderAptitudes();
+}
+function delAptitud(idx){ if(isLocked) return; _aptitudes.splice(idx,1); renderAptitudes(); }
+
+/* ============================================================
+   OBJETOS Y CONSUMIBLES
+============================================================ */
+var _items=[];
+
+function renderItems(){
+  var list=document.getElementById('items-list'); if(!list) return;
+  list.innerHTML='';
+  _items.forEach(function(item,idx){
+    var d=document.createElement('div'); d.className='item-entry';
+    d.innerHTML=
+      '<div class="skdot" style="flex-shrink:0"></div>'+
+      '<input class="item-name-inp" value="'+escQ(item.name)+'" placeholder="Objeto\u2026"'+
+        ' oninput="_items['+idx+'].name=this.value"/>'+
+      '<div class="item-qty-box">'+
+        '<button class="item-qty-btn" onclick="_iqd('+idx+',-1)">\u2212</button>'+
+        '<span class="item-qty-num">\u00d7'+item.qty+'</span>'+
+        '<button class="item-qty-btn" onclick="_iqd('+idx+',1)">+</button>'+
+      '</div>'+
+      '<button class="item-del" onclick="delItem('+idx+')">\u00d7</button>';
+    list.appendChild(d);
+  });
+}
+function _iqd(idx,delta){
+  if(isLocked) return;
+  _items[idx].qty=Math.max(0,(_items[idx].qty||0)+delta);
+  if(_items[idx].qty===0&&confirm('\u00bfEliminar "'+_items[idx].name+'" del inventario?'))
+    _items.splice(idx,1);
+  renderItems();
+}
+function addItem(name,qty){
+  if(isLocked&&!_restoring) return;
+  name=(name||'').trim(); qty=qty||1;
+  if(name){
+    var ex=_items.findIndex(function(i){return i.name.toLowerCase()===name.toLowerCase();});
+    if(ex>-1){ _items[ex].qty+=qty; } else { _items.push({name:name,qty:qty}); }
+  } else { _items.push({name:'',qty:1}); }
+  renderItems();
+}
+function delItem(idx){ if(isLocked) return; _items.splice(idx,1); renderItems(); }
+function removeItemQty(name,qty){
+  var idx=_items.findIndex(function(i){return i.name.toLowerCase()===name.toLowerCase();});
+  if(idx>-1){ _items[idx].qty=Math.max(0,_items[idx].qty-qty); if(!_items[idx].qty) _items.splice(idx,1); renderItems(); }
+}
+
+function escQ(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+/* ============================================================
+   HOLLOW TRACKER
+============================================================ */
+var HW_NAMES=['Hollow Com\u00fan','Gillian','Adjucha','Vasto Lorde','Arrancar'];
+var HW_REQ=[10,20,30,null,null];
+var HW_MORF=[2,3,5,7,7];
+var HW_BONUS={
+  1:{D:{VIT:100,REI:50,FUE:20,DEF:15},C:{VIT:150,REI:70,FUE:25,DEF:20},B:{VIT:200,REI:90,FUE:30,DEF:25},A:{VIT:250,REI:110,FUE:35,DEF:30},S:{VIT:300,REI:130,FUE:40,DEF:35}},
+  2:{C:{VIT:250,REI:100,FUE:20,DEF:30},B:{VIT:300,REI:120,FUE:25,DEF:35},A:{VIT:350,REI:140,FUE:35,DEF:40},S:{VIT:400,REI:160,FUE:40,DEF:45}},
+  3:{B:{VIT:500,REI:200,FUE:40,DEF:45},A:{VIT:700,REI:220,FUE:50,DEF:55},S:{VIT:900,REI:240,FUE:60,DEF:65}}
+};
+var _hollow={stage:0,charges:0,total:0,adjOk:false,log:[]};
+
+function _hwRank(){
+  var el=document.getElementById('char-rank'),r=(el?el.textContent:'').trim().toUpperCase().charAt(0);
+  return ['D','C','B','A','S'].includes(r)?r:'D';
+}
+function _hwStageFromText(txt){
+  txt=txt.toLowerCase();
+  if(/vasto\s*lorde/.test(txt)) return 3;
+  if(/adjucha/.test(txt)) return 2;
+  if(/gillian/.test(txt)) return 1;
+  if(/com[u\u00fa]n/.test(txt)) return 0;
+  return -1;
+}
+function _hwGain(my,tgt){ return tgt<my?0.5:(tgt===my?1:2); }
+
+function updateHollowStage(){
+  var sel=document.getElementById('hw-stage'); if(sel) _hollow.stage=parseInt(sel.value)||0;
+  renderHollow();
+}
+function resetAdjWeek(){ _hollow.adjOk=false; renderHollow(); }
+
+function renderHollow(){
+  var s=_hollow.stage, req=HW_REQ[s], c=_hollow.charges;
+  var sel=document.getElementById('hw-stage'); if(sel&&parseInt(sel.value)!==s) sel.value=s;
+  var el=function(id){return document.getElementById(id);};
+  if(el('hw-sname')) el('hw-sname').textContent=HW_NAMES[s];
+  if(el('hw-cur'))  el('hw-cur').textContent=c;
+  if(el('hw-max'))  el('hw-max').textContent=req!==null?req:'\u221e';
+  if(el('hw-bar'))  el('hw-bar').style.width=(req?Math.min(c/req*100,100):100)+'%';
+  if(el('hw-total'))el('hw-total').textContent=_hollow.total;
+  if(el('hw-morf')) el('hw-morf').textContent=HW_MORF[Math.min(s,4)];
+  // next
+  if(el('hw-next')){
+    if(s>=4) el('hw-next').innerHTML='Arrancar <span style="color:var(--text-dim);font-size:9px">forma final</span>';
+    else if(s===3) el('hw-next').innerHTML='Arrancar<br><span style="color:var(--text-dim);font-size:9px">transformaci\u00f3n</span>';
+    else { var need=req!==null?Math.max(0,req-c):0; el('hw-next').innerHTML=HW_NAMES[s+1]+'<br><span style="color:var(--text-dim);font-size:9px">'+need+' cargas restantes</span>'; }
+  }
+  // bonus
+  if(el('hw-bonus-body')){
+    var sb=HW_BONUS[s];
+    if(!sb){ el('hw-bonus-body').innerHTML='<em>Sin bono territorial en '+HW_NAMES[s]+'.</em>'; }
+    else {
+      var rk=_hwRank(), order=['D','C','B','A','S'], bonus=sb[rk];
+      if(!bonus){ for(var ri=order.indexOf(rk);ri>=0;ri--){ if(sb[order[ri]]){bonus=sb[order[ri]];break;} } }
+      if(bonus){
+        el('hw-bonus-body').innerHTML=
+          '<span class="hw-bonus-ttl">'+HW_NAMES[s]+' &mdash; Rango '+rk+'</span>'+
+          Object.keys(bonus).map(function(k){return '<span class="hw-bstat"><span class="hw-bk">'+k+'</span><span class="hw-bv"> +'+bonus[k]+'</span></span>';}).join('');
+      } else { el('hw-bonus-body').innerHTML='<em>Rango insuficiente para '+HW_NAMES[s]+'.</em>'; }
+    }
+  }
+  // adj curse
+  if(el('hw-adj'))  el('hw-adj').style.display=(s===2)?'flex':'none';
+  if(el('hw-adj-st')){ el('hw-adj-st').className=_hollow.adjOk?'hw-adj-ok':'hw-adj-fail'; el('hw-adj-st').textContent=_hollow.adjOk?'\u2713 Completada':'\u2717 Pendiente'; }
+  // log
+  if(el('hw-log')){
+    if(!_hollow.log.length){ el('hw-log').innerHTML='<div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin registros a\u00fan.</div>'; }
+    else { el('hw-log').innerHTML=_hollow.log.slice().reverse().map(function(e){
+      return '<div class="hw-logr"><span class="hw-logr-d">'+e.d+'</span><span class="hw-logr-t">'+e.t+'</span><span class="hw-logr-g">+'+e.g+'\u00a0cg</span></div>';
+    }).join(''); }
+  }
+}
+
+function addHollowDevour(targetStage,dateStr){
+  var g=_hwGain(_hollow.stage,targetStage);
+  _hollow.charges=Math.round((_hollow.charges+g)*10)/10;
+  _hollow.total=Math.round((_hollow.total+g)*10)/10;
+  if(_hollow.stage===2) _hollow.adjOk=true;
+  var rel=targetStage<_hollow.stage?'inferior':(targetStage===_hollow.stage?'igual':'superior');
+  _hollow.log.push({d:dateStr||_laDate(),t:'Devorado: '+HW_NAMES[targetStage]+' (etapa '+rel+')',g:g});
+  renderHollow();
+  return g;
+}
 
 /* ============================================================
    ADD SKILL
