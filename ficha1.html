@@ -77,6 +77,16 @@ textarea.ta:focus{border-color:var(--cr)}
 .rankpill{flex:1;background:rgba(192,57,43,.08);border:1px solid var(--border-hi);padding:12px 16px;text-align:center}
 .rlbl{font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:4px}
 .rval{font-family:"Cinzel",serif;font-size:18px;font-weight:600;color:var(--bone);letter-spacing:2px;outline:none;cursor:text;display:block}
+select.rval{background:transparent;border:none;width:100%;text-align:center;cursor:pointer;-webkit-appearance:none;appearance:none;padding:0;line-height:1.2}
+select.rval option{background:#17161f;color:var(--bone);font-family:"Cinzel",serif;letter-spacing:1px}
+body.locked select.rval{pointer-events:none;opacity:.65}
+/* HOLLOW EVO TIMELINE */
+.hw-evo-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.hw-evo-item:last-child{border-bottom:none}
+.hw-evo-icon{font-size:14px;flex-shrink:0;line-height:1.3}
+.hw-evo-body{flex:1;font-family:"Share Tech Mono",monospace;font-size:9px;line-height:1.6}
+.hw-evo-date{color:var(--text-dim)}
+.hw-evo-up{color:#6fcf97}.hw-evo-down{color:#e74c3c}.hw-evo-rank{color:var(--gold)}
 
 /* STAT GRID */
 .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
@@ -450,8 +460,22 @@ body.locked .stat-ref-btn{display:none!important}
   <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><polygon points="10,2 12.5,8.5 19.5,8.5 14,12.5 16,19 10,15 4,19 6,12.5 0.5,8.5 7.5,8.5" stroke="#c0392b" stroke-width="1.1" fill="none"/></svg><span class="sttl">Atributos Espirituales</span><span class="stag">03</span></div>
   <div class="sbody">
     <div class="rankrow">
-      <div class="rankpill"><div class="rlbl">Rango</div><div class="rval" id="char-rank" contenteditable="true">&mdash;</div></div>
-      <div class="rankpill"><div class="rlbl">Nivel</div><div class="rval" id="char-level" contenteditable="true">0</div></div>
+      <div class="rankpill"><div class="rlbl">Rango</div>
+        <select class="rval" id="char-rank" onchange="onRankChange(this.value)">
+          <option value="">—</option>
+          <option value="D">D</option>
+          <option value="D+">D+</option>
+          <option value="C">C</option>
+          <option value="C+">C+</option>
+          <option value="B">B</option>
+          <option value="B+">B+</option>
+          <option value="A">A</option>
+          <option value="A+">A+</option>
+          <option value="S">S</option>
+          <option value="S+">S+</option>
+        </select>
+      </div>
+      <div class="rankpill"><div class="rlbl">Nivel</div><div class="rval" id="char-level" contenteditable="true" onblur="onLevelChange()" onkeydown="if(event.key==='Enter'){event.preventDefault();onLevelChange();}">0</div></div>
     </div>
 
     <div class="sgrid">
@@ -557,10 +581,10 @@ body.locked .stat-ref-btn{display:none!important}
     <div class="hw-row">
       <span class="hw-lbl">Etapa actual</span>
       <select class="hw-sel" id="hw-stage" onchange="updateHollowStage()">
-        <option value="0">Hollow Com&uacute;n &mdash; Rango D</option>
-        <option value="1">Gillian (Menos Grande) &mdash; D+</option>
-        <option value="2">Adjucha (Menos Grande) &mdash; C</option>
-        <option value="3">Vasto Lorde (Menos Grande) &mdash; B</option>
+        <option value="0">Hollow Com&uacute;n</option>
+        <option value="1">Gillian (Menos Grande)</option>
+        <option value="2">Adjucha (Menos Grande)</option>
+        <option value="3">Vasto Lorde (Menos Grande)</option>
         <option value="4">Arrancar</option>
       </select>
     </div>
@@ -588,7 +612,10 @@ body.locked .stat-ref-btn{display:none!important}
     <div class="hw-bonus" id="hw-bonus"><span class="hw-bonus-ttl">Bono Territorial (Hueco Mundo)</span><span id="hw-bonus-body" style="color:var(--text-dim);font-style:italic;font-size:9px">Sin bono activo en Hollow Com&uacute;n.</span></div>
     <!-- Log -->
     <span class="hw-lbl" style="display:block;margin-bottom:5px">Registro de devoración</span>
-    <div class="hw-log" id="hw-log"><div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin registros a&uacute;n.</div></div>
+    <div class="hw-log" id="hw-log"><div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin registros aún.</div></div>
+    <!-- Historial Evolutivo -->
+    <span class="hw-lbl" style="display:block;margin:12px 0 5px">&#9670; Historial evolutivo</span>
+    <div class="hw-log" id="hw-evo-log" style="max-height:140px"><div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin evoluciones registradas aún.</div></div>
   </div>
 </div>
 
@@ -796,7 +823,7 @@ async function _decryptPAT(pwd){
 function _collect(){
   var s = { v:1, tf:[], ed:[], sn:{}, bds:{}, dlvl:dlvl, ht:"" };
   document.querySelectorAll('.wrap input.fi,.wrap input.skinput,.wrap input.einput,.wrap textarea.ta:not(#hueco-text)').forEach(function(el){ s.tf.push(el.value); });
-  document.querySelectorAll('.rval,.enum,.cval').forEach(function(el){ s.ed.push(el.textContent.trim()); });
+  document.querySelectorAll('.rval,.enum,.cval').forEach(function(el){ s.ed.push(el.tagName==='SELECT'?el.value:el.textContent.trim()); });
   document.querySelectorAll('.scard[data-stat]').forEach(function(c){
     var n=c.querySelector('.statnum'); if(n) s.sn[c.dataset.stat]=n.textContent.trim();
   });
@@ -831,7 +858,7 @@ function _restore(s){
   var tfEls=document.querySelectorAll('.wrap input.fi,.wrap input.skinput,.wrap input.einput,.wrap textarea.ta:not(#hueco-text)');
   (s.tf||[]).forEach(function(v,i){ if(tfEls[i]) tfEls[i].value=v; });
   var edEls=document.querySelectorAll('.rval,.enum,.cval');
-  (s.ed||[]).forEach(function(v,i){ if(edEls[i]) edEls[i].textContent=v; });
+  (s.ed||[]).forEach(function(v,i){ if(edEls[i]){ if(edEls[i].tagName==='SELECT') edEls[i].value=v; else edEls[i].textContent=v; } });
   if(s.sn) document.querySelectorAll('.scard[data-stat]').forEach(function(c){
     var n=c.querySelector('.statnum'), v=s.sn[c.dataset.stat];
     if(n&&v!==undefined){ n.textContent=v; var b=c.querySelector('.sbar-fill'); if(b) b.style.width=Math.min(parseInt(v)||0,100)+'%'; }
@@ -859,7 +886,7 @@ function _restore(s){
   if(s.lastEdit) _setLastEdit(s.lastEdit);
   if(s.aptitudes){ _restoring=true; _aptitudes=s.aptitudes; renderAptitudes(); _restoring=false; }
   if(s.items){ _restoring=true; _items=s.items; renderItems(); _restoring=false; }
-  if(s.hollow){ _hollow=s.hollow; renderHollow(); }
+  if(s.hollow){ _hollow=s.hollow; if(!_hollow.evolution) _hollow.evolution=[]; renderHollow(); }
   if(s.log){
     var logEl=document.getElementById("logContainer");
     if(logEl){
@@ -904,8 +931,10 @@ async function handleSave(){
    PD RATES
 ============================================================ */
 function getCurrentRank(){
-  var el=document.querySelector(".rval");
-  return el?(el.textContent||el.innerText||"").trim().toUpperCase().charAt(0):"";
+  var el=document.getElementById("char-rank");
+  if(!el) return "D";
+  var r=el.tagName==='SELECT'?el.value:(el.textContent||el.innerText||"").trim();
+  return r.toUpperCase().charAt(0)||"D";
 }
 function calcPdBonus(stat,pds){
   var rank=getCurrentRank(); pds=parseFloat(pds)||0;
@@ -1603,6 +1632,8 @@ var STAT_TABLE=(function(){
   ].forEach(function(r){t[r[0]]={VIT:r[1],REI:r[2],FUE:115,DEF:55,VEL:7,VOL:7};});
   // S (241-290)
   for(var i=241;i<=290;i++) t[i]={VIT:5730+(i-241)*40,REI:2310+(i-241)*20,FUE:165,DEF:95,VEL:8,VOL:8};
+  // S+ (291-300) — interpolación extendida
+  for(var i=291;i<=300;i++) t[i]={VIT:7730+(i-291)*40,REI:3310+(i-291)*20,FUE:175,DEF:105,VEL:9,VOL:9};
   return t;
 })();
 
@@ -1610,9 +1641,83 @@ function suggestBase(bd){
   var stat=bd.dataset.stat; if(!stat||stat==='REII') return;
   var lvl=parseInt((document.getElementById('char-level')||{}).textContent)||0;
   var row=STAT_TABLE[lvl];
-  if(!row){ alert('Nivel '+lvl+' no encontrado en la tabla (rango 1\u2013290).'); return; }
+  if(!row){ alert('Nivel '+lvl+' no encontrado en la tabla (rango 1\u2013300).'); return; }
   var bb=bd.querySelector('.bbase');
   if(bb){ bb.value=row[stat]||0; recalcBd(bd); }
+}
+
+/* ============================================================
+   RANK ↔ LEVEL AUTO-SYNC
+============================================================ */
+var RANK_RANGES=[
+  {rank:'D',  min:1,   max:50 },
+  {rank:'D+', min:51,  max:60 },
+  {rank:'C',  min:61,  max:110},
+  {rank:'C+', min:111, max:120},
+  {rank:'B',  min:121, max:170},
+  {rank:'B+', min:171, max:180},
+  {rank:'A',  min:181, max:230},
+  {rank:'A+', min:231, max:240},
+  {rank:'S',  min:241, max:290},
+  {rank:'S+', min:291, max:300}
+];
+
+function rankToMinLevel(rank){
+  for(var i=0;i<RANK_RANGES.length;i++) if(RANK_RANGES[i].rank===rank) return RANK_RANGES[i].min;
+  return 1;
+}
+
+function levelToRank(lvl){
+  lvl=parseInt(lvl)||1;
+  for(var i=0;i<RANK_RANGES.length;i++) if(lvl>=RANK_RANGES[i].min&&lvl<=RANK_RANGES[i].max) return RANK_RANGES[i].rank;
+  return lvl>300?'S+':'D';
+}
+
+function autoFillAllBases(lvl){
+  lvl=parseInt(lvl)||1;
+  var row=STAT_TABLE[lvl];
+  if(!row){
+    var keys=Object.keys(STAT_TABLE).map(Number);
+    var mx=Math.max.apply(null,keys);
+    row=STAT_TABLE[Math.min(lvl,mx)];
+  }
+  if(!row) return;
+  document.querySelectorAll('.scard[data-stat]').forEach(function(card){
+    var stat=card.dataset.stat;
+    if(stat==='REII') return;
+    var bd=card.querySelector('.breakdown');
+    if(!bd) return;
+    var bb=bd.querySelector('.bbase');
+    if(bb&&row[stat]!==undefined){
+      bb.value=row[stat];
+      recalcBd(bd);
+      applyBd(card);
+    }
+  });
+}
+
+function onRankChange(rank){
+  if(isLocked) return;
+  if(!rank) return;
+  var minLvl=rankToMinLevel(rank);
+  var lvlEl=document.getElementById('char-level');
+  if(lvlEl) lvlEl.textContent=minLvl;
+  autoFillAllBases(minLvl);
+  renderHollow();
+}
+
+function onLevelChange(){
+  if(isLocked) return;
+  var el=document.getElementById('char-level');
+  var lvl=parseInt((el.textContent||'').trim())||1;
+  // clamp to valid range
+  if(lvl<1) lvl=1;
+  el.textContent=lvl;
+  var rank=levelToRank(lvl);
+  var rankEl=document.getElementById('char-rank');
+  if(rankEl){ if(rankEl.tagName==='SELECT') rankEl.value=rank; else rankEl.textContent=rank; }
+  autoFillAllBases(lvl);
+  renderHollow();
 }
 
 /* ============================================================
@@ -1706,10 +1811,13 @@ var HW_BONUS={
   2:{C:{VIT:250,REI:100,FUE:20,DEF:30},B:{VIT:300,REI:120,FUE:25,DEF:35},A:{VIT:350,REI:140,FUE:35,DEF:40},S:{VIT:400,REI:160,FUE:40,DEF:45}},
   3:{B:{VIT:500,REI:200,FUE:40,DEF:45},A:{VIT:700,REI:220,FUE:50,DEF:55},S:{VIT:900,REI:240,FUE:60,DEF:65}}
 };
-var _hollow={stage:0,charges:0,total:0,adjOk:false,log:[]};
+var _hollow={stage:0,charges:0,total:0,adjOk:false,log:[],evolution:[]};
 
 function _hwRank(){
-  var el=document.getElementById('char-rank'),r=(el?el.textContent:'').trim().toUpperCase().charAt(0);
+  var el=document.getElementById('char-rank');
+  if(!el) return 'D';
+  var r=el.tagName==='SELECT'?el.value:(el.textContent||'').trim();
+  r=r.toUpperCase().charAt(0);
   return ['D','C','B','A','S'].includes(r)?r:'D';
 }
 function _hwStageFromText(txt){
@@ -1723,7 +1831,22 @@ function _hwStageFromText(txt){
 function _hwGain(my,tgt){ return tgt<my?0.5:(tgt===my?1:2); }
 
 function updateHollowStage(){
-  var sel=document.getElementById('hw-stage'); if(sel) _hollow.stage=parseInt(sel.value)||0;
+  if(isLocked) return;
+  var sel=document.getElementById('hw-stage'); if(!sel) return;
+  var newStage=parseInt(sel.value)||0;
+  var prevStage=_hollow.stage;
+  if(newStage!==prevStage){
+    if(!_hollow.evolution) _hollow.evolution=[];
+    _hollow.evolution.push({
+      from:prevStage,
+      to:newStage,
+      rank:document.getElementById('char-rank')?(document.getElementById('char-rank').tagName==='SELECT'?document.getElementById('char-rank').value:(document.getElementById('char-rank').textContent||'').trim()):'?',
+      date:_laDate(),
+      regression:newStage<prevStage
+    });
+    _hollow.stage=newStage;
+    _hollow.charges=0; // reset charges on stage change
+  }
   renderHollow();
 }
 function resetAdjWeek(){ _hollow.adjOk=false; renderHollow(); }
@@ -1763,9 +1886,24 @@ function renderHollow(){
   if(el('hw-adj-st')){ el('hw-adj-st').className=_hollow.adjOk?'hw-adj-ok':'hw-adj-fail'; el('hw-adj-st').textContent=_hollow.adjOk?'\u2713 Completada':'\u2717 Pendiente'; }
   // log
   if(el('hw-log')){
-    if(!_hollow.log.length){ el('hw-log').innerHTML='<div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin registros a\u00fan.</div>'; }
+    if(!_hollow.log.length){ el('hw-log').innerHTML='<div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin registros aún.</div>'; }
     else { el('hw-log').innerHTML=_hollow.log.slice().reverse().map(function(e){
       return '<div class="hw-logr"><span class="hw-logr-d">'+e.d+'</span><span class="hw-logr-t">'+e.t+'</span><span class="hw-logr-g">+'+e.g+'\u00a0cg</span></div>';
+    }).join(''); }
+  }
+  // evolution history
+  if(el('hw-evo-log')){
+    var evo=_hollow.evolution||[];
+    if(!evo.length){ el('hw-evo-log').innerHTML='<div style="color:rgba(255,255,255,.18);font-style:italic;font-size:9px">Sin evoluciones registradas aún.</div>'; }
+    else { el('hw-evo-log').innerHTML=evo.slice().reverse().map(function(e){
+      var fromN=HW_NAMES[e.from]||('Etapa '+e.from);
+      var toN=HW_NAMES[e.to]||('Etapa '+e.to);
+      var isReg=e.regression;
+      return '<div class="hw-logr">'+
+        '<span class="hw-logr-d">'+(e.date||'')+'</span>'+
+        '<span class="hw-logr-t hw-evo-'+(isReg?'down':'up')+'">'+(isReg?'\u21d3 Regresión':'\u21d1 Evolución')+': '+fromN+' \u2192 '+toN+'</span>'+
+        '<span class="hw-evo-rank">['+e.rank+']</span>'+
+        '</div>';
     }).join(''); }
   }
 }
