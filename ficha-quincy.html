@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha — Bleach Hobba RPG · Quincy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#030710;--card:#0b1422;--card2:#060c1a;
+  --border:rgba(40,115,205,.22);--border-hi:rgba(65,155,235,.50);
+  --cb:#2878c8;--cb-hi:#58aef0;
+  --bone:#d2e4f8;--bone-dim:#7898b8;
+  --spirit:#163f80;--spirit-hi:#5ab4f8;
+  --text:#a8c2e0;--text-dim:#485870;--silver:#c0d4e8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  background-color:var(--void);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%,rgba(10,30,100,.65) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 90%,rgba(20,60,160,.12) 0%,transparent 60%);
+  color:var(--text);font-family:"Rajdhani",sans-serif;font-size:15px;line-height:1.5;min-height:100vh;padding:40px 20px 80px
+}
+.wrap{max-width:820px;margin:0 auto}
+
+/* LOCK BTN */
+#lockBtn{position:fixed;top:20px;right:20px;z-index:1000;background:rgba(4,8,20,.92);border:1px solid var(--border-hi);color:var(--cb-hi);font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;padding:8px 16px;cursor:pointer;text-transform:uppercase;display:flex;align-items:center;gap:6px;backdrop-filter:blur(8px);transition:background .2s}
+#lockBtn:hover{background:rgba(40,120,200,.2)}
+#lockBtn.vm{color:var(--bone-dim);border-color:var(--border)}
+#lockBtn.vm:hover{color:var(--cb-hi);border-color:var(--border-hi)}
+
+/* HEADER */
+.hdr{text-align:center;margin-bottom:40px}
+.hdr::before{content:"";display:block;height:1px;background:linear-gradient(to right,transparent,var(--cb),transparent);margin-bottom:28px}
+.hdr-eye{font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:4px;color:var(--cb);text-transform:uppercase;margin-bottom:16px}
+.av-frame{position:relative;width:140px;height:140px;margin:0 auto 22px}
+.av-ring{position:absolute;inset:-16px;width:calc(100% + 32px);height:calc(100% + 32px);opacity:.34;pointer-events:none}
+.av-circle{width:140px;height:140px;border-radius:50%;border:2px solid var(--cb);overflow:hidden;background:var(--card2);background-image:repeating-linear-gradient(-45deg,rgba(40,120,200,.06) 0px,rgba(40,120,200,.06) 1px,transparent 1px,transparent 9px);box-shadow:0 0 32px rgba(40,120,200,.38);position:relative}
+.av-circle::before{content:"✝";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:"Cinzel",serif;font-size:38px;color:rgba(40,120,200,.2);z-index:0;pointer-events:none}
+.av-circle img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+.hdr-title{font-family:"Cinzel",serif;font-size:clamp(28px,5vw,46px);font-weight:900;letter-spacing:6px;color:var(--bone);text-transform:uppercase;line-height:1;text-shadow:0 0 40px rgba(20,80,200,.6);outline:none}
+.hdr-sub{font-family:"Cinzel",serif;font-size:13px;letter-spacing:8px;color:var(--cb);margin-top:8px;text-transform:uppercase;outline:none}
+.hdr-line{width:60px;height:2px;background:linear-gradient(to right,transparent,var(--cb),transparent);margin:18px auto 0}
+.badge{display:inline-block;margin-top:16px;background:rgba(40,120,200,.1);border:1px solid var(--border-hi);padding:4px 18px;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:3px;color:var(--cb-hi);text-transform:uppercase;outline:none}
+
+/* SECTIONS */
+.sec{background:var(--card);border:1px solid var(--border);margin-bottom:20px;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+.sec::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--cb),var(--spirit-hi),transparent)}
+.sec:nth-child(2){animation-delay:.05s}.sec:nth-child(3){animation-delay:.1s}.sec:nth-child(4){animation-delay:.15s}.sec:nth-child(5){animation-delay:.2s}.sec:nth-child(6){animation-delay:.25s}.sec:nth-child(7){animation-delay:.3s}.sec:nth-child(8){animation-delay:.35s}.sec:nth-child(9){animation-delay:.4s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.shdr{display:flex;align-items:center;gap:10px;padding:10px 20px 10px 22px;background:rgba(0,0,0,.35);border-bottom:1px solid var(--border)}
+.sico{width:20px;height:20px;flex-shrink:0;opacity:.8}
+.sttl{font-family:"Cinzel",serif;font-size:11px;font-weight:600;letter-spacing:3px;color:var(--cb-hi);text-transform:uppercase;flex:1}
+.stag{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.sbody{padding:18px 22px 20px}
+
+/* FIELDS */
+.frow{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.frow:last-child{border-bottom:none}
+.flbl{font-weight:600;font-size:13px;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase;flex-shrink:0;min-width:170px}
+.fdash{color:var(--cb);flex-shrink:0;font-size:12px}
+.fi{background:transparent;border:none;border-bottom:1px dashed rgba(40,120,200,.3);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:14px;width:100%;outline:none;padding:1px 4px;transition:border-color .2s}
+.fi:focus{border-bottom-color:var(--cb-hi);background:rgba(40,120,200,.05)}
+textarea.ta{width:100%;background:rgba(0,0,0,.3);border:1px dashed rgba(30,110,190,.25);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:14px;line-height:1.6;padding:10px 12px;resize:vertical;min-height:70px;outline:none;margin-top:6px}
+textarea.ta:focus{border-color:var(--cb)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:580px){.two{grid-template-columns:1fr}}
+
+/* CHAR LAYOUT */
+.charlayout{display:flex;gap:20px;align-items:flex-start}
+.charfields{flex:1;min-width:0}
+.pwrap{flex-shrink:0;width:188px}
+.pslot{width:188px;height:272px;border:1px solid var(--border-hi);background:var(--card2);background-image:repeating-linear-gradient(-45deg,rgba(40,120,200,.05) 0px,rgba(40,120,200,.05) 1px,transparent 1px,transparent 10px);position:relative;overflow:hidden}
+.pslot::before{content:"✝";position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:52px;color:rgba(40,120,200,.1);pointer-events:none;font-family:"Cinzel",serif}
+.pslot::after{content:"ARTE DEL\APERSONAJE";white-space:pre;position:absolute;top:50%;left:50%;transform:translate(-50%,30%);font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:rgba(40,120,200,.28);text-align:center;line-height:1.8;pointer-events:none;text-transform:uppercase}
+.pslot img{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:cover;display:block}
+.pcap{border:1px solid var(--border-hi);border-top:none;padding:5px 8px;background:rgba(0,0,0,.4);font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--cb);text-transform:uppercase;text-align:center;outline:none}
+@media(max-width:600px){.charlayout{flex-direction:column}.pwrap{width:100%}.pslot{width:100%;height:200px}}
+
+/* RANK */
+.rankrow{display:flex;gap:16px;margin-bottom:20px}
+.rankpill{flex:1;background:rgba(40,120,200,.08);border:1px solid var(--border-hi);padding:12px 16px;text-align:center}
+.rlbl{font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:4px}
+.rval{font-family:"Cinzel",serif;font-size:18px;font-weight:600;color:var(--bone);letter-spacing:2px;outline:none;cursor:text;display:block}
+
+/* STAT GRID */
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:560px){.sgrid{grid-template-columns:repeat(2,1fr)}}
+
+/* STAT CARD */
+.scard{background:rgba(0,0,0,.35);border:1px solid var(--border);padding:12px 14px;position:relative;overflow:hidden;transition:border-color .2s,background .2s}
+.scard:hover{border-color:var(--border-hi);background:rgba(40,120,200,.06)}
+.scard::after{content:"";position:absolute;bottom:0;left:0;height:2px;width:100%;background:linear-gradient(to right,var(--cb),transparent);opacity:.5}
+.scard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+.sabb{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--cb);text-transform:uppercase}
+.sname{font-size:11px;color:var(--text-dim)}
+.bd-btn{background:none;border:none;color:rgba(40,120,200,.65);cursor:pointer;font-size:9px;padding:0;line-height:1;font-family:"Share Tech Mono",monospace;letter-spacing:1px;flex-shrink:0;transition:color .2s;text-transform:uppercase}
+.bd-btn:hover{color:var(--cb-hi)}
+.sval-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.statnum{font-family:"Share Tech Mono",monospace;font-size:22px;color:var(--bone);min-width:28px;line-height:1;outline:none;cursor:default;pointer-events:none;user-select:none}
+.sbar-wrap{flex:1;height:4px;background:rgba(255,255,255,.06);position:relative}
+.sbar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(to right,var(--cb),var(--spirit-hi));transition:width .4s ease}
+
+/* REII full width */
+.scard.reii{grid-column:1/-1;border-color:rgba(22,63,128,.4)}
+.scard.reii::after{background:linear-gradient(to right,var(--spirit),var(--spirit-hi))}
+.scard.reii .sabb{color:var(--spirit-hi)}
+.scard.reii .sbar-fill{background:linear-gradient(to right,var(--spirit),var(--spirit-hi))}
+.reii-body{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.reii-body .scard-top{margin-bottom:0;flex-shrink:0}
+.reii-body .sval-row{flex:1;min-width:120px;margin-top:0}
+.scard.reii .statnum{font-size:26px}
+
+/* BREAKDOWN */
+.breakdown{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(40,120,200,.18)}
+.breakdown.open{display:block}
+.brow{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:3px 0}
+.blbl{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.binput{background:rgba(0,0,0,.35);border:1px solid rgba(40,120,200,.22);color:var(--text);font-family:"Share Tech Mono",monospace;font-size:12px;padding:3px 6px;outline:none;width:64px;text-align:right;transition:border-color .2s}
+.binput:focus{border-color:var(--cb)}
+.bsel{background:rgba(0,0,0,.35);border:1px solid rgba(40,120,200,.22);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:12px;padding:3px 4px;outline:none;flex:1;min-width:0;transition:border-color .2s}
+.bsel:focus{border-color:var(--cb)}
+.binclist{margin:2px 0}
+.bincrow{display:flex;align-items:center;gap:5px;padding:2px 0}
+.bincname{flex:1;min-width:0;text-align:left;font-family:"Rajdhani",sans-serif;font-size:11px;color:var(--text);background:transparent;border:none;border-bottom:1px dashed rgba(40,120,200,.2);outline:none;padding:1px 3px}
+.bincname:focus{border-bottom-color:var(--cb)}
+.bincval{width:48px;font-size:11px}
+.bdel{background:none;border:none;color:rgba(40,120,200,.55);cursor:pointer;font-size:14px;padding:0;line-height:1;flex-shrink:0;transition:color .2s}
+.bdel:hover{color:var(--cb-hi)}
+.badd-inc{display:block;background:none;border:none;color:rgba(40,120,200,.45);cursor:pointer;font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:3px 0;text-align:left;text-transform:uppercase;transition:color .2s;margin:2px 0}
+.badd-inc:hover{color:var(--cb-hi)}
+.bsubtotal-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0 3px;border-top:1px dashed rgba(40,120,200,.18);margin-top:5px}
+.bsubtotal{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--bone-dim)}
+.bhint{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--spirit-hi);margin:4px 0 2px;letter-spacing:.5px;line-height:1.5;display:none}
+.bpdbonus{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--spirit-hi);padding:0 6px}
+.bpdrate{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--text-dim);letter-spacing:.5px;flex:1;text-align:right;white-space:nowrap}
+.bd-sublbl{color:var(--spirit-hi)!important;font-style:italic}
+.bd-pdrow{border-bottom:1px dashed rgba(22,63,128,.18)!important}
+.bresult-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:7px;margin-top:4px;border-top:1px dashed rgba(40,120,200,.22)}
+.bresult{font-family:"Share Tech Mono",monospace;font-size:16px;color:var(--bone);flex:1;text-align:right}
+.bapply{background:rgba(40,120,200,.15);border:1px solid var(--border-hi);color:var(--cb-hi);font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:4px 10px;cursor:pointer;text-transform:uppercase;transition:background .2s;white-space:nowrap;flex-shrink:0}
+.bapply:hover{background:rgba(40,120,200,.3)}
+
+/* EXP */
+.expblk{background:rgba(0,0,0,.25);border:1px solid var(--border);padding:12px 16px;margin-bottom:14px}
+.erow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:5px 0}
+.elbl{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase;white-space:nowrap}
+.evals{display:flex;align-items:center;gap:6px}
+.enum{font-family:"Share Tech Mono",monospace;font-size:13px;color:var(--bone);outline:none;cursor:text}
+.esep{color:var(--text-dim);font-size:11px}
+.mdiv{height:1px;background:linear-gradient(to right,var(--cb),transparent);margin:6px 0;opacity:.3}
+.enum.exp-pd{color:#7ec8e3}
+.enum.exp-dentro{color:#6fcf97}
+.enum.exp-dentro-max{color:#a8d8a8}
+.enum.exp-fuera{color:#f0a830}
+.enum.exp-total{color:#b8d4f8;font-size:15px}
+.enum.exp-gastada{color:#e74c3c}
+.erow.erow-pd{background:rgba(126,200,227,.04);border-left:2px solid rgba(126,200,227,.3);padding-left:6px}
+.erow.erow-dentro{background:rgba(111,207,151,.05);border-left:2px solid rgba(111,207,151,.35);padding-left:6px}
+.erow.erow-fuera{background:rgba(240,168,48,.05);border-left:2px solid rgba(240,168,48,.35);padding-left:6px}
+.erow.erow-total{background:rgba(184,212,248,.07);border-left:2px solid rgba(184,212,248,.4);padding-left:6px;margin-top:4px}
+.erow-total .elbl{color:var(--silver)}
+
+/* VOLLSTÄNDIG */
+.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hlbl{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase}
+.hcount{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--text-dim);letter-spacing:1px}
+.hname{flex:1;min-width:0;font-size:13px;color:var(--text);font-family:"Rajdhani",sans-serif;background:transparent;border:none;border-bottom:1px dashed rgba(40,120,200,.2);outline:none;padding:1px 4px}
+.hname:focus{border-bottom-color:var(--cb-hi)}
+.hhuecos{width:28px;text-align:center;font-family:"Share Tech Mono",monospace;font-size:13px;color:var(--bone);background:transparent;border:none;outline:none}
+.hlbl-sm{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;flex-shrink:0;white-space:nowrap}
+.hdel{background:none;border:none;color:rgba(40,120,200,.5);cursor:pointer;font-size:14px;padding:0;line-height:1;flex-shrink:0;transition:color .2s}
+.hdel:hover{color:var(--cb-hi)}
+
+/* ARTES SAGRADAS / RAMAS */
+.rrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.rrow:last-child{border-bottom:none}
+.rlbl2{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--bone-dim);text-transform:uppercase;min-width:170px;flex-shrink:0}
+.dbar{display:flex;gap:4px;flex:1}
+.dpip{width:18px;height:6px;background:rgba(255,255,255,.06);cursor:pointer;transition:background .2s}
+.dpip.on{background:var(--spirit-hi)}
+.dval{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--bone-dim);margin-left:8px;min-width:20px;text-align:right}
+
+/* SKILLS */
+.sklist{display:flex;flex-direction:column;gap:6px}
+.ski{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.04);padding:8px 12px}
+.skdot{width:6px;height:6px;background:var(--cb);flex-shrink:0}
+.skinput{background:transparent;border:none;border-bottom:1px dashed rgba(40,120,200,.2);outline:none;color:var(--text);font-family:"Rajdhani",sans-serif;font-size:14px;width:100%;transition:border-color .2s}
+.skinput:focus{border-bottom-color:var(--cb-hi)}
+.add-btn{margin-top:10px;background:rgba(40,120,200,.1);border:1px solid var(--border-hi);color:var(--cb-hi);font-family:"Rajdhani",sans-serif;font-size:12px;letter-spacing:2px;padding:6px 16px;cursor:pointer;text-transform:uppercase;transition:background .2s}
+.add-btn:hover{background:rgba(40,120,200,.2)}
+
+/* EQUIP */
+.egrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(max-width:560px){.egrid{grid-template-columns:1fr}}
+.eslot{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.04);padding:8px 12px}
+.eico{width:28px;height:28px;background:rgba(40,120,200,.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--cb)}
+.einf{flex:1;min-width:0}
+.eslbl{font-size:10px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:1px}
+.einput{background:transparent;border:none;border-bottom:1px dashed rgba(40,120,200,.2);outline:none;color:var(--text);font-family:"Rajdhani",sans-serif;font-size:13px;width:100%;transition:border-color .2s}
+.einput:focus{border-bottom-color:var(--cb-hi)}
+
+/* CURRENCY */
+.equip-rules{display:flex;flex-direction:column;gap:4px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:4px;padding:8px 10px;margin-bottom:12px;font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--text-dim);letter-spacing:.4px;line-height:1.8}
+.er-item{display:flex;align-items:baseline;gap:6px}
+.er-ico{font-size:12px;flex-shrink:0;color:var(--cb);opacity:.7}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+@media(max-width:560px){.cgrid{grid-template-columns:repeat(2,1fr)}}
+.ccard{background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center}
+.cico{font-size:15px;margin-bottom:3px;color:var(--silver)}
+.clbl{font-size:10px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:3px}
+.cval{font-family:"Share Tech Mono",monospace;font-size:16px;color:var(--bone);outline:none;cursor:text}
+
+/* LOG */
+.log{height:180px;overflow-y:auto;background:rgba(0,0,0,.4);border:1px solid var(--border);padding:12px;scrollbar-width:thin;scrollbar-color:var(--cb) transparent}
+.log::-webkit-scrollbar{width:4px}
+.log::-webkit-scrollbar-thumb{background:var(--cb)}
+.lentry{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.04);position:relative;outline:none}
+body.locked .lentry{user-select:text;cursor:default}
+.le-del{position:absolute;top:2px;right:0;background:none;border:none;color:rgba(40,120,200,.35);cursor:pointer;font-size:13px;padding:0 3px;line-height:1;transition:color .2s;display:none}
+.le-del:hover{color:var(--cb-hi)}
+body.locked .le-del{display:none!important}
+.la-exp-row{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:7px;padding:6px 9px;background:rgba(192,212,240,.07);border:1px solid rgba(192,212,240,.2);font-family:"Share Tech Mono",monospace;font-size:9px}
+.la-exp-lbl{color:var(--silver);letter-spacing:1px;white-space:nowrap}
+.la-exp-amt{color:var(--bone);letter-spacing:1px;font-weight:bold}
+.la-exp-opt{color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer;letter-spacing:.5px}
+.la-exp-opt input{accent-color:var(--cb);cursor:pointer}
+.lentry:last-child{margin-bottom:0;border-bottom:none}
+.lwk{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--cb);text-transform:uppercase;margin-bottom:4px}
+.ldate{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--text-dim);margin-right:8px}
+.ltxt{font-size:12px;color:var(--text);line-height:1.5}
+.lexp-gain{color:#6fcf97;font-weight:700;font-family:"Share Tech Mono",monospace}
+.lexp-lose{color:#e74c3c;font-weight:700;font-family:"Share Tech Mono",monospace}
+.lpd-badge{color:#7ec8e3;font-weight:700;font-family:"Share Tech Mono",monospace}
+.lwk-sep{display:flex;align-items:center;gap:8px;margin:10px 0 6px;padding:6px 10px;background:rgba(40,120,200,.08);border:1px solid rgba(40,120,200,.2);border-left:3px solid var(--cb);font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--cb-hi);text-transform:uppercase}
+.lwk-sep-num{font-size:13px;font-weight:700;color:var(--bone)}
+.lwk-sep-dates{color:var(--text-dim);font-size:9px}
+.lwk-sep-cap{font-size:9px;color:var(--spirit-hi);margin-left:auto}
+.last-edit{margin-top:8px;padding:5px 10px 2px;font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1.5px;color:var(--text-dim);text-align:right;border-top:1px solid rgba(255,255,255,.05);text-transform:uppercase}
+.last-edit-ts{color:var(--bone-dim);text-transform:none;letter-spacing:.5px}
+
+/* FOOTER */
+.ftr{text-align:center;margin-top:36px}
+.ftr::before{content:"";display:block;height:1px;background:linear-gradient(to right,transparent,var(--cb),transparent);margin-bottom:16px}
+.ftxt{font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}
+
+/* === LOCKED === */
+body.locked .fi,body.locked .ta,body.locked .skinput,body.locked .einput{pointer-events:none;border-color:transparent;cursor:default;user-select:text}
+body.locked .rval,body.locked .enum,body.locked .cval{cursor:default;pointer-events:none}
+body.locked .hdr-title,body.locked .hdr-sub,body.locked .badge,body.locked .pcap{cursor:default;pointer-events:none}
+body.locked .dpip{pointer-events:none;cursor:default}
+body.locked .add-btn,body.locked .bapply,body.locked .bdel,body.locked .badd-inc,body.locked .hdel{display:none}
+body.locked .bincname,body.locked .bincval{pointer-events:none;border-color:transparent}
+body.locked .hname,body.locked .hhuecos{pointer-events:none;border-color:transparent;cursor:default}
+body.locked .fi::placeholder,body.locked .ta::placeholder,body.locked .skinput::placeholder,body.locked .einput::placeholder{color:transparent}
+body.locked .bd-btn{pointer-events:auto;cursor:pointer}
+body.locked .log-asst{display:none}
+body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(40,120,200,.1)}
+
+/* LOG ASSISTANT */
+.log-asst{background:rgba(0,0,0,.28);border:1px solid rgba(22,63,128,.35);padding:12px 14px;margin-bottom:10px}
+.la-ttl{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--spirit-hi);text-transform:uppercase;margin-bottom:8px}
+.la-tpls{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.la-tpl{font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:.8px;padding:3px 8px;cursor:pointer;border:1px solid rgba(22,63,128,.4);color:var(--spirit-hi);background:transparent;text-transform:uppercase;transition:background .15s}
+.la-tpl:hover{background:rgba(22,63,128,.2)}
+.la-inp{width:100%;background:rgba(0,0,0,.3);border:1px dashed rgba(22,63,128,.3);color:var(--text);font-family:"Rajdhani",sans-serif;font-size:13px;padding:7px 9px;resize:none;outline:none;line-height:1.5;transition:border-color .2s}
+.la-inp:focus{border-color:var(--spirit-hi)}
+.la-row{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center}
+.la-btn{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:5px 11px;cursor:pointer;border:1px solid;text-transform:uppercase;background:transparent;transition:background .2s;white-space:nowrap}
+.la-btn-proc{color:var(--spirit-hi);border-color:rgba(22,63,128,.5)}
+.la-btn-proc:hover{background:rgba(22,63,128,.2)}
+.la-btn-copy{color:var(--bone-dim);border-color:var(--border)}
+.la-btn-copy:hover{background:rgba(255,255,255,.06)}
+.la-btn-ins{color:var(--cb-hi);border-color:var(--border-hi)}
+.la-btn-ins:hover{background:rgba(40,120,200,.15)}
+.la-btn-undo{color:var(--text-dim);border-color:rgba(255,255,255,.08);margin-left:auto}
+.la-btn-undo:hover{background:rgba(255,255,255,.05)}
+.la-prev{margin-top:8px;padding:7px 10px;background:rgba(0,0,0,.4);border-left:2px solid var(--spirit-hi);display:none}
+.la-prev-lbl{font-family:"Share Tech Mono",monospace;font-size:8px;letter-spacing:1.5px;color:var(--spirit-hi);text-transform:uppercase;margin-bottom:4px}
+.la-prev-txt{font-family:"Share Tech Mono",monospace;font-size:9px;color:var(--bone-dim);line-height:1.7;word-break:break-all}
+</style>
+</head>
+<body class="locked">
+
+<!-- PASS MODAL -->
+<div id="passModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
+  <div style="background:#0a1020;border:1px solid var(--cb);border-radius:6px;padding:30px 34px;min-width:290px;max-width:90vw;text-align:center;font-family:'Share Tech Mono',monospace;box-shadow:0 0 40px rgba(40,120,200,.25)">
+    <div style="color:var(--cb-hi);font-size:12px;letter-spacing:3px;margin-bottom:4px">&#9670; ACCESO RESTRINGIDO</div>
+    <div style="color:var(--text-dim);font-size:9px;letter-spacing:1.5px;margin-bottom:22px">introduce la clave para editar</div>
+    <input id="passInput" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+      style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.55);border:1px solid var(--border);border-radius:4px;color:var(--bone);font-family:'Share Tech Mono',monospace;font-size:15px;padding:9px 12px;margin-bottom:6px;outline:none;text-align:center;letter-spacing:4px"
+      onkeydown="if(event.key==='Enter')confirmPass()"/>
+    <div id="passErr" style="display:none;color:var(--cb-hi);font-size:9px;letter-spacing:2px;margin-bottom:4px;min-height:14px">&#10005; CLAVE INCORRECTA</div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button onclick="hidePassModal()"
+        style="flex:1;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px;border-radius:4px;cursor:pointer;letter-spacing:1.5px">CANCELAR</button>
+      <button id="passConfirmBtn" onclick="confirmPass()"
+        style="flex:1;background:var(--cb);border:none;color:#fff;font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px;border-radius:4px;cursor:pointer;letter-spacing:1.5px">CONFIRMAR</button>
+    </div>
+  </div>
+</div>
+
+<button id="saveBtn" onclick="handleSave()" style="display:none;position:fixed;top:20px;right:168px;z-index:1000;background:rgba(4,8,20,.92);border:1px solid rgba(22,63,128,.55);color:var(--spirit-hi);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:8px 16px;cursor:pointer;text-transform:uppercase;align-items:center;gap:6px;backdrop-filter:blur(8px);transition:background .2s">&#128190; Guardar</button>
+<button id="lockBtn" class="vm" onclick="toggleLock()">&#9998; Editar</button>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-eye">Todo lo que existe es Reishi... y la Reishi me pertenece.</div>
+  <div class="av-frame">
+    <svg class="av-ring" viewBox="0 0 172 172" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="86" cy="86" r="82" stroke="#2878c8" stroke-width="1"/>
+      <circle cx="86" cy="86" r="70" stroke="#2878c8" stroke-width=".5" stroke-dasharray="4 5"/>
+      <!-- Cross arms -->
+      <line x1="86" y1="6" x2="86" y2="166" stroke="#2878c8" stroke-width=".9"/>
+      <line x1="6" y1="86" x2="166" y2="86" stroke="#2878c8" stroke-width=".9"/>
+      <!-- T-bars on top and bottom -->
+      <line x1="74" y1="14" x2="98" y2="14" stroke="#2878c8" stroke-width=".9"/>
+      <line x1="74" y1="158" x2="98" y2="158" stroke="#2878c8" stroke-width=".9"/>
+      <!-- Diagonal hints -->
+      <line x1="26" y1="26" x2="146" y2="146" stroke="#2878c8" stroke-width=".35" stroke-dasharray="3 6"/>
+      <line x1="146" y1="26" x2="26" y2="146" stroke="#2878c8" stroke-width=".35" stroke-dasharray="3 6"/>
+      <!-- Center diamond -->
+      <polygon points="86,68 100,86 86,104 72,86" stroke="#2878c8" stroke-width=".9" fill="none"/>
+      <!-- Cardinal dots -->
+      <circle cx="86" cy="22" r="4" stroke="#2878c8" stroke-width=".9" fill="none"/>
+      <circle cx="86" cy="150" r="4" stroke="#2878c8" stroke-width=".9" fill="none"/>
+      <circle cx="22" cy="86" r="4" stroke="#2878c8" stroke-width=".9" fill="none"/>
+      <circle cx="150" cy="86" r="4" stroke="#2878c8" stroke-width=".9" fill="none"/>
+      <!-- Diagonal dots -->
+      <circle cx="38" cy="38" r="2.5" stroke="#2878c8" stroke-width=".6" fill="none"/>
+      <circle cx="134" cy="38" r="2.5" stroke="#2878c8" stroke-width=".6" fill="none"/>
+      <circle cx="38" cy="134" r="2.5" stroke="#2878c8" stroke-width=".6" fill="none"/>
+      <circle cx="134" cy="134" r="2.5" stroke="#2878c8" stroke-width=".6" fill="none"/>
+    </svg>
+    <div class="av-circle">
+      <img src="" alt="Avatar" onerror="this.style.display='none'"/>
+    </div>
+  </div>
+  <div class="hdr-title" contenteditable="true">Nombre</div>
+  <div class="hdr-sub" contenteditable="true">usuario.hobba</div>
+  <div class="hdr-line"></div>
+  <span class="badge" contenteditable="true">Quincy · Título</span>
+</div>
+
+<!-- 01 -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="1" stroke="#58aef0" stroke-width="1.2"/><line x1="6" y1="8" x2="14" y2="8" stroke="#58aef0" stroke-width="1"/><line x1="6" y1="11.5" x2="11" y2="11.5" stroke="#58aef0" stroke-width="1"/></svg>
+    <span class="sttl">Datos de la Cuenta</span><span class="stag">01</span>
+  </div>
+  <div class="sbody"><div class="two">
+    <div>
+      <div class="frow"><span class="flbl">Usuario de Hobba</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+      <div class="frow"><span class="flbl">Otras Cuentas</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+      <div class="frow"><span class="flbl">Fecha de Ingreso</span><span class="fdash">&mdash;</span><input class="fi" placeholder="DD/MM/AAAA"/></div>
+    </div>
+    <div>
+      <div class="frow"><span class="flbl">Raza</span><span class="fdash">&mdash;</span><span style="color:var(--cb-hi);font-weight:600;font-size:14px">Quincy</span></div>
+      <div class="frow"><span class="flbl">Tipo</span><span class="fdash">&mdash;</span><input class="fi" placeholder="Echt / Gemischt&hellip;"/></div>
+      <div class="frow"><span class="flbl">Escuadr&oacute;n / Sternritter</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+      <div class="frow"><span class="flbl">Cargo</span><span class="fdash">&mdash;</span><input class="fi" placeholder="&hellip;"/></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- 02 -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="4" stroke="#58aef0" stroke-width="1.2"/><path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round"/></svg>
+    <span class="sttl">Datos del Personaje</span><span class="stag">02</span>
+  </div>
+  <div class="sbody"><div class="charlayout">
+    <div class="charfields">
+      <div class="frow" style="margin-bottom:8px"><span class="flbl">Nombre</span><span class="fdash">&mdash;</span><input class="fi" placeholder="Nombre del personaje" style="font-size:16px;font-weight:600"/></div>
+      <div class="frow" style="margin-bottom:8px"><span class="flbl">Personalidad</span><span class="fdash">&mdash;</span><input class="fi" placeholder="Descripci&oacute;n breve&hellip;"/></div>
+      <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Historia</span><textarea class="ta" rows="4" placeholder="Historia del personaje&hellip;"></textarea></div>
+      <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Aptitudes y Limitaciones</span><textarea class="ta" rows="3" placeholder="Anotar aptitudes y limitaciones de forma libre&hellip;"></textarea></div>
+    </div>
+    <div class="pwrap">
+      <div class="pslot"><img src="" alt="Arte del personaje" onerror="this.style.display='none'"/></div>
+      <div class="pcap" contenteditable="true">Lema del personaje.</div>
+    </div>
+  </div></div>
+</div>
+
+<!-- 03 ATRIBUTOS -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none">
+      <!-- Quincy cross star icon -->
+      <line x1="10" y1="2" x2="10" y2="18" stroke="#58aef0" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="2" y1="10" x2="18" y2="10" stroke="#58aef0" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="4.5" y1="4.5" x2="15.5" y2="15.5" stroke="#58aef0" stroke-width=".7" stroke-linecap="round"/>
+      <line x1="15.5" y1="4.5" x2="4.5" y2="15.5" stroke="#58aef0" stroke-width=".7" stroke-linecap="round"/>
+    </svg>
+    <span class="sttl">Atributos Espirituales</span><span class="stag">03</span>
+  </div>
+  <div class="sbody">
+    <div class="rankrow">
+      <div class="rankpill"><div class="rlbl">Rango</div><div class="rval" contenteditable="true">&mdash;</div></div>
+      <div class="rankpill"><div class="rlbl">Nivel</div><div class="rval" contenteditable="true">0</div></div>
+      <div class="rankpill"><div class="rlbl">Schrift</div><div class="rval" contenteditable="true">&mdash;</div></div>
+    </div>
+
+    <div class="sgrid">
+      <div class="scard" data-stat="VIT"><div class="scard-top"><div><div class="sabb">VIT</div><div class="sname">Vitalidad</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="REI"><div class="scard-top"><div><div class="sabb">REI</div><div class="sname">Reiryoku</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="FUE"><div class="scard-top"><div><div class="sabb">FUE</div><div class="sname">Fuerza</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="DEF"><div class="scard-top"><div><div class="sabb">DEF</div><div class="sname">Defensa</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="VEL"><div class="scard-top"><div><div class="sabb">VEL</div><div class="sname">Velocidad</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard" data-stat="VOL"><div class="scard-top"><div><div class="sabb">VOL</div><div class="sname">Voluntad</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
+      <div class="scard reii" data-stat="REII"><div class="reii-body"><div class="scard-top"><div class="sabb">REII</div><div class="sname">Reiatsu</div></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)" style="align-self:center">&#9660; ver desglose</button></div></div>
+    </div>
+
+    <div class="expblk">
+      <div class="erow erow-pd"><span class="elbl">Puntos de Desarrollo</span><div class="evals"><span class="enum exp-pd" id="pd-disp" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-pd" contenteditable="true">0</span></div></div>
+      <div class="mdiv"></div>
+      <div class="erow" style="padding:3px 0"><span class="elbl" style="font-size:11px;color:var(--text-dim)">Semana de ingreso</span><div class="evals"><span class="enum" id="join-week" contenteditable="true" style="font-size:12px;color:var(--text-dim)" title="Semana en que te registraste — afecta al cap acumulativo">1</span></div></div>
+      <div class="mdiv"></div>
+      <div class="erow erow-dentro"><span class="elbl">EXP L&iacute;mite Acumulativa</span><div class="evals"><span class="enum exp-dentro" id="exp-dentro" contenteditable="true">0</span><span class="esep">/</span><span class="enum exp-dentro-max" id="exp-dentro-max" contenteditable="true">0</span></div></div>
+      <div class="erow erow-fuera"><span class="elbl">EXP Fuera de L&iacute;mite</span><div class="evals"><span class="enum exp-fuera" id="exp-fuera" contenteditable="true">1000</span></div></div>
+      <div class="erow erow-total"><span class="elbl">EXP Total</span><div class="evals"><span class="enum exp-total" id="exp-total">1000</span><span class="esep">/</span><span class="enum exp-gastada" id="exp-gastada" contenteditable="true">0</span></div></div>
+    </div>
+
+    <!-- VOLLSTÄNDIG Y CAPACIDADES -->
+    <div class="hdr-row"><span class="hlbl">Vollst&auml;ndig y Capacidades</span><span class="hcount">m&aacute;x.&thinsp;10 huecos</span></div>
+    <textarea class="ta" id="hueco-text" rows="5" placeholder="Ejemplo:&#10;Quincy: Vollst&auml;ndig — [Nombre del Arco] — 0 huecos&#10;Arte Sagrada: Heilig Pfeil — principal&#10;Arte Sagrada: Blut Vene — 1 hueco (defensiva)&#10;Arte Sagrada: Hirenkyaku — 1 hueco&#10;Arte Sagrada: Ginto — 1 hueco" style="margin-bottom:4px"></textarea>
+  </div>
+</div>
+
+<!-- 04 -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none">
+      <line x1="10" y1="2" x2="10" y2="18" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="6" y1="6" x2="10" y2="2" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="14" y1="6" x2="10" y2="2" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="4" y1="10" x2="10" y2="10" stroke="#58aef0" stroke-width="1" stroke-linecap="round"/>
+      <line x1="16" y1="10" x2="10" y2="10" stroke="#58aef0" stroke-width="1" stroke-linecap="round"/>
+    </svg>
+    <span class="sttl">Artes Sagradas y Dominios</span><span class="stag">04</span>
+  </div>
+  <div class="sbody">
+    <div class="rrow"><span class="rlbl2">Arte Sagrada Principal</span><input class="fi" placeholder="Ej: Heilig Pfeil, Blut Arterie&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Artes Secundarias</span><input class="fi" placeholder="&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Artes Avanzadas</span><input class="fi" placeholder="Ej: Ginto, Sklaverei, Licht Regen&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Nivel de Dominio</span><div class="dbar" id="dbar"></div><span class="dval" id="dval">0</span></div>
+  </div>
+</div>
+
+<!-- 05 -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><path d="M3 10h2m10 0h2M5 10l3-5m4 0l3 5M8 5l4 0" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="14" r="3" stroke="#58aef0" stroke-width="1.2"/></svg>
+    <span class="sttl">Entrenamientos y Mejoras</span><span class="stag">05</span>
+  </div>
+  <div class="sbody">
+    <div style="margin-bottom:12px"><span class="flbl" style="display:block;margin-bottom:6px">Mejoras</span><textarea class="ta" rows="2" placeholder="Mejoras obtenidas&hellip;"></textarea></div>
+    <div><span class="flbl" style="display:block;margin-bottom:6px">Entrenamientos</span><textarea class="ta" rows="2" placeholder="Entrenamientos realizados&hellip;"></textarea></div>
+  </div>
+</div>
+
+<!-- 06 -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none">
+      <!-- Arrow / Heilig Pfeil icon -->
+      <line x1="3" y1="17" x2="17" y2="3" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round"/>
+      <polyline points="10,3 17,3 17,10" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <span class="sttl">Habilidades y T&eacute;cnicas</span><span class="stag">06</span>
+  </div>
+  <div class="sbody">
+    <div class="sklist" id="sklist">
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad o t&eacute;cnica&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad o t&eacute;cnica&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad o t&eacute;cnica&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad o t&eacute;cnica&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad o t&eacute;cnica&hellip;"/></div>
+      <div class="ski"><div class="skdot"></div><input class="skinput" placeholder="Nombre de habilidad o t&eacute;cnica&hellip;"/></div>
+    </div>
+    <button class="add-btn" onclick="addSkill()">+ A&ntilde;adir habilidad</button>
+  </div>
+</div>
+
+<!-- 07 -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="12" rx="1" stroke="#58aef0" stroke-width="1.2"/><path d="M6 6V4a4 4 0 018 0v2" stroke="#58aef0" stroke-width="1.2"/><circle cx="10" cy="12" r="2" stroke="#58aef0" stroke-width="1"/></svg>
+    <span class="sttl">Posesiones y Divisas</span><span class="stag">07</span>
+  </div>
+  <div class="sbody">
+    <span class="flbl" style="display:block;margin-bottom:6px">Equipamiento Actual</span>
+    <div class="equip-rules">
+      <span class="er-item"><span class="er-ico">&#9876;</span>1 arma empu&ntilde;ada <em>(2 si <strong>Ambidiestro</strong> + ambas de 1 mano)</em></span>
+      <span class="er-item"><span class="er-ico">&#128737;</span>1 pieza por parte del cuerpo <em>(cabeza, torso, brazos, piernas)</em></span>
+      <span class="er-item"><span class="er-ico">&#9671;</span>M&aacute;x. 2 complementos de vestimenta</span>
+    </div>
+    <div class="egrid">
+      <div class="eslot"><div class="eico">&#9876;</div><div class="einf"><div class="eslbl">Arma Empu&ntilde;ada / Heilig Bogen</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#9937;</div><div class="einf"><div class="eslbl">Cabeza</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#128737;</div><div class="einf"><div class="eslbl">Torso</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#9994;</div><div class="einf"><div class="eslbl">Brazos</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#128094;</div><div class="einf"><div class="eslbl">Piernas</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot"><div class="eico">&#9671;</div><div class="einf"><div class="eslbl">Complemento 1</div><input class="einput" placeholder="&mdash;"/></div></div>
+      <div class="eslot" style="grid-column:1/-1"><div class="eico">&#9671;</div><div class="einf"><div class="eslbl">Complemento 2</div><input class="einput" placeholder="&mdash;"/></div></div>
+    </div>
+    <div style="margin-top:14px"><span class="flbl" style="display:block;margin-bottom:6px">Objetos y Consumibles</span><textarea class="ta" rows="2" placeholder="Listar objetos&hellip;"></textarea></div>
+    <div class="cgrid">
+      <div class="ccard"><div class="cico">&yen;</div><div class="clbl">Kan / Yen</div><div class="cval" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:var(--spirit-hi)">&#9672;</div><div class="clbl">Monedas Temp.</div><div class="cval" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:var(--silver)">&#9673;</div><div class="clbl">Fichas Arcade</div><div class="cval" contenteditable="true">0</div></div>
+      <div class="ccard"><div class="cico" style="color:#6aacdf">&#10022;</div><div class="clbl">Tickets Gacha</div><div class="cval" contenteditable="true">0</div></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:10px">
+      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">Pase de Batalla</div><div class="cval" contenteditable="true">0</div></div>
+      <div style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:10px;text-align:center"><div class="clbl">ELO Clasificatorio</div><div class="cval" contenteditable="true">0</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 -->
+<div class="sec">
+  <div class="shdr">
+    <svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#58aef0" stroke-width="1.2"/><polyline points="10,5 10,10 13,13" stroke="#58aef0" stroke-width="1.2" stroke-linecap="round"/></svg>
+    <span class="sttl">Historial de Acciones</span><span class="stag">08</span>
+  </div>
+  <div class="sbody">
+    <div class="log-asst">
+      <div class="la-ttl">&#9670; A&ntilde;adir entrada al historial</div>
+      <div class="la-tpls">
+        <button class="la-tpl" onclick="laTpl('exp')">+ EXP</button>
+        <button class="la-tpl" onclick="laTpl('pd-gain')">+ PD obtenido</button>
+        <button class="la-tpl" onclick="laTpl('pd-spend')">&#8722; PD gastado</button>
+        <button class="la-tpl" onclick="laTpl('train')">&#8722; Entrenamiento</button>
+        <button class="la-tpl" onclick="laTpl('habilidad')">&#8722; Habilidad</button>
+        <button class="la-tpl" onclick="laTpl('mejora')">&#8722; Tienda EXP</button>
+        <button class="la-tpl" onclick="laTpl('item')">+ &Iacute;tem</button>
+      </div>
+      <textarea class="la-inp" id="laInp" rows="2"
+        placeholder="Ej: gan&eacute; 200 EXP rolando con alguien &rarr; https://foro.com/hilo/123"></textarea>
+      <div class="la-row">
+        <button class="la-btn la-btn-proc" onclick="laProcess()">&#8635; Procesar</button>
+        <button class="la-btn la-btn-copy" id="laCopyBtn" onclick="laCopy()" style="display:none">&#128203; Copiar</button>
+        <button class="la-btn la-btn-ins"  id="laInsBtn"  onclick="laInsert()" style="display:none">&#43; Insertar</button>
+        <button class="la-btn la-btn-undo" id="laUndoBtn" onclick="laUndo()" style="display:none">&#8630; Deshacer</button>
+      </div>
+      <div class="la-exp-row" id="laExpRow" style="display:none;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="la-exp-lbl">&#9670; EXP detectada:</span>
+          <span class="la-exp-amt" id="laExpAmt" style="font-weight:700">0</span>
+        </div>
+        <div id="laExpTypeRow" style="display:flex;gap:10px;align-items:center">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px">TIPO:</span>
+          <label class="la-exp-opt"><input type="radio" name="laExpType" value="dentro" checked/> Dentro l&iacute;mite</label>
+          <label class="la-exp-opt"><input type="radio" name="laExpType" value="fuera"/> Fuera l&iacute;mite</label>
+        </div>
+      </div>
+      <div class="la-prev" id="laPrev">
+        <div class="la-prev-lbl">BBCode generado</div>
+        <div class="la-prev-txt" id="laPrevTxt"></div>
+      </div>
+    </div>
+    <div class="log" id="logContainer">
+      <div class="lwk-sep" data-week="1">
+        <span class="lwk-sep-num">S1</span>
+        <span>Semana 1</span>
+        <span class="lwk-sep-dates">08/06 &ndash; 14/06/2026</span>
+        <span class="lwk-sep-cap">Cap. 500 EXP</span>
+      </div>
+      <div class="lentry" data-snap='{"expAmt":1000,"expSign":1,"expType":"fuera","pdAmt":0,"pdIsGain":false,"pdStat":null}'>
+        <div><span class="ldate">[08/06/2026]</span><span class="ltxt">Registro del personaje en <strong style="color:var(--cb-hi)">Bleach Hobba RPG</strong>. Aptitudes y limitaciones iniciales asignadas. Se obtienen <span class="lexp-gain">+1000 EXP</span> de base.</span></div>
+      </div>
+    </div>
+    <div class="last-edit" id="lastEditStamp">&#8212; Sin guardar a&uacute;n &#8212;</div>
+  </div>
+</div>
+
+<div class="ftr"><div class="ftxt">✝ &mdash; Heilig Pfeil &mdash; ✝</div></div>
+</div>
+
+<script>
+var isLocked   = true;
+var dlvl       = 0;
+var _restoring = false;
+var _pwd       = null;
+
+// ── CONFIGURAR CON: setupPassword("tuClave") EN CONSOLA ──
+var PASS_SALT = "";
+var PASS_HASH = "";
+var PASS_ITER = 600000;
+
+function showPassModal(){
+  var m=document.getElementById("passModal");
+  m.style.display="flex";
+  document.getElementById("passInput").value="";
+  document.getElementById("passErr").style.display="none";
+  setTimeout(function(){ document.getElementById("passInput").focus(); },50);
+}
+function hidePassModal(){ document.getElementById("passModal").style.display="none"; }
+
+async function confirmPass(){
+  var val=document.getElementById("passInput").value;
+  var btn=document.getElementById("passConfirmBtn");
+  if(btn){ btn.disabled=true; btn.textContent="Verificando…"; }
+  if(!PASS_SALT||!PASS_HASH){
+    // Sin contraseña configurada → permitir acceso directo
+    _pwd=val||"sin-clave";
+    hidePassModal(); doUnlock();
+    if(btn){ btn.disabled=false; btn.textContent="CONFIRMAR"; }
+    return;
+  }
+  try {
+    var enc=new TextEncoder();
+    var saltArr=Uint8Array.from(PASS_SALT.match(/.{2}/g).map(function(b){return parseInt(b,16);}));
+    var km=await crypto.subtle.importKey("raw",enc.encode(val),"PBKDF2",false,["deriveBits"]);
+    var bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:saltArr,iterations:PASS_ITER,hash:"SHA-256"},km,256);
+    var hash=[...new Uint8Array(bits)].map(function(x){return x.toString(16).padStart(2,"0");}).join("");
+    if(hash===PASS_HASH){ _pwd=val; hidePassModal(); doUnlock(); }
+    else {
+      document.getElementById("passErr").style.display="block";
+      document.getElementById("passInput").value="";
+      document.getElementById("passInput").focus();
+    }
+  } catch(e){ document.getElementById("passErr").style.display="block"; }
+  finally { if(btn){ btn.disabled=false; btn.textContent="CONFIRMAR"; } }
+}
+
+function doUnlock(){
+  isLocked=false;
+  document.body.classList.remove("locked");
+  var btn=document.getElementById("lockBtn");
+  btn.innerHTML="&#128274; Bloquear"; btn.classList.remove("vm");
+  document.getElementById("saveBtn").style.display="flex";
+  document.querySelectorAll("[data-was-edit]").forEach(function(el){
+    el.contentEditable="true"; delete el.dataset.wasEdit;
+  });
+  document.querySelectorAll(".lentry").forEach(_makeLentryEditable);
+}
+
+function toggleLock(){
+  if(isLocked){ showPassModal(); }
+  else {
+    isLocked=true; _pwd=null;
+    document.body.classList.add("locked");
+    var btn=document.getElementById("lockBtn");
+    btn.innerHTML="&#9998; Editar"; btn.classList.add("vm");
+    document.getElementById("saveBtn").style.display="none";
+    document.querySelectorAll("[contenteditable=true]").forEach(function(el){
+      el.contentEditable="false"; el.dataset.wasEdit="1";
+    });
+  }
+}
+
+// ── GIST STORAGE ──
+var GIST_ID       = "";        // ← tu ID de Gist
+var ENCRYPTED_PAT = "";        // ← resultado de setupEncrypt("ghp_tuToken", "tuClave")
+var GIST_FILE     = "ficha-quincy.json";
+var _SALT         = "bleach-quincy-rpg-2026";
+
+async function _deriveKey(pwd,usage){
+  var enc=new TextEncoder();
+  var km=await crypto.subtle.importKey("raw",enc.encode(pwd),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:enc.encode(_SALT),iterations:200000,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,[usage]);
+}
+
+window.setupPassword=async function(pwd){
+  var salt=crypto.getRandomValues(new Uint8Array(16));
+  var saltHex=[...salt].map(function(x){return x.toString(16).padStart(2,"0");}).join("");
+  var enc=new TextEncoder();
+  var km=await crypto.subtle.importKey("raw",enc.encode(pwd),"PBKDF2",false,["deriveBits"]);
+  var bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:salt,iterations:600000,hash:"SHA-256"},km,256);
+  var hash=[...new Uint8Array(bits)].map(function(x){return x.toString(16).padStart(2,"0");}).join("");
+  console.log("%c🔑 Credenciales generadas","color:#2878c8;font-weight:bold;font-size:14px");
+  console.log('%cvar PASS_SALT = "'+saltHex+'";',"color:#7ec8e3;font-size:12px");
+  console.log('%cvar PASS_HASH = "'+hash+'";',"color:#6fcf97;font-size:12px");
+  console.log("%c→ Luego: setupEncrypt(\"ghp_tuToken\", pwd)","color:#f0a830;font-size:11px");
+};
+
+window.setupEncrypt=async function(pat,pwd){
+  var enc=new TextEncoder();
+  var key=await _deriveKey(pwd,"encrypt");
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  var ct=await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},key,enc.encode(pat));
+  var res=btoa(String.fromCharCode.apply(null,[...iv,...new Uint8Array(ct)]));
+  console.log("%c✅ PAT cifrado","color:#2878c8;font-weight:bold;font-size:14px",res);
+  return res;
+};
+
+async function _decryptPAT(pwd){
+  var key=await _deriveKey(pwd,"decrypt");
+  var raw=Uint8Array.from(atob(ENCRYPTED_PAT),function(c){return c.charCodeAt(0);});
+  var dec=await crypto.subtle.decrypt({name:"AES-GCM",iv:raw.slice(0,12)},key,raw.slice(12));
+  return new TextDecoder().decode(dec);
+}
+
+function _collect(){
+  var s={v:1,tf:[],ed:[],sn:{},bds:{},dlvl:dlvl,ht:""};
+  document.querySelectorAll('.wrap input.fi,.wrap input.skinput,.wrap input.einput,.wrap textarea.ta:not(#hueco-text)').forEach(function(el){s.tf.push(el.value);});
+  document.querySelectorAll('.rval,.enum,.cval,.hdr-title,.hdr-sub,.badge,.pcap').forEach(function(el){s.ed.push(el.textContent.trim());});
+  document.querySelectorAll('.scard[data-stat]').forEach(function(c){
+    var n=c.querySelector('.statnum'); if(n) s.sn[c.dataset.stat]=n.textContent.trim();
+  });
+  document.querySelectorAll('.breakdown').forEach(function(bd){
+    var incs=[];
+    bd.querySelectorAll('.bincrow').forEach(function(r){
+      incs.push({n:r.querySelector('.bincname').value,v:r.querySelector('.bincval').value});
+    });
+    s.bds[bd.dataset.stat]={
+      b:(bd.querySelector('.bbase')||{}).value||0,
+      p:(bd.querySelector('.bpd')||{}).value||0,
+      si:(bd.querySelector('.bsel')||{}).selectedIndex||0,
+      f:(bd.querySelector('.bfinal')||{}).value||0,
+      i:incs
+    };
+  });
+  var ht=document.getElementById("hueco-text"); s.ht=ht?ht.value:"";
+  var logEl=document.getElementById("logContainer");
+  if(logEl){
+    var logClone=logEl.cloneNode(true);
+    logClone.querySelectorAll('.le-del').forEach(function(b){b.remove();});
+    s.log=logClone.innerHTML;
+  }
+  return s;
+}
+
+function _restore(s){
+  if(!s||s.v!==1) return;
+  var tfEls=document.querySelectorAll('.wrap input.fi,.wrap input.skinput,.wrap input.einput,.wrap textarea.ta:not(#hueco-text)');
+  (s.tf||[]).forEach(function(v,i){if(tfEls[i]) tfEls[i].value=v;});
+  var edEls=document.querySelectorAll('.rval,.enum,.cval,.hdr-title,.hdr-sub,.badge,.pcap');
+  (s.ed||[]).forEach(function(v,i){if(edEls[i]) edEls[i].textContent=v;});
+  if(s.sn) document.querySelectorAll('.scard[data-stat]').forEach(function(c){
+    var n=c.querySelector('.statnum'),v=s.sn[c.dataset.stat];
+    if(n&&v!==undefined){n.textContent=v;var b=c.querySelector('.sbar-fill');if(b) b.style.width=Math.min(parseInt(v)||0,100)+'%';}
+  });
+  if(s.bds) document.querySelectorAll('.breakdown').forEach(function(bd){
+    var d=s.bds[bd.dataset.stat]; if(!d) return;
+    var bb=bd.querySelector('.bbase'),bp=bd.querySelector('.bpd'),bs=bd.querySelector('.bsel'),bf=bd.querySelector('.bfinal');
+    if(bb) bb.value=d.b||0; if(bp) bp.value=d.p||0; if(bs) bs.selectedIndex=d.si||0; if(bf) bf.value=d.f||0;
+    if(d.i&&d.i.length){_restoring=true;d.i.forEach(function(inc){
+      addInc(bd);
+      var rows=bd.querySelectorAll('.bincrow'),last=rows[rows.length-1];
+      if(last){last.querySelector('.bincname').value=inc.n;last.querySelector('.bincval').value=inc.v;}
+    });_restoring=false;recalcBd(bd);}
+  });
+  if(s.dlvl!==undefined){
+    dlvl=parseInt(s.dlvl)||0;
+    document.querySelectorAll('.dpip').forEach(function(d,i){d.classList.toggle('on',i<dlvl);});
+    var dv=document.getElementById("dval"); if(dv) dv.textContent=dlvl;
+  }
+  var ht=document.getElementById("hueco-text"); if(ht&&s.ht!==undefined) ht.value=s.ht;
+  if(s.lastEdit) _setLastEdit(s.lastEdit);
+  if(s.log){
+    var logEl=document.getElementById("logContainer");
+    if(logEl){logEl.innerHTML=s.log;logEl.querySelectorAll('.le-del').forEach(function(b){b.remove();});}
+  }
+}
+
+async function loadFromGist(){
+  if(!GIST_ID) return;
+  try {
+    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{headers:{"Accept":"application/vnd.github+json"}});
+    if(!r.ok) return;
+    var g=await r.json();
+    var f=g.files&&g.files[GIST_FILE];
+    if(f) _restore(JSON.parse(f.content));
+  } catch(e){ console.warn("No se pudo cargar la ficha:",e); }
+}
+
+async function handleSave(){
+  if(!_pwd){showPassModal();return;}
+  var btn=document.getElementById("saveBtn");
+  var orig=btn.innerHTML; btn.disabled=true; btn.innerHTML="&#8987; Guardando…";
+  try {
+    var pat=await _decryptPAT(_pwd);
+    var now=new Date().toISOString();
+    var state=_collect(); state.lastEdit=now;
+    var body=JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(state,null,2)}}});
+    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{
+      method:"PATCH",
+      headers:{"Authorization":"Bearer "+pat,"Content-Type":"application/json","Accept":"application/vnd.github+json"},
+      body:body
+    });
+    if(r.ok){btn.innerHTML="&#10003; Guardado";_setLastEdit(now);}
+    else btn.innerHTML="&#10005; Error al guardar";
+  } catch(e){btn.innerHTML="&#10005; Error (clave o red)";}
+  setTimeout(function(){btn.innerHTML=orig;btn.disabled=false;},2800);
+}
+
+/* ── PD RATES ── */
+function getCurrentRank(){
+  var el=document.querySelector(".rval");
+  return el?(el.textContent||el.innerText||"").trim().toUpperCase().charAt(0):"";
+}
+function calcPdBonus(stat,pds){
+  var rank=getCurrentRank(); pds=parseFloat(pds)||0;
+  switch(stat){
+    case "VIT": return pds*((rank==="A"||rank==="S")?50:20);
+    case "REI": return pds*10;
+    case "FUE": return pds*3;
+    case "DEF": var dr=(rank==="A"||rank==="S")?10:(rank==="C"||rank==="B")?5:3; return pds*dr;
+    case "VEL": return Math.floor(pds/5);
+    case "VOL": return Math.floor(pds/5);
+    default: return 0;
+  }
+}
+function pdRateLabel(stat){
+  var rank=getCurrentRank();
+  switch(stat){
+    case "VIT": return (rank==="A"||rank==="S")?"50/PD ◆":"20/PD";
+    case "REI": return "10/PD";
+    case "FUE": return "3/PD";
+    case "DEF": if(rank==="A"||rank==="S") return "10/PD ◆"; if(rank==="C"||rank==="B") return "5/PD ◆"; return "3/PD";
+    case "VEL": return "1 / 5 PD";
+    case "VOL": return "1 / 5 PD";
+    default: return "";
+  }
+}
+
+/* ── STAT BREAKDOWNS ── */
+var STAT_OPTS={
+  VIT: [["&mdash; Sin aptitud",1.0],["Resistencia Sagrada",1.3],["Cuerpo Equilibrado",1.2]],
+  REI: [["&mdash; Sin aptitud",1.0],["Reishi Denso",1.2],["Cuerpo Equilibrado",1.1]],
+  FUE: [["&mdash; Sin aptitud",1.0],["Fuerza Quincy",1.3],["Cuerpo Equilibrado",1.1],["Mutilado: Manco",0.75]],
+  DEF: [["&mdash; Sin aptitud",1.0],["Blut Vene",1.3,"Suma al Bonus Final seg&uacute;n rango &mdash; D:+10 &middot; C:+20 &middot; B:+30 &middot; A:+40 &middot; S:+50"],["Cuerpo Equilibrado",1.15]],
+  VEL: [["&mdash; Sin aptitud",1.0],["Hirenkyaku",1.2],["Cuerpo Equilibrado",1.1],["Obeso",0.85],["Mutilado: Cojo",0.75]],
+  VOL: [["&mdash; Sin aptitud",1.0],["Voluntad F&eacute;rrea",1.2],["Cuerpo Equilibrado",1.1]],
+  REII:[["&mdash; Sin aptitud",1.0],["Cuerpo Equilibrado",1.1]]
+};
+
+function mkBreakdown(opts,stat){
+  var selHtml=opts.map(function(o){
+    var h=o[2]?' data-hint="'+o[2]+'"':''; return '<option value="'+o[1]+'"'+h+'>'+o[0]+' (&times;'+o[1]+')</option>';
+  }).join('');
+  var hasPd=stat&&stat!=="REII";
+  var pdHtml=hasPd
+    ?'<div class="brow"><span class="blbl">PD Gastados</span><input class="binput bpd" type="number" value="0" min="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/></div>'+
+     '<div class="brow bd-pdrow"><span class="blbl bd-sublbl">&rarr; Bonus PD</span><span class="bpdbonus">0</span><span class="bpdrate"></span></div>'
+    :'';
+  var bd=document.createElement("div");
+  bd.className="breakdown"; bd.dataset.stat=stat||"";
+  bd.innerHTML=
+    '<div class="brow"><span class="blbl">Base</span><input class="binput bbase" type="number" value="0" min="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/></div>'+
+    pdHtml+
+    '<div class="binclist"></div>'+
+    '<button class="badd-inc" onclick="addInc(this.closest(\'.breakdown\'))">+ a&ntilde;adir incremento</button>'+
+    '<div class="brow bsubtotal-row"><span class="blbl">Subtotal</span><span class="bsubtotal">0</span></div>'+
+    '<div class="brow"><span class="blbl">&times; Aptitud Est.</span><select class="bsel" onchange="recalcBd(this.closest(\'.breakdown\'));checkHint(this)">'+selHtml+'</select></div>'+
+    '<div class="bhint" style="display:none"></div>'+
+    '<div class="brow"><span class="blbl">+ Bonus final</span><input class="binput bfinal" type="number" value="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/></div>'+
+    '<div class="bresult-row"><span class="blbl">= Resultado</span><span class="bresult">0</span><button class="bapply" onclick="applyBd(this.closest(\'.scard\'))">Aplicar &#9658;</button></div>';
+  return bd;
+}
+
+document.querySelectorAll(".scard[data-stat]").forEach(function(card){
+  var s=card.dataset.stat;
+  if(STAT_OPTS[s]) card.appendChild(mkBreakdown(STAT_OPTS[s],s));
+});
+
+loadFromGist();
+
+/* ── LAST EDIT ── */
+function _fmtLastEdit(iso){
+  var d=new Date(iso);
+  return d.toLocaleString(undefined,{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",timeZoneName:"short"});
+}
+function _setLastEdit(iso){
+  var el=document.getElementById("lastEditStamp");
+  if(!el) return;
+  el.innerHTML="&#128336; &Uacute;ltima edici&oacute;n: <span class='last-edit-ts'>"+_fmtLastEdit(iso)+"</span>";
+}
+
+function toggleBd(btn){
+  var card=btn.closest(".scard"),bd=card.querySelector(".breakdown"),open=bd.classList.toggle("open");
+  btn.innerHTML=open?"&#9650; cerrar":"&#9660; ver";
+  if(open) recalcBd(bd);
+}
+function recalcBd(bd){
+  var stat=bd.dataset.stat||"",base=parseFloat(bd.querySelector(".bbase").value)||0;
+  var pdInput=bd.querySelector(".bpd"),pdBonus=0;
+  if(pdInput){
+    pdBonus=calcPdBonus(stat,pdInput.value);
+    var pbe=bd.querySelector(".bpdbonus"),pre=bd.querySelector(".bpdrate");
+    if(pbe) pbe.textContent=pdBonus; if(pre) pre.textContent=pdRateLabel(stat);
+  }
+  var inc=pdBonus;
+  bd.querySelectorAll(".bincval").forEach(function(i){inc+=parseFloat(i.value)||0;});
+  var sub=base+inc;
+  bd.querySelector(".bsubtotal").textContent=sub;
+  var mult=parseFloat(bd.querySelector(".bsel").value)||1;
+  var fin=parseFloat(bd.querySelector(".bfinal").value)||0;
+  bd.querySelector(".bresult").textContent=Math.floor(sub*mult)+fin;
+}
+function checkHint(sel){
+  var bd=sel.closest(".breakdown"),hint=bd.querySelector(".bhint");
+  var h=sel.options[sel.selectedIndex]&&sel.options[sel.selectedIndex].getAttribute("data-hint");
+  if(h){hint.textContent=h;hint.style.display="block";}else hint.style.display="none";
+}
+function addInc(bd){
+  if(isLocked&&!_restoring) return;
+  var list=bd.querySelector(".binclist"),row=document.createElement("div");
+  row.className="bincrow";
+  row.innerHTML='<span class="blbl" style="flex-shrink:0">+</span><input class="bincname" placeholder="Arte / Entrenamiento…" oninput="recalcBd(this.closest(\'.breakdown\'))"/><input class="binput bincval" type="number" value="0" oninput="recalcBd(this.closest(\'.breakdown\'))"/><button class="bdel" onclick="delInc(this)">&times;</button>';
+  list.appendChild(row);
+  if(!_restoring) row.querySelector(".bincname").focus();
+}
+function delInc(btn){
+  if(isLocked) return;
+  var bd=btn.closest(".breakdown"); btn.closest(".bincrow").remove(); recalcBd(bd);
+}
+function applyBd(card){
+  if(isLocked) return;
+  var res=parseInt(card.querySelector(".bresult").textContent)||0;
+  card.querySelector(".statnum").textContent=res;
+  var bar=card.querySelector(".sbar-fill");
+  if(bar) bar.style.width=Math.min(res,100)+"%";
+}
+
+/* ── DOMINIO BAR ── */
+var dbar=document.getElementById("dbar"),dval=document.getElementById("dval");
+for(var j=0;j<10;j++){
+  (function(idx){
+    var p=document.createElement("div"); p.className="dpip";
+    p.addEventListener("click",function(){
+      if(isLocked) return;
+      dlvl=(dlvl===idx+1)?0:idx+1;
+      document.querySelectorAll(".dpip").forEach(function(d,i){d.classList.toggle("on",i<dlvl);});
+      dval.textContent=dlvl;
+    });
+    dbar.appendChild(p);
+  })(j);
+}
+
+/* ── LOG ASSISTANT ── */
+var _laData=null;
+var _laUndoStack=[];
+
+function _makeLentryEditable(el){
+  el.contentEditable="true";
+  if(!el.querySelector(".le-del")){
+    var btn=document.createElement("button");
+    btn.className="le-del"; btn.title="Eliminar entrada"; btn.innerHTML="&times;";
+    btn.style.display="block";
+    btn.addEventListener("click",function(e){
+      e.stopPropagation();
+      var idx=_laUndoStack.indexOf(el);
+      if(idx>-1) _laUndoStack.splice(idx,1);
+      _updUndoBtn();
+      _revertEntry(el);
+      el.remove();
+    });
+    el.appendChild(btn);
+  }
+}
+
+function laTpl(type){
+  var tpls={
+    exp:"Obtengo ___ EXP [motivo] → https://",
+    "pd-gain":"Obtengo ___ PD [motivo, ej: subida de rango] → https://",
+    "pd-spend":"Gasto ___ PD en [VIT|REI|FUE|DEF|VEL|VOL] → https://",
+    train:"Canjeo entrenamiento de [tipo], consumo 500 EXP → https://",
+    habilidad:"Canjeo habilidad: [nombre], consumo 100 EXP → https://",
+    mejora:"Canjeo mejora de tienda: [nombre], consumo ___ EXP → https://",
+    item:"Obtengo ítem: [nombre] por [motivo] → https://"
+  };
+  var el=document.getElementById("laInp");
+  el.value=tpls[type]||""; el.focus();
+  var i=el.value.indexOf("[");
+  if(i>-1){var k=el.value.indexOf("]",i);el.setSelectionRange(i,k+1);}
+}
+
+function _laDate(){
+  var d=new Date();
+  return "["+String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear()+"]";
+}
+
+function laProcess(){
+  var raw=document.getElementById("laInp").value.trim();
+  if(!raw) return;
+  var date=_laDate();
+  var urlRx=/https?:\/\/[^\s,;)>\]]+/g;
+  var urls=raw.match(urlRx)||[];
+  var body=raw;
+  body=body.replace(/[,;\s]*(?:link|enlace|post|ver en|aqui:|aquí:|url:)\s*/gi," ");
+  body=body.replace(/\s*[→\-][>]?\s*/g," ");
+  urls.forEach(function(url){body=body.replace(url,"[url="+url+"]aquí[/url]");});
+  body=body.replace(/\s{2,}/g," ").trim();
+  body=body.charAt(0).toUpperCase()+body.slice(1);
+  if(!/[.!?\]]$/.test(body)) body+=".";
+  var bbcode=date+" "+body;
+  _laData={date:date,body:body,bbcode:bbcode};
+  var pdAmt=0,pdStat=null,pdIsGain=false;
+  var pdSpendM=raw.match(/(?:gasto|consumo|invierto|uso)\D{0,10}?(\d+)\s*PD\D{0,20}?\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i);
+  var pdGainM=raw.match(/(?:obtengo|gano|recibo|compro|subo de rango|rango[^,]*?otorga)\D{0,30}?(\d+)\s*PD/i);
+  if(pdSpendM){pdAmt=parseInt(pdSpendM[1])||0;pdStat=pdSpendM[2].toUpperCase();pdIsGain=false;}
+  else if(pdGainM){pdAmt=parseInt(pdGainM[1])||0;pdIsGain=true;}
+  else{
+    var pdFallM=raw.match(/(\d+)\s*PD/i);
+    if(pdFallM){
+      pdAmt=parseInt(pdFallM[1])||0;
+      pdIsGain=/obtengo|gano|recibo|compro|rango/i.test(raw);
+      var stFall=raw.match(/\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i);
+      if(stFall&&!pdIsGain) pdStat=stFall[1].toUpperCase();
+    }
+  }
+  _laData.pdAmt=pdAmt;_laData.pdStat=pdStat;_laData.pdIsGain=pdIsGain;
+  var expM=raw.match(/(\d[\d.,]*)\s*(?:exp|experiencia)/i);
+  var expAmt=0,expSign=1;
+  if(expM){
+    expAmt=parseFloat(expM[1].replace(",",".").replace("k",""))*(/k/i.test(expM[1])?1000:1);
+    if(/consumo|gasto|canjeo|compro|pago/i.test(raw)) expSign=-1;
+    document.getElementById("laExpAmt").textContent=(expSign<0?"-":"+")+expAmt+" EXP";
+    document.getElementById("laExpRow").style.display="flex";
+    document.getElementById("laExpTypeRow").style.display=expSign>0?"flex":"none";
+  } else { document.getElementById("laExpRow").style.display="none"; }
+  _laData.expAmt=expAmt; _laData.expSign=expSign;
+  document.getElementById("laPrevTxt").textContent=bbcode;
+  document.getElementById("laPrev").style.display="block";
+  document.getElementById("laCopyBtn").style.display="inline-block";
+  document.getElementById("laInsBtn").style.display="inline-block";
+}
+
+function laCopy(){
+  if(!_laData) return;
+  var btn=document.getElementById("laCopyBtn");
+  navigator.clipboard.writeText(_laData.bbcode).then(function(){
+    btn.innerHTML="&#10003; Copiado";setTimeout(function(){btn.innerHTML="&#128203; Copiar";},1800);
+  }).catch(function(){
+    var ta=document.createElement("textarea");ta.value=_laData.bbcode;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
+    btn.innerHTML="&#10003; Copiado";setTimeout(function(){btn.innerHTML="&#128203; Copiar";},1800);
+  });
+}
+
+function laInsert(){
+  if(!_laData||isLocked) return;
+  var log=document.getElementById("logContainer");
+  var entry=document.createElement("div");
+  entry.className="lentry";
+  var visual=_laData.body.replace(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/g,'<a href="$1" target="_blank" style="color:var(--cb-hi);text-decoration:none">$2</a>');
+  var sign=_laData.expSign||1;
+  if(_laData.expAmt>0){
+    var cls=sign>0?"lexp-gain":"lexp-lose",prefix=sign>0?"+":"-";
+    visual=visual.replace(new RegExp("(\\d[\\d.,]*)\\s*EXP","i"),'<span class="'+cls+'">'+prefix+_laData.expAmt+' EXP</span>');
+  }
+  if(_laData.pdAmt>0){
+    var pdPrefix=_laData.pdIsGain?"+":"-",pdCls=_laData.pdIsGain?"lexp-gain":"lpd-badge";
+    visual=visual.replace(new RegExp("(\\d+)\\s*PD\\b","i"),'<span class="'+pdCls+'">'+pdPrefix+_laData.pdAmt+' PD</span>');
+  }
+  var wn=_currentWeekNumber();
+  _ensureWeekSep(wn);
+  entry.innerHTML='<div><span class="ldate">'+_laData.date+'</span><span class="ltxt"> '+visual+'</span></div>';
+  var sep=log.querySelector('.lwk-sep[data-week="'+wn+'"]');
+  if(sep&&sep.nextSibling){log.insertBefore(entry,sep.nextSibling);}else{log.insertBefore(entry,log.firstChild);}
+  _laUndoStack.push(entry);
+  if(!isLocked) _makeLentryEditable(entry);
+
+  var expType=(_laData.expAmt>0&&sign>0)?document.querySelector('input[name="laExpType"]:checked').value:"dentro";
+  var effectiveExpAmt=_laData.expAmt||0;
+  if(_laData.expAmt>0){
+    if(sign>0){
+      var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
+      if(expEl){
+        var cur=parseFloat(expEl.textContent)||0;
+        if(expType==="dentro"){
+          var maxEl=document.getElementById("exp-dentro-max");
+          var cap=parseFloat(maxEl?maxEl.textContent:0)||0;
+          var space=Math.max(0,cap-cur);
+          effectiveExpAmt=Math.min(_laData.expAmt,space);
+        }
+        expEl.textContent=cur+effectiveExpAmt;
+        if(effectiveExpAmt!==_laData.expAmt){
+          var expSpan=entry.querySelector('.lexp-gain');
+          if(expSpan){
+            expSpan.textContent="+"+effectiveExpAmt+" EXP";
+            expSpan.title="Límite aplicado: "+effectiveExpAmt+" de "+_laData.expAmt+" EXP añadidos";
+            expSpan.insertAdjacentHTML('afterend',' <span style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:var(--text-dim)">(de '+_laData.expAmt+' EXP — cap aplicado)</span>');
+          }
+        }
+      }
+    } else {
+      var gastEl=document.getElementById("exp-gastada");
+      if(gastEl){var curG=parseFloat(gastEl.textContent)||0;gastEl.textContent=curG+_laData.expAmt;}
+    }
+    _recalcExpTotal();
+  }
+
+  if(_laData.pdAmt>0){
+    var pdDispEl=document.getElementById("pd-disp");
+    var pdTotalEl=pdDispEl?pdDispEl.parentNode.querySelector(".enum.exp-pd:last-child"):null;
+    if(_laData.pdIsGain){
+      if(pdDispEl){var dv=parseFloat(pdDispEl.textContent)||0;pdDispEl.textContent=dv+_laData.pdAmt;}
+      if(pdTotalEl){var tv=parseFloat(pdTotalEl.textContent)||0;pdTotalEl.textContent=tv+_laData.pdAmt;}
+    } else {
+      if(pdDispEl){var dv2=parseFloat(pdDispEl.textContent)||0;pdDispEl.textContent=Math.max(0,dv2-_laData.pdAmt);}
+      if(_laData.pdStat){
+        var targetCard=document.querySelector('.scard[data-stat="'+_laData.pdStat+'"]');
+        if(targetCard){
+          var bpd=targetCard.querySelector('.bpd');
+          if(bpd){
+            bpd.value=(parseFloat(bpd.value)||0)+_laData.pdAmt;
+            var bd=targetCard.querySelector('.breakdown');
+            if(bd){recalcBd(bd);}
+            if(bd&&!bd.classList.contains('open')){var bdBtn=targetCard.querySelector('.bd-btn');if(bdBtn){toggleBd(bdBtn);}}
+            applyBd(targetCard);
+          }
+        }
+      }
+    }
+  }
+
+  entry._laSnapshot={expAmt:effectiveExpAmt,expSign:_laData.expSign||1,expType:expType,pdAmt:_laData.pdAmt||0,pdIsGain:_laData.pdIsGain||false,pdStat:_laData.pdStat||null};
+  entry.dataset.snap=JSON.stringify(entry._laSnapshot);
+  _updUndoBtn();
+  document.getElementById("laInp").value="";
+  document.getElementById("laPrev").style.display="none";
+  document.getElementById("laExpRow").style.display="none";
+  document.getElementById("laCopyBtn").style.display="none";
+  document.getElementById("laInsBtn").style.display="none";
+  _laData=null;
+  log.scrollTop=0;
+}
+
+function _revertEntry(el){
+  var snap=el._laSnapshot;
+  if(!snap&&el.dataset.snap){try{snap=JSON.parse(el.dataset.snap);}catch(e){}}
+  if(!snap) return;
+  if(snap.expAmt>0){
+    if(snap.expSign>0){
+      var expEl=document.getElementById(snap.expType==="fuera"?"exp-fuera":"exp-dentro");
+      if(expEl){var cur=parseFloat(expEl.textContent)||0;expEl.textContent=Math.max(0,cur-snap.expAmt);}
+    } else {
+      var gastEl=document.getElementById("exp-gastada");
+      if(gastEl){var curG=parseFloat(gastEl.textContent)||0;gastEl.textContent=Math.max(0,curG-snap.expAmt);}
+    }
+    _recalcExpTotal();
+  }
+  if(snap.pdAmt>0){
+    var pdDispEl=document.getElementById("pd-disp");
+    var pdTotalEl=pdDispEl?pdDispEl.parentNode.querySelector(".enum.exp-pd:last-child"):null;
+    if(snap.pdIsGain){
+      if(pdDispEl){var dv=parseFloat(pdDispEl.textContent)||0;pdDispEl.textContent=Math.max(0,dv-snap.pdAmt);}
+      if(pdTotalEl&&pdTotalEl!==pdDispEl){var tv=parseFloat(pdTotalEl.textContent)||0;pdTotalEl.textContent=Math.max(0,tv-snap.pdAmt);}
+    } else {
+      if(pdDispEl){var dv2=parseFloat(pdDispEl.textContent)||0;pdDispEl.textContent=dv2+snap.pdAmt;}
+      if(snap.pdStat){
+        var targetCard=document.querySelector('.scard[data-stat="'+snap.pdStat+'"]');
+        if(targetCard){
+          var bpd=targetCard.querySelector('.bpd');
+          if(bpd){bpd.value=Math.max(0,(parseFloat(bpd.value)||0)-snap.pdAmt);var bd=targetCard.querySelector('.breakdown');if(bd)recalcBd(bd);applyBd(targetCard);}
+        }
+      }
+    }
+  }
+}
+
+function _updUndoBtn(){
+  var btn=document.getElementById("laUndoBtn");
+  if(!btn) return;
+  if(_laUndoStack.length>0){btn.style.display="inline-block";btn.innerHTML="&#8630; Deshacer ("+_laUndoStack.length+")";}
+  else{btn.style.display="none";btn.innerHTML="&#8630; Deshacer";}
+}
+function laUndo(){
+  if(!_laUndoStack.length) return;
+  var entry=_laUndoStack.pop();
+  if(entry&&entry.parentNode){_revertEntry(entry);entry.remove();}
+  _updUndoBtn();
+}
+
+/* ── EXP CAP & SEMANAS ── */
+var _WEEK1_START=new Date("2026-06-08T00:00:00");
+var _EXP_PER_WEEK=500;
+
+function _currentWeekNumber(){
+  var now=new Date(),diff=now-_WEEK1_START;
+  if(diff<0) return 1;
+  return Math.floor(diff/(7*24*60*60*1000))+1;
+}
+function _weekDates(n){
+  var ms=7*24*60*60*1000;
+  var s=new Date(_WEEK1_START.getTime()+(n-1)*ms);
+  var e=new Date(s.getTime()+6*24*60*60*1000);
+  function fmt(d){return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();}
+  return{start:fmt(s),end:fmt(e)};
+}
+function _calcExpCap(joinWeek){
+  joinWeek=parseInt(joinWeek)||1;
+  return Math.max(0,(_currentWeekNumber()-joinWeek+1))*_EXP_PER_WEEK;
+}
+function _updateExpCap(){
+  var jwEl=document.getElementById("join-week");
+  var cap=_calcExpCap(jwEl?parseInt(jwEl.textContent)||1:1);
+  var maxEl=document.getElementById("exp-dentro-max");
+  if(maxEl) maxEl.textContent=cap;
+}
+function _recalcExpTotal(){
+  var dentro=parseFloat(document.getElementById("exp-dentro").textContent)||0;
+  var fuera=parseFloat(document.getElementById("exp-fuera").textContent)||0;
+  var el=document.getElementById("exp-total");
+  if(el) el.textContent=dentro+fuera;
+}
+function _ensureWeekSep(weekNum){
+  var log=document.getElementById("logContainer"); if(!log) return;
+  if(log.querySelector('.lwk-sep[data-week="'+weekNum+'"]')) return;
+  var d=_weekDates(weekNum);
+  var sep=document.createElement("div");
+  sep.className="lwk-sep"; sep.dataset.week=weekNum;
+  sep.innerHTML='<span class="lwk-sep-num">S'+weekNum+'</span><span>Semana '+weekNum+'</span><span class="lwk-sep-dates">'+d.start+' &ndash; '+d.end+'</span><span class="lwk-sep-cap">Cap. '+(_calcExpCap(1)-(weekNum-1)*500)+'&nbsp;acum.</span>';
+  log.insertBefore(sep,log.firstChild);
+}
+
+(function(){
+  function _w(id){var el=document.getElementById(id);if(el) el.addEventListener("input",_recalcExpTotal);}
+  _w("exp-dentro"); _w("exp-fuera");
+  var jwEl=document.getElementById("join-week");
+  if(jwEl) jwEl.addEventListener("input",function(){_updateExpCap();_recalcExpTotal();});
+  setTimeout(function(){_updateExpCap();_recalcExpTotal();},1200);
+  setInterval(_updateExpCap,3600000);
+})();
+
+/* ── ADD SKILL ── */
+function addSkill(){
+  if(isLocked) return;
+  var list=document.getElementById("sklist"),d=document.createElement("div");
+  d.className="ski";
+  d.innerHTML="<div class='skdot'></div><input class='skinput' placeholder='Nombre de habilidad o técnica…'/>";
+  list.appendChild(d); d.querySelector("input").focus();
+}
+</script>
+</body>
+</html>
