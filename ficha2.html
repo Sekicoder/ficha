@@ -396,7 +396,7 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(40,1
       <line x1="4.5" y1="4.5" x2="15.5" y2="15.5" stroke="#58aef0" stroke-width=".7" stroke-linecap="round"/>
       <line x1="15.5" y1="4.5" x2="4.5" y2="15.5" stroke="#58aef0" stroke-width=".7" stroke-linecap="round"/>
     </svg>
-    <span class="sttl">Atributos Espirituales</span><span class="stag">03</span>
+    <span class="sttl">Atributos del Personaje</span><span class="stag">03</span>
   </div>
   <div class="sbody">
     <div class="rankrow">
@@ -426,8 +426,8 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(40,1
     </div>
 
     <!-- VOLLSTÄNDIG Y CAPACIDADES -->
-    <div class="hdr-row"><span class="hlbl">Vollst&auml;ndig y Capacidades</span><span class="hcount">m&aacute;x.&thinsp;10 huecos</span></div>
-    <textarea class="ta" id="hueco-text" rows="5" placeholder="Ejemplo:&#10;Quincy: Vollst&auml;ndig — [Nombre del Arco] — 0 huecos&#10;Arte Sagrada: Heilig Pfeil — principal&#10;Arte Sagrada: Blut Vene — 1 hueco (defensiva)&#10;Arte Sagrada: Hirenkyaku — 1 hueco&#10;Arte Sagrada: Ginto — 1 hueco" style="margin-bottom:4px"></textarea>
+    <div class="hdr-row"><span class="hlbl">Huecos de Poder</span><span class="hcount">m&aacute;x.&thinsp;10 huecos</span></div>
+    <textarea class="ta" id="hueco-text" rows="5" placeholder="Ejemplo:Heiling Bogen — Principal — 0 huecos&#10;Blut — 1 hueco&#10;Ginto — 1 hueco" style="margin-bottom:4px"></textarea>
   </div>
 </div>
 
@@ -441,12 +441,12 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(40,1
       <line x1="4" y1="10" x2="10" y2="10" stroke="#58aef0" stroke-width="1" stroke-linecap="round"/>
       <line x1="16" y1="10" x2="10" y2="10" stroke="#58aef0" stroke-width="1" stroke-linecap="round"/>
     </svg>
-    <span class="sttl">Artes Sagradas y Dominios</span><span class="stag">04</span>
+    <span class="sttl">Sistema de Ramas y Dominios</span><span class="stag">04</span>
   </div>
   <div class="sbody">
-    <div class="rrow"><span class="rlbl2">Arte Sagrada Principal</span><input class="fi" placeholder="Ej: Heilig Pfeil, Blut Arterie&hellip;" style="flex:1"/></div>
-    <div class="rrow"><span class="rlbl2">Artes Secundarias</span><input class="fi" placeholder="&hellip;" style="flex:1"/></div>
-    <div class="rrow"><span class="rlbl2">Artes Avanzadas</span><input class="fi" placeholder="Ej: Ginto, Sklaverei, Licht Regen&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Rama Principal</span><input class="fi" placeholder="Ej: Heilig Pfeil, Blut Arterie&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Ramas secundarias</span><input class="fi" placeholder="&hellip;" style="flex:1"/></div>
+    <div class="rrow"><span class="rlbl2">Ramas Avanzadas</span><input class="fi" placeholder="Ej: Ginto, Sklaverei, Licht Regen&hellip;" style="flex:1"/></div>
     <div class="rrow"><span class="rlbl2">Nivel de Dominio</span><div class="dbar" id="dbar"></div><span class="dval" id="dval">0</span></div>
   </div>
 </div>
@@ -656,9 +656,9 @@ function toggleLock(){
 }
 
 // ── GIST STORAGE ──
-var GIST_ID       = "";        // ← tu ID de Gist
-var ENCRYPTED_PAT = "";        // ← resultado de setupEncrypt("ghp_tuToken", "tuClave")
-var GIST_FILE     = "ficha-quincy.json";
+var GIST_ID       = "513f5e45b57835b378bb7b336fa4a318";
+var ENCRYPTED_PAT = "NpcZFW7m+OvbvCtYyMCsew89cvLkUJvly9DQD5oADt55VKx0yc/RW3+tjAgAUQUpRos8hhnP/jdmvQ6D8lfuBde/hbw=";
+var GIST_FILE     = "ficha2.json";
 var _SALT         = "bleach-quincy-rpg-2026";
 
 async function _deriveKey(pwd,usage){
@@ -674,10 +674,6 @@ window.setupPassword=async function(pwd){
   var km=await crypto.subtle.importKey("raw",enc.encode(pwd),"PBKDF2",false,["deriveBits"]);
   var bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:salt,iterations:600000,hash:"SHA-256"},km,256);
   var hash=[...new Uint8Array(bits)].map(function(x){return x.toString(16).padStart(2,"0");}).join("");
-  console.log("%c🔑 Credenciales generadas","color:#2878c8;font-weight:bold;font-size:14px");
-  console.log('%cvar PASS_SALT = "'+saltHex+'";',"color:#7ec8e3;font-size:12px");
-  console.log('%cvar PASS_HASH = "'+hash+'";',"color:#6fcf97;font-size:12px");
-  console.log("%c→ Luego: setupEncrypt(\"ghp_tuToken\", pwd)","color:#f0a830;font-size:11px");
 };
 
 window.setupEncrypt=async function(pat,pwd){
