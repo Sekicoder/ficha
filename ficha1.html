@@ -384,7 +384,7 @@ body.locked .stat-ref-btn{display:none!important}
   </div>
 </div>
 
-<button id="saveBtn" onclick="handleSave()" style="display:none;position:fixed;top:20px;right:168px;z-index:1000;background:rgba(12,10,20,.92);border:1px solid rgba(163,92,199,.55);color:var(--spirit-hi);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:8px 16px;cursor:pointer;text-transform:uppercase;display:none;align-items:center;gap:6px;backdrop-filter:blur(8px);transition:background .2s">&#128190; Guardar</button>
+<button id="saveBtn" onclick="handleSave()" style="display:none;position:fixed;top:20px;right:168px;z-index:1000;background:rgba(12,10,20,.92);border:1px solid rgba(163,92,199,.55);color:var(--spirit-hi);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:8px 16px;cursor:pointer;text-transform:uppercase;align-items:center;gap:6px;backdrop-filter:blur(8px);transition:background .2s">&#128190; Guardar</button>
 <button id="lockBtn" class="vm" onclick="toggleLock()">&#9998; Editar</button>
 <div class="wrap">
 
@@ -1217,7 +1217,6 @@ function laProcess(){
   if(bdg){
     var bhtml='';
     _cc.forEach(function(c){
-      var s=c.mode==='set'?'→ nv.':'(c.sign>=0?'+':'-');
       bhtml+='<span class="la-bd la-bd-cur">◆ '+c.lbl+' '+(c.mode==='set'?'→ nv. ':c.sign>=0?'+':'-')+c.amt+'</span>';
     });
     if(_ic){ bhtml+='<span class="la-bd la-bd-item">◇ '+(_ic.sign>0?'+ ítem':'− ítem')+': '+_ic.name+'</span>'; }
@@ -1456,7 +1455,6 @@ function _revertEntry(el){
       }
     }
   }
-}
 
   /* ── revert currencies ── */
   if(snap.cc&&snap.cc.length){
