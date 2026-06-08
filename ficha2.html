@@ -579,8 +579,19 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(40,1
   </div>
 </div>
 
-<div class="ftr"><div class="ftxt">✝ &mdash; Heilig Pfeil &mdash; ✝</div></div>
+<div class="ftr"><div class="ftxt">Enhorabuena si has llegado hasta aquí, recibes un plátano de la amistad</div></div>
 </div>
+
+  <audio id="bgMusic" loop>
+    <source src="inocente.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.addEventListener("click", () => {
+    const music = document.getElementById("bgMusic");
+    if (music.paused) music.play();
+}, { once: true });
+</script>
 
 <script>
 var isLocked   = true;
