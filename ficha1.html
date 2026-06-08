@@ -307,7 +307,8 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
     <div style="display:flex;gap:8px;margin-top:14px">
       <button onclick="hidePassModal()"
         style="flex:1;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px;border-radius:4px;cursor:pointer;letter-spacing:1.5px">CANCELAR</button>
-      <button onclick="confirmPass()"
+      <!-- ▼ CAMBIO: id="passConfirmBtn" añadido para feedback de carga durante PBKDF2 -->
+      <button id="passConfirmBtn" onclick="confirmPass()"
         style="flex:1;background:var(--cr);border:none;color:#fff;font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px;border-radius:4px;cursor:pointer;letter-spacing:1.5px">CONFIRMAR</button>
     </div>
   </div>
@@ -331,7 +332,6 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <line x1="68" y1="6" x2="68" y2="130" stroke="#c0392b" stroke-width=".4"/>
     </svg>
     <div class="av-circle">
-      <!-- AVATAR: reemplaza src con la URL de tu imagen -->
       <img src="https://i.gyazo.com/c700c52fa31a362fe8b8f820da40a420.png" alt="Avatar" />
     </div>
   </div>
@@ -369,7 +369,6 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <div style="margin-top:12px"><span class="flbl" style="display:block;margin-bottom:6px">Aptitudes y Limitaciones</span><textarea class="ta" rows="3" placeholder="Anotar aptitudes y limitaciones de forma libre&hellip;"></textarea></div>
     </div>
     <div class="pwrap">
-      <!-- RETRATO: reemplaza src con la URL de tu imagen -->
       <div class="pslot"><img src="https://i.gyazo.com/0286e009b07cff381f076cfa0ce9162e.png" alt="Arte del personaje"/></div>
       <div class="pcap">Aletea.</div>
     </div>
@@ -385,7 +384,6 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <div class="rankpill"><div class="rlbl">Nivel</div><div class="rval" contenteditable="true">0</div></div>
     </div>
 
-    <!-- Stat cards — breakdowns injected by JS -->
     <div class="sgrid">
       <div class="scard" data-stat="VIT"><div class="scard-top"><div><div class="sabb">VIT</div><div class="sname">Vitalidad</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
       <div class="scard" data-stat="REI"><div class="scard-top"><div><div class="sabb">REI</div><div class="sname">Reiryoku</div></div><button class="bd-btn" onclick="event.stopPropagation();toggleBd(this)">&#9660; ver</button></div><div class="sval-row"><div class="statnum">0</div><div class="sbar-wrap"><div class="sbar-fill" style="width:0%"></div></div></div></div>
@@ -481,10 +479,8 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
 <div class="sec">
   <div class="shdr"><svg class="sico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#c0392b" stroke-width="1.2"/><polyline points="10,5 10,10 13,13" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="sttl">Historial de Acciones</span><span class="stag">08</span></div>
   <div class="sbody">
-  <!-- ASISTENTE DE LOG -->
   <div class="log-asst">
     <div class="la-ttl">&#9670; A&ntilde;adir entrada al historial</div>
-    <!-- Plantillas rápidas -->
     <div class="la-tpls">
       <button class="la-tpl" onclick="laTpl('exp')">+ EXP</button>
       <button class="la-tpl" onclick="laTpl('pd-gain')">+ PD obtenido</button>
@@ -502,7 +498,6 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
       <button class="la-btn la-btn-ins"  id="laInsBtn"  onclick="laInsert()" style="display:none">&#43; Insertar</button>
       <button class="la-btn la-btn-undo" id="laUndoBtn" onclick="laUndo()" style="display:none">&#8630; Deshacer</button>
     </div>
-    <!-- Selector tipo EXP (aparece solo si se detecta EXP) -->
     <div class="la-exp-row" id="laExpRow" style="display:none;flex-direction:column;gap:4px">
       <div style="display:flex;align-items:center;gap:8px">
         <span class="la-exp-lbl">&#9670; EXP detectada:</span>
@@ -541,9 +536,11 @@ body.locked .binput,body.locked .bsel{pointer-events:none;border-color:rgba(192,
 var isLocked   = true;
 var dlvl       = 0;
 var _restoring = false;
-var _pwd       = null;   
+var _pwd       = null;
 
-var PASS_HASH = "f1570876b9daeff816effc00f7019f4237f24bf1e8e4792e2825e05618256286";
+var PASS_SALT = "fae29312714da1708e436e1ba8533b80";
+var PASS_HASH = "ac059424194ee106db168afac35863bee1397722a43311fa757508cd7b0a5354";
+var PASS_ITER = 600000;
 
 function showPassModal(){
   var m = document.getElementById("passModal");
@@ -556,16 +553,38 @@ function hidePassModal(){ document.getElementById("passModal").style.display = "
 
 async function confirmPass(){
   var val = document.getElementById("passInput").value;
-  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(val));
-  var hash = [...new Uint8Array(buf)].map(function(x){ return x.toString(16).padStart(2,"0"); }).join("");
-  if(hash === PASS_HASH){
-    _pwd = val;
-    hidePassModal();
-    doUnlock();
-  } else {
+  var confirmBtn = document.getElementById("passConfirmBtn");
+  if(confirmBtn){ confirmBtn.disabled = true; confirmBtn.textContent = "Verificando…"; }
+
+  try {
+    var enc     = new TextEncoder();
+    var saltArr = Uint8Array.from(
+      PASS_SALT.match(/.{2}/g).map(function(b){ return parseInt(b, 16); })
+    );
+    var km = await crypto.subtle.importKey(
+      "raw", enc.encode(val), "PBKDF2", false, ["deriveBits"]
+    );
+    var bits = await crypto.subtle.deriveBits(
+      { name:"PBKDF2", salt:saltArr, iterations:PASS_ITER, hash:"SHA-256" },
+      km, 256
+    );
+    var hash = [...new Uint8Array(bits)]
+      .map(function(x){ return x.toString(16).padStart(2,"0"); })
+      .join("");
+
+    if(hash === PASS_HASH){
+      _pwd = val;
+      hidePassModal();
+      doUnlock();
+    } else {
+      document.getElementById("passErr").style.display = "block";
+      document.getElementById("passInput").value = "";
+      document.getElementById("passInput").focus();
+    }
+  } catch(e){
     document.getElementById("passErr").style.display = "block";
-    document.getElementById("passInput").value = "";
-    document.getElementById("passInput").focus();
+  } finally {
+    if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = "CONFIRMAR"; }
   }
 }
 
@@ -579,7 +598,6 @@ function doUnlock(){
   document.querySelectorAll("[data-was-edit]").forEach(function(el){
     el.contentEditable = "true"; delete el.dataset.wasEdit;
   });
-  /* hacer editables las entradas del historial */
   document.querySelectorAll(".lentry").forEach(_makeLentryEditable);
 }
 
@@ -599,7 +617,7 @@ function toggleLock(){
 }
 
 var GIST_ID       = "60656921a5e63dc11aa71c39ed790861";
-var ENCRYPTED_PAT = "/iHGgiSbW7Nt8k1FSOXOBsgpGuGSQSkBs9efeAonpQdBbOsH+Vsk0vh4bixFEYILm/h2KP+9y6JHTV9YaMaFWxcck/8="; 
+var ENCRYPTED_PAT = "3lnqFywm4XyIKnYmqjShTUTYcI2lswPtsWqKhf+4W5hwneJXTsEq35zz1qoNrQncuPrh/iuGijWlnUB0Ge2jIpAuwTU=";
 var GIST_FILE     = "ficha.json";
 var _SALT         = "bleach-hollow-rpg-2026";
 
@@ -611,15 +629,31 @@ async function _deriveKey(pwd, usage){
     km, { name:"AES-GCM", length:256 }, false, [usage]
   );
 }
-  
+
+window.setupPassword = async function(pwd){
+  var salt    = crypto.getRandomValues(new Uint8Array(16));
+  var saltHex = [...salt].map(function(x){ return x.toString(16).padStart(2,"0"); }).join("");
+  var enc     = new TextEncoder();
+  var km      = await crypto.subtle.importKey("raw", enc.encode(pwd), "PBKDF2", false, ["deriveBits"]);
+  var bits    = await crypto.subtle.deriveBits(
+    { name:"PBKDF2", salt:salt, iterations:600000, hash:"SHA-256" }, km, 256
+  );
+  var hash = [...new Uint8Array(bits)]
+    .map(function(x){ return x.toString(16).padStart(2,"0"); })
+    .join("");
+  console.log("%c🔑 Credenciales generadas — copia estos valores al HTML", "color:#27ae60;font-weight:bold;font-size:14px");
+  console.log('%cvar PASS_SALT = "' + saltHex + '";', "color:#7ec8e3;font-size:12px");
+  console.log('%cvar PASS_HASH = "' + hash     + '";', "color:#6fcf97;font-size:12px");
+  console.log("%c→ Después re-cifra el PAT: setupEncrypt(\"ghp_tuToken\", pwd)", "color:#f0a830;font-size:11px");
+};
+
 window.setupEncrypt = async function(pat, pwd){
   var enc = new TextEncoder();
   var key = await _deriveKey(pwd, "encrypt");
   var iv  = crypto.getRandomValues(new Uint8Array(12));
   var ct  = await crypto.subtle.encrypt({ name:"AES-GCM", iv:iv }, key, enc.encode(pat));
   var res = btoa(String.fromCharCode.apply(null, [...iv, ...new Uint8Array(ct)]));
-  console.log("%c✅ what is love=", "color:#27ae60;font-weight:bold;font-size:14px", res);
-  console.log("baby dont hurt me dont hurt me no moreee");
+  console.log("%c✅ PAT cifrado — copia este valor a ENCRYPTED_PAT", "color:#27ae60;font-weight:bold;font-size:14px", res);
   return res;
 };
 
@@ -630,7 +664,6 @@ async function _decryptPAT(pwd){
   return new TextDecoder().decode(dec);
 }
 
-/* --- Serialización del estado --- */
 function _collect(){
   var s = { v:1, tf:[], ed:[], sn:{}, bds:{}, dlvl:dlvl, ht:"" };
   document.querySelectorAll('.wrap input.fi,.wrap input.skinput,.wrap input.einput,.wrap textarea.ta:not(#hueco-text)').forEach(function(el){ s.tf.push(el.value); });
@@ -652,11 +685,9 @@ function _collect(){
     };
   });
   var ht=document.getElementById("hueco-text"); s.ht=ht?ht.value:"";
-  /* guardar historial de acciones */
   var logEl=document.getElementById("logContainer");
   if(logEl){
     var logClone=logEl.cloneNode(true);
-    /* eliminar botones de borrado (son UI en tiempo de ejecución, se recrean al desbloquear) */
     logClone.querySelectorAll('.le-del').forEach(function(b){b.remove();});
     s.log=logClone.innerHTML;
   }
@@ -694,13 +725,10 @@ function _restore(s){
   }
   var ht=document.getElementById("hueco-text"); if(ht&&s.ht!==undefined) ht.value=s.ht;
   if(s.lastEdit) _setLastEdit(s.lastEdit);
-  /* restaurar historial de acciones */
   if(s.log){
     var logEl=document.getElementById("logContainer");
     if(logEl){
       logEl.innerHTML=s.log;
-      /* eliminar cualquier botón .le-del que viniera en el HTML guardado;
-         se recrearán correctamente (con sus event listeners) cuando el usuario desbloquee */
       logEl.querySelectorAll('.le-del').forEach(function(b){b.remove();});
     }
   }
@@ -763,8 +791,8 @@ function pdRateLabel(stat){
     case "REI": return "10/PD";
     case "FUE": return "3/PD";
     case "DEF": if(rank==="A"||rank==="S") return "10/PD ◆"; if(rank==="C"||rank==="B") return "5/PD ◆"; return "3/PD";
-    case "VEL": return "1 / 5 PD";
-    case "VOL": return "1 / 5 PD";
+    case "VEL": return "1 / 5 PD";
+    case "VOL": return "1 / 5 PD";
     default: return "";
   }
 }
@@ -816,7 +844,6 @@ loadFromGist();
 ============================================================ */
 function _fmtLastEdit(iso){
   var d=new Date(iso);
-  /* hora local del visitante con abreviatura de zona horaria */
   return d.toLocaleString(undefined,{
     year:"numeric",month:"2-digit",day:"2-digit",
     hour:"2-digit",minute:"2-digit",second:"2-digit",
@@ -901,7 +928,7 @@ for(var j=0;j<10;j++){
    LOG ASSISTANT
 ============================================================ */
 var _laData = null;
-var _laUndoStack = [];  /* pila de entradas para deshacer */
+var _laUndoStack = [];
 
 function _makeLentryEditable(el){
   el.contentEditable = "true";
@@ -911,7 +938,6 @@ function _makeLentryEditable(el){
     btn.style.display = "block";
     btn.addEventListener("click", function(e){
       e.stopPropagation();
-      /* quitar de la pila de deshacer si estaba ahí */
       var idx = _laUndoStack.indexOf(el);
       if(idx > -1) _laUndoStack.splice(idx, 1);
       _updUndoBtn();
@@ -922,7 +948,6 @@ function _makeLentryEditable(el){
   }
 }
 
-/* Plantillas rápidas */
 function laTpl(type){
   var tpls={
     exp:      "Obtengo ___ EXP [motivo] → https://",
@@ -936,7 +961,6 @@ function laTpl(type){
   var el=document.getElementById("laInp");
   el.value=tpls[type]||"";
   el.focus();
-  /* seleccionar primer [placeholder] */
   var i=el.value.indexOf("[");
   if(i>-1){ var j=el.value.indexOf("]",i); el.setSelectionRange(i,j+1); }
 }
@@ -952,39 +976,26 @@ function laProcess(){
   var raw=document.getElementById("laInp").value.trim();
   if(!raw) return;
   var date=_laDate();
-
-  /* detectar URLs */
   var urlRx=/https?:\/\/[^\s,;)>\]]+/g;
   var urls=raw.match(urlRx)||[];
-
-  /* construir cuerpo */
   var body=raw;
-  /* quitar palabras indicadoras de enlace */
   body=body.replace(/[,;\s]*(?:link|enlace|post|ver en|aqui:|aquí:|url:)\s*/gi," ");
   body=body.replace(/\s*[→\-][>]?\s*/g," ");
-  /* sustituir URLs por BBCode */
   urls.forEach(function(url){
     body=body.replace(url,"[url="+url+"]aquí[/url]");
   });
   body=body.replace(/\s{2,}/g," ").trim();
-  /* capitalizar primera letra */
   body=body.charAt(0).toUpperCase()+body.slice(1);
-  /* punto final si no termina en puntuación o BBCode */
   if(!/[.!?\]]$/.test(body)) body+=".";
-
   var bbcode=date+" "+body;
   _laData={date:date,body:body,bbcode:bbcode};
 
-  /* detectar PD: cantidad, stat destino y si es obtención o gasto */
   var pdAmt=0, pdStat=null, pdIsGain=false;
   var pdStatRx=/\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i;
-  /* obtención de PD: "obtengo N PD", "gano N PD", "recibo N PD", "compro N PD" */
   var pdGainRx=/(?:obtengo|gano|recibo|compro|subo de rango|rango[^,]*?otorga)\D{0,30}?(\d+)\s*PD/i;
-  /* gasto de PD: "gasto N PD en STAT", "consumo N PD en STAT" */
   var pdSpendRx=/(?:gasto|consumo|invierto|uso)\D{0,10}?(\d+)\s*PD\D{0,20}?\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i;
   var pdGainM=raw.match(pdGainRx);
   var pdSpendM=raw.match(pdSpendRx);
-  /* también patrón simple "X PD en STAT" sin verbo explícito de gasto si hay stat */
   var pdSimpleM=raw.match(/(\d+)\s*PD\b[^\n]{0,30}?\b(VIT|REI|FUE|DEF|VEL|VOL)\b/i);
   if(pdSpendM){
     pdAmt=parseInt(pdSpendM[1])||0;
@@ -998,7 +1009,6 @@ function laProcess(){
     pdAmt=parseInt(pdGainM[1])||0;
     pdIsGain=true;
   } else {
-    /* fallback: cualquier mención de N PD */
     var pdFallM=raw.match(/(\d+)\s*PD/i);
     if(pdFallM){
       pdAmt=parseInt(pdFallM[1])||0;
@@ -1009,18 +1019,15 @@ function laProcess(){
   }
   _laData.pdAmt=pdAmt; _laData.pdStat=pdStat; _laData.pdIsGain=pdIsGain;
 
-  /* detectar cantidad de EXP y si es ganancia o consumo */
   var expM=raw.match(/(\d[\d.,]*)\s*(?:exp|experiencia)/i);
   var expAmt=0;
-  var expSign=1; /* +1 ganancia, -1 consumo */
+  var expSign=1;
   if(expM){
     expAmt=parseFloat(expM[1].replace(",",".").replace("k",""))*
            (/k/i.test(expM[1])?1000:1);
-    /* detectar si es consumo: palabras clave de gasto */
     if(/consumo|gasto|canjeo|compro|pago/i.test(raw)) expSign=-1;
     document.getElementById("laExpAmt").textContent=(expSign<0?"-":"+")+" "+expAmt+" EXP";
     document.getElementById("laExpRow").style.display="flex";
-    /* ocultar selector dentro/fuera si es consumo (siempre va al total) */
     document.getElementById("laExpTypeRow").style.display=expSign>0?"flex":"none";
   } else {
     document.getElementById("laExpRow").style.display="none";
@@ -1041,7 +1048,6 @@ function laCopy(){
     btn.innerHTML="&#10003; Copiado";
     setTimeout(function(){ btn.innerHTML="&#128203; Copiar"; },1800);
   }).catch(function(){
-    /* fallback para navegadores sin clipboard API */
     var ta=document.createElement("textarea");
     ta.value=_laData.bbcode; document.body.appendChild(ta);
     ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
@@ -1056,13 +1062,11 @@ function laInsert(){
   var entry=document.createElement("div");
   entry.className="lentry";
 
-  /* convertir BBCode a HTML visual */
   var visual=_laData.body.replace(
     /\[url=([^\]]+)\]([^\[]+)\[\/url\]/g,
     '<a href="$1" target="_blank" style="color:var(--cr-hi);text-decoration:none">$2</a>'
   );
 
-  /* colorear EXP en el texto */
   var sign=_laData.expSign||1;
   if(_laData.expAmt>0){
     var expStr=_laData.expAmt+" EXP";
@@ -1074,7 +1078,6 @@ function laInsert(){
     );
   }
 
-  /* colorear PD en el texto */
   if(_laData.pdAmt>0){
     var pdPrefix=_laData.pdIsGain?"+":"-";
     var pdCls=_laData.pdIsGain?"lexp-gain":"lpd-badge";
@@ -1084,14 +1087,13 @@ function laInsert(){
     );
   }
 
-  /* asegurar separador de semana actual */
   var wn=_currentWeekNumber();
   _ensureWeekSep(wn);
 
   entry.innerHTML=
     '<div><span class="ldate">'+_laData.date+'</span>'+
     '<span class="ltxt"> '+visual+'</span></div>';
-  /* insertar tras el sep de la semana actual */
+
   var sep=log.querySelector('.lwk-sep[data-week="'+wn+'"]');
   if(sep && sep.nextSibling){
     log.insertBefore(entry, sep.nextSibling);
@@ -1101,32 +1103,27 @@ function laInsert(){
   _laUndoStack.push(entry);
   if(!isLocked) _makeLentryEditable(entry);
 
-  /* ── EXP ── */
-  /* capturar expType antes del bloque para poder guardarlo en el snapshot */
   var expType = (_laData.expAmt>0 && sign>0)
     ? document.querySelector('input[name="laExpType"]:checked').value
     : "dentro";
-  var effectiveExpAmt = _laData.expAmt || 0; /* puede reducirse si supera el cap de dentro */
+  var effectiveExpAmt = _laData.expAmt || 0;
   if(_laData.expAmt>0){
     if(sign>0){
       var expEl=document.getElementById(expType==="fuera"?"exp-fuera":"exp-dentro");
       if(expEl){
         var cur=parseFloat(expEl.textContent)||0;
         if(expType==="dentro"){
-          /* no superar exp-dentro-max: solo añadir el hueco disponible */
           var maxEl=document.getElementById("exp-dentro-max");
           var cap=parseFloat(maxEl?maxEl.textContent:0)||0;
           var space=Math.max(0,cap-cur);
           effectiveExpAmt=Math.min(_laData.expAmt,space);
         }
         expEl.textContent=cur+effectiveExpAmt;
-        /* si el cap redujo la cantidad, actualizar el texto de la entrada del historial */
         if(effectiveExpAmt!==_laData.expAmt){
           var expSpan=entry.querySelector('.lexp-gain');
           if(expSpan){
             expSpan.textContent="+"+effectiveExpAmt+" EXP";
             expSpan.title="Límite aplicado: "+effectiveExpAmt+" de "+_laData.expAmt+" EXP añadidos (cap semanal)";
-            /* añadir nota visual entre paréntesis */
             var note=entry.querySelector('.la-cap-note');
             if(!note){
               expSpan.insertAdjacentHTML('afterend',
@@ -1143,18 +1140,14 @@ function laInsert(){
     _recalcExpTotal();
   }
 
-  /* ── PD ── */
   if(_laData.pdAmt>0){
     var pdDispEl=document.getElementById("pd-disp");
     var pdTotalEl=pdDispEl ? pdDispEl.parentNode.querySelector(".enum.exp-pd:last-child") : null;
     if(_laData.pdIsGain){
-      /* obtención: sube disponibles Y el total */
       if(pdDispEl){ var dv=parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent=dv+_laData.pdAmt; }
       if(pdTotalEl){ var tv=parseFloat(pdTotalEl.textContent)||0; pdTotalEl.textContent=tv+_laData.pdAmt; }
     } else {
-      /* gasto: baja disponibles */
       if(pdDispEl){ var dv2=parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent=Math.max(0,dv2-_laData.pdAmt); }
-      /* sumar al campo bpd del breakdown del stat correspondiente y recalcular */
       if(_laData.pdStat){
         var targetCard=document.querySelector('.scard[data-stat="'+_laData.pdStat+'"]');
         if(targetCard){
@@ -1164,12 +1157,10 @@ function laInsert(){
             bpd.value=curPd+_laData.pdAmt;
             var bd=targetCard.querySelector('.breakdown');
             if(bd){ recalcBd(bd); }
-            /* abrir el desglose brevemente para feedback visual */
             if(bd && !bd.classList.contains('open')){
               var bdBtn=targetCard.querySelector('.bd-btn');
               if(bdBtn){ toggleBd(bdBtn); }
             }
-            /* aplicar automáticamente al statnum */
             applyBd(targetCard);
           }
         }
@@ -1177,8 +1168,6 @@ function laInsert(){
     }
   }
 
-  /* ── guardar snapshot para revertir los cambios al eliminar la entrada ── */
-  /* expAmt usa effectiveExpAmt: la cantidad real que se añadió tras respetar el cap */
   entry._laSnapshot = {
     expAmt:   effectiveExpAmt,
     expSign:  _laData.expSign  || 1,
@@ -1187,7 +1176,6 @@ function laInsert(){
     pdIsGain: _laData.pdIsGain || false,
     pdStat:   _laData.pdStat   || null
   };
-  /* persistir el snapshot como atributo HTML: sobrevive innerHTML restore tras F5 */
   entry.dataset.snap = JSON.stringify(entry._laSnapshot);
 
   _updUndoBtn();
@@ -1202,36 +1190,29 @@ function laInsert(){
 
 function _revertEntry(el){
   var snap = el._laSnapshot;
-  /* fallback: leer el snapshot desde el atributo data-snap (sobrevive restore por innerHTML) */
   if(!snap && el.dataset.snap){
     try { snap = JSON.parse(el.dataset.snap); } catch(e){}
   }
   if(!snap) return;
 
-  /* ── revertir EXP ── */
   if(snap.expAmt > 0){
     if(snap.expSign > 0){
-      /* era ganancia: restar del campo correspondiente */
       var expEl = document.getElementById(snap.expType === "fuera" ? "exp-fuera" : "exp-dentro");
       if(expEl){ var cur = parseFloat(expEl.textContent)||0; expEl.textContent = Math.max(0, cur - snap.expAmt); }
     } else {
-      /* era gasto: restar de exp-gastada */
       var gastEl = document.getElementById("exp-gastada");
       if(gastEl){ var curG = parseFloat(gastEl.textContent)||0; gastEl.textContent = Math.max(0, curG - snap.expAmt); }
     }
     _recalcExpTotal();
   }
 
-  /* ── revertir PD ── */
   if(snap.pdAmt > 0){
     var pdDispEl = document.getElementById("pd-disp");
     var pdTotalEl = pdDispEl ? pdDispEl.parentNode.querySelector(".enum.exp-pd:last-child") : null;
     if(snap.pdIsGain){
-      /* era obtención: descontar de disponibles y del total */
       if(pdDispEl){ var dv = parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent = Math.max(0, dv - snap.pdAmt); }
       if(pdTotalEl && pdTotalEl !== pdDispEl){ var tv = parseFloat(pdTotalEl.textContent)||0; pdTotalEl.textContent = Math.max(0, tv - snap.pdAmt); }
     } else {
-      /* era gasto: devolver a disponibles y descontar del bpd del stat */
       if(pdDispEl){ var dv2 = parseFloat(pdDispEl.textContent)||0; pdDispEl.textContent = dv2 + snap.pdAmt; }
       if(snap.pdStat){
         var targetCard = document.querySelector('.scard[data-stat="' + snap.pdStat + '"]');
@@ -1274,7 +1255,7 @@ function laUndo(){
 /* ============================================================
    EXP TOTAL RECALC + CAP SEMANAL AUTOMÁTICO
 ============================================================ */
-var _WEEK1_START = new Date("2026-06-08T00:00:00"); /* lunes semana 1 */
+var _WEEK1_START = new Date("2026-06-08T00:00:00");
 var _EXP_PER_WEEK = 500;
 
 function _currentWeekNumber(){
@@ -1285,7 +1266,6 @@ function _currentWeekNumber(){
 }
 
 function _weekDates(n){
-  /* devuelve {start, end} como strings DD/MM/YYYY */
   var ms = 7*24*60*60*1000;
   var s = new Date(_WEEK1_START.getTime() + (n-1)*ms);
   var e = new Date(s.getTime() + 6*24*60*60*1000);
@@ -1294,10 +1274,8 @@ function _weekDates(n){
 }
 
 function _calcExpCap(joinWeek){
-  /* joinWeek: semana en que el personaje se registró (por defecto 1) */
   joinWeek = parseInt(joinWeek)||1;
   var current = _currentWeekNumber();
-  /* cap = 500 * semanas disponibles desde que entró */
   return Math.max(0, (current - joinWeek + 1)) * _EXP_PER_WEEK;
 }
 
@@ -1317,11 +1295,9 @@ function _recalcExpTotal(){
   if(el) el.textContent=total;
 }
 
-/* Insertar separador de semana en el log si es necesario */
 function _ensureWeekSep(weekNum){
   var log=document.getElementById("logContainer");
   if(!log) return;
-  /* buscar si ya existe el sep de esa semana */
   var existing=log.querySelector('.lwk-sep[data-week="'+weekNum+'"]');
   if(existing) return;
   var d=_weekDates(weekNum);
@@ -1333,11 +1309,9 @@ function _ensureWeekSep(weekNum){
     '<span>Semana '+weekNum+'</span>'+
     '<span class="lwk-sep-dates">'+d.start+' &ndash; '+d.end+'</span>'+
     '<span class="lwk-sep-cap">Cap. '+(_calcExpCap(1) - (weekNum-1)*500)+'&nbsp;acum.</span>';
-  /* insertar al principio (entradas nuevas van arriba) */
   log.insertBefore(sep, log.firstChild);
 }
 
-/* Recalcular al editar dentro/fuera manualmente */
 (function(){
   function _watchExp(id){
     var el=document.getElementById(id);
@@ -1346,9 +1320,7 @@ function _ensureWeekSep(weekNum){
   _watchExp("exp-dentro"); _watchExp("exp-fuera");
   var jwEl=document.getElementById("join-week");
   if(jwEl) jwEl.addEventListener("input",function(){ _updateExpCap(); _recalcExpTotal(); });
-  /* cap automático al cargar */
   setTimeout(function(){ _updateExpCap(); _recalcExpTotal(); },1200);
-  /* actualizar cap cada hora (por si el tab queda abierto) */
   setInterval(_updateExpCap, 3600000);
 })();
 
