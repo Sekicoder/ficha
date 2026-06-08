@@ -1208,8 +1208,8 @@ function laProcess(){
 
   /* ── detect hollow devour ── */
   var _hwc=null;
-  var hwM=raw.match(/devo(?:ro|r[eé]|rar)\s+(?:a\s+)?(?:un?\s+)?(?:hollow\s+)?([a-zA-Zà-ü\s]+?)(?:\s+hollow)?(?:\s*→.*)?$/im);
-  if(hwM){ var tgt=_hwStageFromText(hwM[1]); if(tgt>-1) _hwc={targetStage:tgt}; }
+  var hwM=raw.match(/devo(?:r[oó]|r[eé]|rar)\b[^→\n]*/im);
+  if(hwM){ var tgt=_hwStageFromText(hwM[0]); if(tgt>-1) _hwc={targetStage:tgt}; }
   _laData.hwc=_hwc;
 
   /* ── build badges ── */
