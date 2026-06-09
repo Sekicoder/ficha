@@ -1315,11 +1315,28 @@ function laInsert(){
 
   if(_laData.pdAmt>0){
     var pdPrefix=_laData.pdIsGain?"+":"-";
-    var pdCls=_laData.pdIsGain?"lexp-gain":"lpd-badge";
+    var pdCls=_laData.pdIsGain?"lexp-gain":"lexp-lose";
     visual=visual.replace(
       new RegExp("(\\d+)\\s*PD\\b","i"),
       '<span class="'+pdCls+'">'+pdPrefix+_laData.pdAmt+' PD</span>'
     );
+  }
+
+  /* ── color gastos de divisa en rojo ── */
+  if(_laData.cc && _laData.cc.length){
+    var _curPatterns={
+      'cur-kan':    /\d[\d.,]*\s*(?:kan|yen)\b/i,
+      'cur-temp':   /\d[\d.,]*\s*monedas?\s*(?:de\s*)?temp(?:orada)?\b/i,
+      'cur-arcade': /\d[\d.,]*\s*fichas?\s*arcade\b/i,
+      'cur-gacha':  /\d[\d.,]*\s*tickets?\b/i,
+      'cur-elo':    /\d[\d.,]*\s*elo\b/i
+    };
+    _laData.cc.forEach(function(c){
+      if(c.sign !== -1 || !_curPatterns[c.id]) return;
+      visual=visual.replace(_curPatterns[c.id],function(match){
+        return '<span class="lexp-lose">-'+match+'</span>';
+      });
+    });
   }
 
   var wn=_currentWeekNumber();
@@ -1667,6 +1684,11 @@ function rankToMinLevel(rank){
   return 1;
 }
 
+function rankToMaxLevel(rank){
+  for(var i=0;i<RANK_RANGES.length;i++) if(RANK_RANGES[i].rank===rank) return RANK_RANGES[i].max;
+  return 300;
+}
+
 function levelToRank(lvl){
   lvl=parseInt(lvl)||1;
   for(var i=0;i<RANK_RANGES.length;i++) if(lvl>=RANK_RANGES[i].min&&lvl<=RANK_RANGES[i].max) return RANK_RANGES[i].rank;
@@ -1699,10 +1721,10 @@ function autoFillAllBases(lvl){
 function onRankChange(rank){
   if(isLocked) return;
   if(!rank) return;
-  var minLvl=rankToMinLevel(rank);
+  var maxLvl=rankToMaxLevel(rank);
   var lvlEl=document.getElementById('char-level');
-  if(lvlEl) lvlEl.textContent=minLvl;
-  autoFillAllBases(minLvl);
+  if(lvlEl) lvlEl.textContent=maxLvl;
+  autoFillAllBases(maxLvl);
   renderHollow();
 }
 
@@ -1713,10 +1735,10 @@ function onLevelChange(){
   // clamp to valid range
   if(lvl<1) lvl=1;
   el.textContent=lvl;
+  // solo actualiza el indicador de rango; los stats no cambian al editar nivel
   var rank=levelToRank(lvl);
   var rankEl=document.getElementById('char-rank');
   if(rankEl){ if(rankEl.tagName==='SELECT') rankEl.value=rank; else rankEl.textContent=rank; }
-  autoFillAllBases(lvl);
   renderHollow();
 }
 
